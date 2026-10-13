@@ -573,16 +573,27 @@ async function getJSON(url, who) {
   var r;
   try { r = await fetch(url); } catch (e) { throw new Error(who + ': blocked'); }
   if (r.status === 429) throw new Error(who + ': limit');
-  if (!r.ok) throw new Error(who + ': ' + r.status);
+  if (!r.ok) {
+    var detail = '';
+    try { var t = await r.text(); var m = /"(?:message|error)"\s*:\s*"([^"]{1,90})/.exec(t); detail = m ? m[1] : t.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 90); } catch (e) {}
+    throw new Error(who + ': ' + r.status + (detail ? ' ' + detail : ''));
+  }
   try { return await r.json(); } catch (e) { throw new Error(who + ': bad reply'); }
 }
 async function offSearch(q) {
   // Open Food Facts' current search service, US products first.
-  var base = 'https://search.openfoodfacts.org/search?page_size=20&langs=en&fields=' + OFF_FIELDS + '&q=';
-  var j = await getJSON(base + encodeURIComponent(q + ' countries_tags:"en:united-states"'), 'Open Food Facts');
-  var hits = offHits(j.hits);
-  if (!hits.length) hits = offHits((await getJSON(base + encodeURIComponent(q), 'Open Food Facts')).hits);
-  return hits;
+  try {
+    var base = 'https://search.openfoodfacts.org/search?page_size=20&langs=en&fields=' + OFF_FIELDS + '&q=';
+    var j = await getJSON(base + encodeURIComponent(q + ' countries_tags:"en:united-states"'), 'Open Food Facts');
+    var hits = offHits(j.hits);
+    if (!hits.length) hits = offHits((await getJSON(base + encodeURIComponent(q), 'Open Food Facts')).hits);
+    return hits;
+  } catch (e) {
+    // The newer service may refuse other websites; the main Open Food Facts site allows them.
+    var k = await getJSON('https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=20&tagtype_0=countries&tag_contains_0=contains&tag_0=united-states&fields=' +
+      OFF_FIELDS + '&search_terms=' + encodeURIComponent(q), 'Open Food Facts');
+    return offHits(k.products);
+  }
 }
 
 /* ---------- USDA FoodData Central ---------- */
@@ -626,9 +637,15 @@ function fromUSDA(x) {
   return food;
 }
 async function usdaSearch(q, types, size) {
-  var j = await getJSON('https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + USDA_KEY + '&pageSize=' + size +
-    '&dataType=' + types.map(encodeURIComponent).join(',') + '&query=' + encodeURIComponent(q), 'USDA');
-  return j.foods || [];
+  var base = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + USDA_KEY + '&pageSize=' + size + '&query=' + encodeURIComponent(q);
+  try {
+    return (await getJSON(base + '&dataType=' + types.map(encodeURIComponent).join(','), 'USDA')).foods || [];
+  } catch (e) {
+    if (/limit/.test(e.message)) throw e;
+    // Retry once in the plainest form (no food-type filter), in case the filter is what it objected to.
+    try { return (await getJSON(base, 'USDA')).foods || []; }
+    catch (e2) { throw new Error(e.message + ' / ' + e2.message.replace(/^USDA: /, '')); }
+  }
 }
 async function usdaByCode(code) {
   try {
