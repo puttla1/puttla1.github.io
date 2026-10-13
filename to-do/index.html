@@ -59,35 +59,14 @@ button.add:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 footer{margin-top:36px;color:var(--muted);font-size:13px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
-/* Sign-in gate: each wrapper shows only in its state */
-[data-show]{display:none}
-body[data-auth="loading"] [data-show="loading"],body[data-auth="out"] [data-show="out"],
-body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denied"]{display:block}
-.gate{margin-top:36px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.gate p{margin:0 0 14px;color:var(--muted)}
-.gate .who{color:var(--ink);font-weight:500}
-.link{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.link:hover,.link:focus-visible{color:var(--accent)}
-.loading-msg{color:var(--muted);margin-top:36px}
+.error{color:var(--accent)}
 </style>
 </head>
 <body>
 <main class="wrap">
   <a class="back" href="/">Puneeth &amp; Alaina</a>
   <h1>To do</h1>
-  <div data-show="loading"><p class="loading-msg">Loading…</p></div>
-
-  <div data-show="out" class="gate">
-    <p>Sign in to see the list. Anything you check off or add shows up on every phone and computer you’re signed in on.</p>
-    <button class="add js-signin" type="button">Sign in with Google</button>
-  </div>
-
-  <div data-show="denied" class="gate">
-    <p><span class="who"></span> doesn’t have access to this list.</p>
-    <button class="link js-signout" type="button">Use a different account</button>
-  </div>
-
-  <div data-show="in">
+  <div>
     <p class="count" id="count" aria-live="polite"></p>
     <div class="bar" aria-hidden="true"><i id="bar"></i></div>
 
@@ -107,13 +86,12 @@ body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denie
       <button type="button" id="toggleDone" aria-pressed="false">Hide completed</button>
       <button type="button" id="clearDone">Remove completed</button>
     </div>
-    <footer>Synced across devices. Signed in as <span class="who"></span> · <button class="link js-signout" type="button">Sign out</button></footer>
+    <footer>Synced across devices. Anyone with this link can see and edit the list.</footer>
   </div>
 </main>
 
 <script type="module">
-import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp,
-  startGate, denied, isDenied } from '/shared/firebase.js';
+import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp } from '/shared/firebase.js';
 
 var LOCAL_KEY = 'pa-todo-v1';      // the old on-this-device list, used once to fill the shared list
 var PREF_KEY = 'pa-todo-prefs';    // per-device view settings
@@ -154,10 +132,14 @@ GROUPS.forEach(function (g) {
 
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function ref(id) { return doc(db, 'todo', id); }
-function report(err) { if (isDenied(err)) denied(); else console.error(err); }
+function report(err) {
+  console.error(err);
+  var c = document.getElementById('count');
+  c.textContent = 'Couldn\u2019t reach the list. Check your connection and refresh.'; c.classList.add('error');
+}
 
 // First sign-in anywhere: copy this device's existing list (or the starting list) into the shared one, exactly once.
-function seedOnce(user) {
+function seedOnce() {
   var local = null;
   try { var s = JSON.parse(localStorage.getItem(LOCAL_KEY)); if (s && s.items && s.items.length) local = s.items; } catch (e) {}
   var start = local || DEFAULTS.map(function (d) { return Object.assign({ done: false }, d); });
@@ -167,7 +149,7 @@ function seedOnce(user) {
     start.forEach(function (it, i) {
       tx.set(ref(it.id), { g: it.g, t: it.t, n: it.n || null, due: it.due || null, done: !!it.done, order: i + 1 });
     });
-    tx.set(meta, { seeded: true, at: serverTimestamp(), by: user.email });
+    tx.set(meta, { seeded: true, at: serverTimestamp(), by: 'page' });
     return true;
   });
 }
@@ -240,17 +222,12 @@ document.getElementById('clearDone').addEventListener('click', function () {
   b.commit().catch(report);
 });
 
-startGate({
-  onSignedIn: function (user) {
-    seedOnce(user).catch(report);
-    if (unsub) unsub();
-    unsub = onSnapshot(collection(db, 'todo'), function (snap) {
-      items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      loaded = true; render();
-    }, report);
-  },
-  onSignedOut: function () { if (unsub) unsub(); unsub = null; items = []; loaded = false; render(); }
-});
+// Open to anyone with the link: no sign-in.
+seedOnce().catch(function (e) { console.error(e); });
+onSnapshot(collection(db, 'todo'), function (snap) {
+  items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+  loaded = true; render();
+}, report);
 render();
 </script>
 </body>
