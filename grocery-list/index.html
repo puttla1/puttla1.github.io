@@ -257,11 +257,44 @@ async function findPicture(it, query) {
   try {
     var token = await auth.currentUser.getIdToken();
     var r = await fetch(PICTURE_HELPER.replace(/\/$/, '') + '/pick?q=' + encodeURIComponent(query || it.name), { headers: { Authorization: 'Bearer ' + token } });
-    var d = await r.json();
-    if (!r.ok) throw new Error(d.error || r.status);
-    var options = (d.options || []).map(function (o) { return { img: o.img, thumb: o.thumb || null, cap: o.cap || null }; });
-    if (d.pick) setPicture(it, options[0], { options: options, autoTried: true });
-    else updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report);
+    var clean = function (list) { return (list || []).map(function (o) { return { img: o.img, thumb: o.thumb || null, cap: o.cap || null }; }); };
+    if (!r.ok) { var bad = await r.json().catch(function () { return {}; }); throw new Error(bad.error || r.status); }
+
+    if (!/ndjson/.test(r.headers.get('content-type') || '')) {
+      // Older helper: one answer at the end.
+      var d = await r.json(), all = clean(d.options);
+      if (d.pick) setPicture(it, all[0], { options: all, autoTried: true });
+      else updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report);
+      return;
+    }
+
+    // Streaming helper: show the top Google result immediately, then switch to Claude's pick if it differs.
+    var reader = r.body.getReader(), dec = new TextDecoder(), buf = '', options = null;
+    var onMessage = function (m) {
+      if (m.error) throw new Error(m.error);
+      if (m.options) {
+        options = clean(m.options);
+        if (!options.length) { updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report); return; }
+        setPicture(it, options[0], { options: options, autoTried: true });
+        delete looking[it.id]; render();
+      }
+      if (m.done && options && m.index > 0 && options[m.index]) {
+        var now = byId(it.id);
+        if (now && now.img && now.img !== options[0].img) return;   // someone already chose a different picture
+        var pick = options[m.index];
+        setPicture(it, pick, { options: [pick].concat(options.filter(function (_, i) { return i !== m.index; })) });
+      }
+    };
+    for (;;) {
+      var chunk = await reader.read();
+      if (chunk.done) break;
+      buf += dec.decode(chunk.value, { stream: true });
+      var nl;
+      while ((nl = buf.indexOf('\n')) >= 0) {
+        var line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+        if (line) onMessage(JSON.parse(line));
+      }
+    }
   } catch (e) {
     console.error(e);
     updateDoc(itemRef(it.id), { autoTried: true }).catch(report);

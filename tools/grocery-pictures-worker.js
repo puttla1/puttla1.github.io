@@ -11,7 +11,8 @@
 const FIREBASE_PROJECT = 'puneeth-alaina';
 const ALLOWED_ORIGINS = ['https://puneeth-alaina.com', 'https://www.puneeth-alaina.com', 'https://puttla1.github.io'];
 const MODEL = 'claude-haiku-5-5';
-const MAX_CANDIDATES = 8;
+const MAX_CANDIDATES = 8;   // returned to the page as alternates
+const AI_CANDIDATES = 6;    // how many of those Claude looks at (fewer = faster)
 
 export default {
   async fetch(request, env) {
@@ -39,21 +40,31 @@ export default {
     if (!q) return reply(400, { error: 'missing q' });
     if (!env.SERPAPI_KEY) return reply(500, { error: 'SERPAPI_KEY is not set' });
 
-    let options;
-    try { options = await googleImages(q, env.SERPAPI_KEY); } catch (e) { return reply(502, { error: 'image search failed: ' + e.message }); }
-    if (!options.length) return reply(200, { pick: null, options: [], by: 'none' });
-
-    let index = 0, by = 'first';
-    if (env.ANTHROPIC_API_KEY) {
+    // Stream two lines so the page can show the top Google result right away:
+    //   {"options":[...]}                        as soon as the search returns
+    //   {"done":true,"index":n,"by":"ai"|...}     once Claude has picked (index into options)
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter(), enc = new TextEncoder();
+    const send = obj => writer.write(enc.encode(JSON.stringify(obj) + '\n'));
+    (async () => {
       try {
-        const chosen = await claudePick(q, options, env.ANTHROPIC_API_KEY);
-        if (chosen != null) { index = chosen; by = 'ai'; }
-      } catch (e) { by = 'first (ai failed: ' + e.message + ')'; }
-    }
-    // Put the pick first so the page can show the rest as alternates.
-    const pick = options[index];
-    const ordered = [pick].concat(options.filter((_, i) => i !== index));
-    return reply(200, { pick, options: ordered, by });
+        const options = await googleImages(q, env.SERPAPI_KEY);
+        await send({ options });
+        let index = 0, by = options.length ? 'first' : 'none';
+        if (options.length > 1 && env.ANTHROPIC_API_KEY) {
+          try {
+            const chosen = await claudePick(q, options.slice(0, AI_CANDIDATES), env.ANTHROPIC_API_KEY);
+            if (chosen != null) { index = chosen; by = 'ai'; }
+          } catch (e) { by = 'first (ai failed: ' + e.message + ')'; }
+        }
+        await send({ done: true, index, by });
+      } catch (e) {
+        await send({ error: 'image search failed: ' + e.message });
+      } finally {
+        await writer.close();
+      }
+    })();
+    return new Response(readable, { headers: { ...cors, 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store' } });
   }
 };
 
@@ -81,7 +92,7 @@ async function claudePick(q, options, key) {
       'List item: "' + q + '"\n\n' +
       'Below are the top Google Images results. Pick the one that best shows exactly this item as a shopper would find it: ' +
       'the right brand, flavor, variety and form (for a packaged product, its package; for produce or a generic food, a clear photo of the food itself). ' +
-      'Prefer a clean product shot on a plain background. Avoid people, recipes, dishes, collages, ads, logos alone, nutrition labels and screenshots.\n' +
+      'Prefer a single clean product shot on a plain background. Avoid infographics, images with lots of text, people, recipes, dishes, collages, ads, logos alone, nutrition labels and screenshots.\n' +
       'Reply with only the image number.'
   }];
   const numbers = [];
