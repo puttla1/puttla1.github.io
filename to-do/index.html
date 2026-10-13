@@ -59,142 +59,199 @@ button.add:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 footer{margin-top:36px;color:var(--muted);font-size:13px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+/* Sign-in gate: each wrapper shows only in its state */
+[data-show]{display:none}
+body[data-auth="loading"] [data-show="loading"],body[data-auth="out"] [data-show="out"],
+body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denied"]{display:block}
+.gate{margin-top:36px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gate p{margin:0 0 14px;color:var(--muted)}
+.gate .who{color:var(--ink);font-weight:500}
+.link{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link:hover,.link:focus-visible{color:var(--accent)}
+.loading-msg{color:var(--muted);margin-top:36px}
 </style>
 </head>
 <body>
 <main class="wrap">
   <a class="back" href="/">Puneeth &amp; Alaina</a>
   <h1>To do</h1>
-  <p class="count" id="count" aria-live="polite"></p>
-  <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  <div data-show="loading"><p class="loading-msg">Loading…</p></div>
 
-  <div id="lists"></div>
-
-  <form id="addForm" autocomplete="off">
-    <div class="row">
-      <label class="sr" for="newTask">New task</label>
-      <input type="text" id="newTask" placeholder="Add a task" maxlength="140" required>
-      <label class="sr" for="newGroup">List</label>
-      <select id="newGroup"></select>
-    </div>
-    <button class="add" type="submit">Add</button>
-  </form>
-
-  <div class="tools">
-    <button type="button" id="toggleDone" aria-pressed="false">Hide completed</button>
-    <button type="button" id="clearDone">Remove completed</button>
+  <div data-show="out" class="gate">
+    <p>Sign in to see the list. Anything you check off or add shows up on every phone and computer you’re signed in on.</p>
+    <button class="add js-signin" type="button">Sign in with Google</button>
   </div>
 
-  <footer>Saved on this device. Checking something off here won't show up on another phone.</footer>
+  <div data-show="denied" class="gate">
+    <p><span class="who"></span> doesn’t have access to this list.</p>
+    <button class="link js-signout" type="button">Use a different account</button>
+  </div>
+
+  <div data-show="in">
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+
+    <div id="lists"></div>
+
+    <form id="addForm" autocomplete="off">
+      <div class="row">
+        <label class="sr" for="newTask">New task</label>
+        <input type="text" id="newTask" placeholder="Add a task" maxlength="140" required>
+        <label class="sr" for="newGroup">List</label>
+        <select id="newGroup"></select>
+      </div>
+      <button class="add" type="submit">Add</button>
+    </form>
+
+    <div class="tools">
+      <button type="button" id="toggleDone" aria-pressed="false">Hide completed</button>
+      <button type="button" id="clearDone">Remove completed</button>
+    </div>
+    <footer>Synced across devices. Signed in as <span class="who"></span> · <button class="link js-signout" type="button">Sign out</button></footer>
+  </div>
 </main>
 
-<script>
-(function () {
-  var KEY = 'pa-todo-v1';
-  var GROUPS = [
-    { id: 'week', name: 'This week' },
-    { id: 'travel', name: 'Travel to book' },
-    { id: 'wedding', name: 'Our wedding' },
-    { id: 'india', name: 'India trip' },
-    { id: 'later', name: 'Later' }
-  ];
-  var DEFAULTS = [
-    { id: 'pharmacy', g: 'week', t: 'Call the pharmacy', due: 'Mon' },
-    { id: 'deposit', g: 'week', t: 'Move $500 of direct deposit to Capital One checking', due: 'Mon' },
-    { id: 'xmas', g: 'travel', t: 'Book Christmas flights', n: 'Puneeth to DC, Alaina to Lexington.' },
-    { id: 'mexico', g: 'travel', t: 'Book Monterrey flights', n: 'Viva SAT to MTY Thu Dec 31, 8:00 PM. MTY to SAT Sun Jan 3, 5:40 PM.' },
-    { id: 'venue-sheet', g: 'wedding', t: 'Finish the venue spreadsheet' },
-    { id: 'venue-research', g: 'wedding', t: 'Finish researching venues' },
-    { id: 'agra', g: 'india', t: 'Book a driver for Agra, Tue Feb 9', n: 'Pickup at Delhi arrivals at 5:15 AM. Ask other guests about sharing.' },
-    { id: 'taj', g: 'india', t: 'Buy Taj Mahal tickets online', n: 'For Tuesday, Feb 9.' },
-    { id: 'evisa', g: 'india', t: 'India e-Visa', n: 'For anyone on a U.S. passport without an OCI card.' },
-    { id: 'pto', g: 'india', t: 'Request PTO for Feb 8–12', n: 'Check whether Presidents’ Day, Feb 15, is a holiday.' },
-    { id: 'latecheckout', g: 'india', t: 'Ask the Grand Hyatt Istanbul for a late checkout', n: 'The Delhi flight leaves at 8:45 PM.' },
-    { id: 'sat-ride', g: 'india', t: 'Arrange a ride to SAT, or parking', n: 'Feb 6 to Feb 13.' },
-    { id: 'confs', g: 'india', t: 'Add confirmation numbers to the India page' },
-    { id: 'europe', g: 'later', t: 'Set seats.aero alerts for Europe, summer 2027' },
-    { id: 'citi-aa', g: 'later', t: 'Decide on the Citi AA card' }
-  ];
+<script type="module">
+import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp,
+  startGate, denied, isDenied } from '/shared/firebase.js';
 
-  function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.items) return s; } catch (e) {}
-    return { items: DEFAULTS.map(function (d) { return Object.assign({ done: false }, d); }), hideDone: false };
-  }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  var state = load();
+var LOCAL_KEY = 'pa-todo-v1';      // the old on-this-device list, used once to fill the shared list
+var PREF_KEY = 'pa-todo-prefs';    // per-device view settings
+var GROUPS = [
+  { id: 'week', name: 'This week' },
+  { id: 'travel', name: 'Travel to book' },
+  { id: 'wedding', name: 'Our wedding' },
+  { id: 'india', name: 'India trip' },
+  { id: 'later', name: 'Later' }
+];
+var DEFAULTS = [
+  { id: 'pharmacy', g: 'week', t: 'Call the pharmacy', due: 'Mon' },
+  { id: 'deposit', g: 'week', t: 'Move $500 of direct deposit to Capital One checking', due: 'Mon' },
+  { id: 'xmas', g: 'travel', t: 'Book Christmas flights', n: 'Puneeth to DC, Alaina to Lexington.' },
+  { id: 'mexico', g: 'travel', t: 'Book Monterrey flights', n: 'Viva SAT to MTY Thu Dec 31, 8:00 PM. MTY to SAT Sun Jan 3, 5:40 PM.' },
+  { id: 'venue-sheet', g: 'wedding', t: 'Finish the venue spreadsheet' },
+  { id: 'venue-research', g: 'wedding', t: 'Finish researching venues' },
+  { id: 'agra', g: 'india', t: 'Book a driver for Agra, Tue Feb 9', n: 'Pickup at Delhi arrivals at 5:15 AM. Ask other guests about sharing.' },
+  { id: 'taj', g: 'india', t: 'Buy Taj Mahal tickets online', n: 'For Tuesday, Feb 9.' },
+  { id: 'evisa', g: 'india', t: 'India e-Visa', n: 'For anyone on a U.S. passport without an OCI card.' },
+  { id: 'pto', g: 'india', t: 'Request PTO for Feb 8–12', n: 'Check whether Presidents’ Day, Feb 15, is a holiday.' },
+  { id: 'latecheckout', g: 'india', t: 'Ask the Grand Hyatt Istanbul for a late checkout', n: 'The Delhi flight leaves at 8:45 PM.' },
+  { id: 'sat-ride', g: 'india', t: 'Arrange a ride to SAT, or parking', n: 'Feb 6 to Feb 13.' },
+  { id: 'confs', g: 'india', t: 'Add confirmation numbers to the India page' },
+  { id: 'europe', g: 'later', t: 'Set seats.aero alerts for Europe, summer 2027' },
+  { id: 'citi-aa', g: 'later', t: 'Decide on the Citi AA card' }
+];
 
-  var lists = document.getElementById('lists');
-  var groupSel = document.getElementById('newGroup');
-  GROUPS.forEach(function (g) {
-    var o = document.createElement('option'); o.value = g.id; o.textContent = g.name; groupSel.appendChild(o);
-  });
+var items = [], loaded = false, unsub = null, focusAfter = null;
+var prefs = (function () { try { return JSON.parse(localStorage.getItem(PREF_KEY)) || {}; } catch (e) { return {}; } })();
+function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
-  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+var lists = document.getElementById('lists');
+var groupSel = document.getElementById('newGroup');
+GROUPS.forEach(function (g) {
+  var o = document.createElement('option'); o.value = g.id; o.textContent = g.name; groupSel.appendChild(o);
+});
 
-  function render() {
-    lists.textContent = '';
-    lists.classList.toggle('hide-done', state.hideDone);
-    GROUPS.forEach(function (g) {
-      var items = state.items.filter(function (i) { return i.g === g.id; });
-      if (!items.length) return;
-      var open = items.filter(function (i) { return !i.done; }).length;
-      var sec = el('section'); sec.setAttribute('aria-labelledby', 'h-' + g.id);
-      var h = el('h2'); h.id = 'h-' + g.id; h.appendChild(document.createTextNode(g.name));
-      h.appendChild(el('small', null, open ? open + ' left' : 'All done'));
-      sec.appendChild(h);
-      var ul = el('ul');
-      items.forEach(function (it) {
-        var li = el('li', it.done ? 'done' : '');
-        var lab = el('label');
-        var cb = el('input'); cb.type = 'checkbox'; cb.checked = it.done;
-        cb.addEventListener('change', function () { it.done = cb.checked; save(); render(); focusItem(it.id); });
-        var body = el('span');
-        var t = el('span', 'task', it.t);
-        if (it.due) t.appendChild(el('span', 'due', it.due));
-        body.appendChild(t);
-        if (it.n) body.appendChild(el('span', 'note', it.n));
-        lab.appendChild(cb); lab.appendChild(body);
-        li.appendChild(lab);
-        var del = el('button', 'del', 'Delete'); del.type = 'button';
-        del.setAttribute('aria-label', 'Delete “' + it.t + '”');
-        del.addEventListener('click', function () {
-          state.items = state.items.filter(function (x) { return x !== it; }); save(); render();
-        });
-        li.appendChild(del);
-        li.dataset.id = it.id;
-        ul.appendChild(li);
-      });
-      sec.appendChild(ul);
-      sec.appendChild(el('p', 'empty', 'Everything here is done.'));
-      lists.appendChild(sec);
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function ref(id) { return doc(db, 'todo', id); }
+function report(err) { if (isDenied(err)) denied(); else console.error(err); }
+
+// First sign-in anywhere: copy this device's existing list (or the starting list) into the shared one, exactly once.
+function seedOnce(user) {
+  var local = null;
+  try { var s = JSON.parse(localStorage.getItem(LOCAL_KEY)); if (s && s.items && s.items.length) local = s.items; } catch (e) {}
+  var start = local || DEFAULTS.map(function (d) { return Object.assign({ done: false }, d); });
+  return runTransaction(db, async function (tx) {
+    var meta = doc(db, 'meta', 'todo');
+    if ((await tx.get(meta)).exists()) return false;
+    start.forEach(function (it, i) {
+      tx.set(ref(it.id), { g: it.g, t: it.t, n: it.n || null, due: it.due || null, done: !!it.done, order: i + 1 });
     });
-    var total = state.items.length, done = state.items.filter(function (i) { return i.done; }).length;
-    document.getElementById('count').textContent = total ? (total - done) + ' left of ' + total : 'Nothing on the list.';
-    document.getElementById('bar').style.width = total ? (done / total * 100) + '%' : '0';
-    var tb = document.getElementById('toggleDone');
-    tb.textContent = state.hideDone ? 'Show completed' : 'Hide completed';
-    tb.setAttribute('aria-pressed', String(state.hideDone));
-  }
-  function focusItem(id) {
-    var cb = lists.querySelector('li[data-id="' + id + '"] input');
-    if (cb && cb.offsetParent) cb.focus();
-  }
+    tx.set(meta, { seeded: true, at: serverTimestamp(), by: user.email });
+    return true;
+  });
+}
 
-  document.getElementById('addForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var input = document.getElementById('newTask');
-    var t = input.value.trim(); if (!t) return;
-    state.items.push({ id: 'c' + Date.now(), g: groupSel.value, t: t, done: false });
-    save(); render(); input.value = ''; input.focus();
+function render() {
+  lists.textContent = '';
+  lists.classList.toggle('hide-done', !!prefs.hideDone);
+  GROUPS.forEach(function (g) {
+    var group = items.filter(function (i) { return i.g === g.id; }).sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+    if (!group.length) return;
+    var open = group.filter(function (i) { return !i.done; }).length;
+    var sec = el('section'); sec.setAttribute('aria-labelledby', 'h-' + g.id);
+    var h = el('h2'); h.id = 'h-' + g.id; h.appendChild(document.createTextNode(g.name));
+    h.appendChild(el('small', null, open ? open + ' left' : 'All done'));
+    sec.appendChild(h);
+    var ul = el('ul');
+    group.forEach(function (it) {
+      var li = el('li', it.done ? 'done' : '');
+      var lab = el('label');
+      var cb = el('input'); cb.type = 'checkbox'; cb.checked = !!it.done;
+      cb.addEventListener('change', function () {
+        focusAfter = it.id;
+        updateDoc(ref(it.id), { done: cb.checked }).catch(report);
+      });
+      var body = el('span');
+      var t = el('span', 'task', it.t);
+      if (it.due) t.appendChild(el('span', 'due', it.due));
+      body.appendChild(t);
+      if (it.n) body.appendChild(el('span', 'note', it.n));
+      lab.appendChild(cb); lab.appendChild(body);
+      li.appendChild(lab);
+      var del = el('button', 'del', 'Delete'); del.type = 'button';
+      del.setAttribute('aria-label', 'Delete \u201c' + it.t + '\u201d');
+      del.addEventListener('click', function () { deleteDoc(ref(it.id)).catch(report); });
+      li.appendChild(del);
+      li.dataset.id = it.id;
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul);
+    sec.appendChild(el('p', 'empty', 'Everything here is done.'));
+    lists.appendChild(sec);
   });
-  document.getElementById('toggleDone').addEventListener('click', function () { state.hideDone = !state.hideDone; save(); render(); });
-  document.getElementById('clearDone').addEventListener('click', function () {
-    var n = state.items.filter(function (i) { return i.done; }).length;
-    if (!n || !confirm('Remove ' + n + ' completed ' + (n === 1 ? 'task' : 'tasks') + '?')) return;
-    state.items = state.items.filter(function (i) { return !i.done; }); save(); render();
-  });
-  render();
-})();
+  var total = items.length, done = items.filter(function (i) { return i.done; }).length;
+  document.getElementById('count').textContent = !loaded ? 'Loading\u2026' : total ? (total - done) + ' left of ' + total : 'Nothing on the list.';
+  document.getElementById('bar').style.width = total ? (done / total * 100) + '%' : '0';
+  var tb = document.getElementById('toggleDone');
+  tb.textContent = prefs.hideDone ? 'Show completed' : 'Hide completed';
+  tb.setAttribute('aria-pressed', String(!!prefs.hideDone));
+  if (focusAfter) {
+    var c = lists.querySelector('li[data-id="' + focusAfter + '"] input');
+    if (c && c.offsetParent) c.focus();
+    focusAfter = null;
+  }
+}
+
+document.getElementById('addForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var input = document.getElementById('newTask');
+  var t = input.value.trim(); if (!t) return;
+  setDoc(doc(collection(db, 'todo')), { g: groupSel.value, t: t, n: null, due: null, done: false, order: Date.now() }).catch(report);
+  input.value = ''; input.focus();
+});
+document.getElementById('toggleDone').addEventListener('click', function () { prefs.hideDone = !prefs.hideDone; savePrefs(); render(); });
+document.getElementById('clearDone').addEventListener('click', function () {
+  var doneItems = items.filter(function (i) { return i.done; });
+  var n = doneItems.length;
+  if (!n || !confirm('Remove ' + n + ' completed ' + (n === 1 ? 'task' : 'tasks') + '?')) return;
+  var b = writeBatch(db);
+  doneItems.forEach(function (i) { b.delete(ref(i.id)); });
+  b.commit().catch(report);
+});
+
+startGate({
+  onSignedIn: function (user) {
+    seedOnce(user).catch(report);
+    if (unsub) unsub();
+    unsub = onSnapshot(collection(db, 'todo'), function (snap) {
+      items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      loaded = true; render();
+    }, report);
+  },
+  onSignedOut: function () { if (unsub) unsub(); unsub = null; items = []; loaded = false; render(); }
+});
+render();
 </script>
 </body>
 </html>

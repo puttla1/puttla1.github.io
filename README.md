@@ -24,3 +24,7 @@ To add a page: create `new-page-name/index.html` (a complete HTML document) and 
 - `.nojekyll` tells GitHub Pages to serve files as-is, without Jekyll.
 - `robots.txt` and `noindex` tags keep these pages out of search engines. Anyone with a link can still open them.
 - The root `*.html` files are redirects from the original upload names.
+
+## Shared lists (Firebase)
+
+`to-do/` and `grocery-list/` read and write a shared Firestore database (project `puneeth-alaina`) through `shared/firebase.js`. Visitors sign in with Google; the Firestore security rules decide which accounts can see or edit anything. The Firebase config in `shared/firebase.js` is public by design.

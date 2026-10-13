@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Libre+Franklin:wght@400;500;600&display=swap">
 <style>
 /* Same world as the home page: one quiet column, Fraunces names, Libre Franklin body, rosa accent.
-   The one new idea: every item is a picture. Image wells stay white in both themes because product shots are shot on white. */
+   Every item is a picture. Image wells stay light in both themes because product shots are shot on white. */
 :root{--bg:#F4F3EF;--surface:#FFFFFF;--well:#FFFFFF;--ink:#1D2129;--muted:#626872;--line:#DCDAD3;--accent:#B3125A;--accent-soft:#F6DCE7;
   --f-display:"Fraunces",Georgia,serif;--f-body:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
 @media (prefers-color-scheme: dark){:root{--bg:#14161A;--surface:#1C1F25;--well:#F4F3EF;--ink:#ECEAE4;--muted:#A2A7AF;--line:#2E323A;--accent:#F0679F;--accent-soft:#3A1B2A;color-scheme:dark}}
@@ -30,6 +30,8 @@ input[type=text],input[type=url]{font:inherit;color:var(--ink);background:var(--
 input[type=text]:focus-visible,input[type=url]:focus-visible{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
 button.primary{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
 button.primary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.link{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.link:hover,.link:focus-visible{color:var(--accent)}
 
 .grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
 @media (max-width:380px){.grid{grid-template-columns:1fr 1fr;gap:10px}}
@@ -39,14 +41,12 @@ button.primary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .well{aspect-ratio:1;background:var(--well);display:grid;place-items:center;overflow:hidden;position:relative}
 .well img{width:100%;height:100%;object-fit:contain;padding:10px;display:block}
 .well .letter{font-family:var(--f-display);font-size:56px;font-weight:500;color:#B9B6AD}
-.well.loading::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(179,18,90,.08) 50%,transparent 70%);background-size:200% 100%;animation:sheen 1.2s linear infinite}
-@keyframes sheen{from{background-position:120% 0}to{background-position:-80% 0}}
 .check{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:none;place-items:center;font-size:16px;font-weight:600}
 .name{padding:10px 12px 0;font-weight:500;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
-.status{padding:2px 12px 0;color:var(--muted);font-size:12px}
 .actions{display:flex;gap:14px;white-space:nowrap;padding:6px 12px 10px;margin-top:auto}
 .actions button{background:none;border:0;padding:4px 0;font:inherit;font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .actions button:hover,.actions button:focus-visible{color:var(--accent)}
+.actions button.needs{color:var(--accent);font-weight:600}
 .tile.done .well img,.tile.done .well .letter{opacity:.35;filter:grayscale(1)}
 .tile.done .check{display:grid}
 .tile.done .name{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
@@ -58,15 +58,29 @@ button.primary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 footer{margin-top:36px;color:var(--muted);font-size:13px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
+/* Sign-in gate: each wrapper shows only in its state */
+[data-show]{display:none}
+body[data-auth="loading"] [data-show="loading"],body[data-auth="out"] [data-show="out"],
+body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denied"]{display:block}
+.gate{margin-top:36px;padding:22px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.gate p{margin:0 0 14px;color:var(--muted)}
+.gate .who{color:var(--ink);font-weight:500}
+.loading-msg{color:var(--muted);margin-top:36px}
+
 /* Picture picker */
 dialog{border:0;border-radius:14px;padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 32px);background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
 dialog::backdrop{background:rgba(20,22,26,.55)}
-.pk{padding:20px 18px 18px;display:flex;flex-direction:column;gap:14px;max-height:calc(100dvh - 32px)}
+.pk{padding:20px 18px 18px;display:flex;flex-direction:column;gap:14px;max-height:calc(100dvh - 32px);overflow-y:auto}
 .pk-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .pk h2{font-family:var(--f-display);font-weight:500;font-size:24px;margin:0;line-height:1.15}
 .pk .close{background:none;border:0;font:inherit;font-size:14px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+.pk h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:6px 0 0}
+.pk ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
+.pk ol li{margin:2px 0}
+a.google{display:inline-flex;align-items:center;gap:6px;font-weight:600;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;text-decoration:none;align-self:flex-start}
+a.google:hover,a.google:focus-visible{border-color:var(--accent);color:var(--accent)}
 .pk form{display:grid;grid-template-columns:1fr auto;gap:8px}
-.pk-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;overflow-y:auto;min-height:120px}
+.pk-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
 .pk-grid button{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;width:100%;height:100%;background:var(--surface);border:2px solid var(--line);border-radius:10px;overflow:hidden}
 .pk-grid button:hover{border-color:var(--muted)}
 .pk-grid button:focus-visible,.pk-grid button[aria-pressed=true]{border-color:var(--accent)}
@@ -74,32 +88,45 @@ dialog::backdrop{background:rgba(20,22,26,.55)}
 .pk-grid .cap{font-size:12px;line-height:1.3;padding:6px 8px 8px;color:var(--muted)}
 .pk-grid .cap b{display:block;color:var(--ink);font-weight:500;font-size:13px}
 .pk-msg{color:var(--muted);font-size:14px;margin:0}
+.pk-err{color:var(--accent);font-size:14px;margin:0;display:none}
 .pk-foot{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
-.pk-foot button{background:none;border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.pk-foot button:hover{color:var(--accent)}
-@media (prefers-reduced-motion:reduce){.well.loading::after{animation:none}}
 </style>
 </head>
 <body>
 <main class="wrap">
   <a class="back" href="/">Puneeth &amp; Alaina</a>
   <h1>Grocery list</h1>
-  <p class="count" id="count" aria-live="polite"></p>
 
-  <form class="add-form" id="addForm" autocomplete="off">
-    <label class="sr" for="newItem">Add an item</label>
-    <input type="text" id="newItem" placeholder="Add an item, like bananas or Chobani vanilla" maxlength="120" required>
-    <button class="primary" type="submit">Add</button>
-  </form>
+  <div data-show="loading"><p class="loading-msg">Loading…</p></div>
 
-  <ul class="grid" id="grid"></ul>
-  <p class="empty" id="empty">Nothing on the list.</p>
-
-  <div class="tools">
-    <button type="button" id="clearDone">Remove checked items</button>
+  <div data-show="out" class="gate">
+    <p>Sign in to see the list. Anything either of you adds or checks off shows up on every phone right away.</p>
+    <button class="primary js-signin" type="button">Sign in with Google</button>
   </div>
 
-  <footer>Tap a picture to check it off. Pictures come from Open Food Facts and Wikipedia. Saved on this device only, for now.</footer>
+  <div data-show="denied" class="gate">
+    <p><span class="who"></span> doesn’t have access to this list.</p>
+    <button class="link js-signout" type="button">Use a different account</button>
+  </div>
+
+  <div data-show="in">
+    <p class="count" id="count" aria-live="polite"></p>
+
+    <form class="add-form" id="addForm" autocomplete="off">
+      <label class="sr" for="newItem">Add an item</label>
+      <input type="text" id="newItem" placeholder="Add an item" maxlength="120" required>
+      <button class="primary" type="submit">Add</button>
+    </form>
+
+    <ul class="grid" id="grid"></ul>
+    <p class="empty" id="empty">Nothing on the list.</p>
+
+    <div class="tools">
+      <button type="button" id="clearDone">Remove checked items</button>
+    </div>
+
+    <footer>Tap a picture to check it off. A picture you choose is remembered the next time you add that item. Signed in as <span class="who"></span> · <button class="link js-signout" type="button">Sign out</button></footer>
+  </div>
 </main>
 
 <dialog id="picker" aria-labelledby="pkTitle">
@@ -108,256 +135,250 @@ dialog::backdrop{background:rgba(20,22,26,.55)}
       <h2 id="pkTitle">Choose a picture</h2>
       <button type="button" class="close" id="pkClose">Done</button>
     </div>
-    <form id="pkSearch" autocomplete="off">
-      <label class="sr" for="pkQuery">Search for a picture</label>
-      <input type="text" id="pkQuery" maxlength="120">
-      <button class="primary" type="submit">Search</button>
-    </form>
-    <p class="pk-msg" id="pkMsg" aria-live="polite"></p>
-    <ul class="pk-grid" id="pkGrid"></ul>
+
+    <h3>From Google</h3>
+    <a class="google" id="pkGoogle" href="#" target="_blank" rel="noopener">Search Google Images ↗</a>
+    <ol>
+      <li>Press and hold the picture you want (right-click on a computer).</li>
+      <li>Choose “Copy Image Address” or “Copy Image Link”.</li>
+      <li>Come back and paste it here.</li>
+    </ol>
     <form id="pkUrl" autocomplete="off">
       <label class="sr" for="pkUrlInput">Image link</label>
-      <input type="url" id="pkUrlInput" placeholder="Or paste an image link">
+      <input type="text" id="pkUrlInput" placeholder="Paste the image link" inputmode="url">
       <button class="primary" type="submit">Use</button>
     </form>
-    <div class="pk-foot"><button type="button" id="pkNone">No picture</button></div>
+    <p class="pk-err" id="pkErr" role="alert">That doesn’t look like an image link. Try “Copy Image Address” instead of copying the page link.</p>
+
+    <h3>Or pick a package photo</h3>
+    <p class="pk-msg" id="pkMsg" aria-live="polite"></p>
+    <ul class="pk-grid" id="pkGrid"></ul>
+
+    <div class="pk-foot"><button type="button" class="link" id="pkNone">Remove the picture</button></div>
   </div>
 </dialog>
 
-<script>
-(function () {
-  var KEY = 'pa-grocery-v1';
-  var DEFAULTS = [{ id: 'silk', name: 'Silk Yogurt Dairy-Free Strawberry' }];
+<script type="module">
+import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp,
+  startGate, denied, isDenied } from '/shared/firebase.js';
 
-  /* ---------- state ---------- */
-  function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY)); if (s && s.items) { s.cache = s.cache || {}; return s; } } catch (e) {}
-    return { items: DEFAULTS.map(function (d) { return { id: d.id, name: d.name, img: null, src: null, cap: null, done: false }; }), cache: {} };
-  }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  var state = load();
-  var looking = {};      // item id -> true while a lookup is running
-  var candidates = {};   // item id -> last search results (not saved)
+var FIRST_ITEM = 'Silk Yogurt Dairy-Free Strawberry';
+var items = [], pics = {}, loaded = false, unsubs = [];
+var candidates = {};   // item name key -> package-photo results (this session only)
 
-  /* ---------- text helpers ---------- */
-  function singular(w) {
-    if (w.length <= 3) return w;
-    if (/ies$/.test(w)) return w.slice(0, -3) + 'y';
-    if (/(oes|ches|shes|xes|sses)$/.test(w)) return w.slice(0, -2);
-    if (/s$/.test(w) && !/ss$/.test(w)) return w.slice(0, -1);
-    return w;
-  }
-  function tokens(s) {
-    return (s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
-      .split(/[^a-z0-9]+/).filter(Boolean).map(singular);
-  }
-  function keyOf(name) { return tokens(name).join(' '); }
-  function overlap(queryToks, text) {
-    if (!queryToks.length) return 0;
-    var have = {}; tokens(text).forEach(function (t) { have[t] = 1; });
-    return queryToks.filter(function (t) { return have[t]; }).length / queryToks.length;
-  }
+/* ---------- text helpers ---------- */
+function singular(w) {
+  if (w.length <= 3) return w;
+  if (/ies$/.test(w)) return w.slice(0, -3) + 'y';
+  if (/(oes|ches|shes|xes|sses)$/.test(w)) return w.slice(0, -2);
+  if (/s$/.test(w) && !/ss$/.test(w)) return w.slice(0, -1);
+  return w;
+}
+function tokens(s) {
+  return (s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
+    .split(/[^a-z0-9]+/).filter(Boolean).map(singular);
+}
+// "Bananas" and "banana" share one remembered picture.
+function picKey(name) { return tokens(name).join('-').slice(0, 300) || 'item'; }
+function overlap(qt, text) {
+  if (!qt.length) return 0;
+  var have = {}; tokens(text).forEach(function (t) { have[t] = 1; });
+  return qt.filter(function (t) { return have[t]; }).length / qt.length;
+}
 
-  /* ---------- image sources ---------- */
-  function getJSON(url, ms) {
-    var ctl = 'AbortController' in window ? new AbortController() : null;
-    var timer = setTimeout(function () { if (ctl) ctl.abort(); }, ms || 12000);
-    return fetch(url, ctl ? { signal: ctl.signal } : {})
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .finally(function () { clearTimeout(timer); });
-  }
-
-  // Branded, packaged products.
-  function searchFoodFacts(q) {
-    var url = 'https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=24' +
-      '&fields=code,product_name,brands,image_front_url,image_front_small_url&search_terms=' + encodeURIComponent(q);
-    return getJSON(url, 15000).then(function (d) {
+/* ---------- package photos (Open Food Facts) ---------- */
+function searchPackages(q) {
+  var url = 'https://world.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=24' +
+    '&fields=product_name,brands,image_front_url,image_front_small_url&search_terms=' + encodeURIComponent(q);
+  var ctl = new AbortController(); var timer = setTimeout(function () { ctl.abort(); }, 15000);
+  return fetch(url, { signal: ctl.signal }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
       var qt = tokens(q), seen = {};
       return (d.products || []).filter(function (p) { return p.image_front_url || p.image_front_small_url; })
         .map(function (p, i) {
-          var title = (p.product_name || '').trim();
-          var brand = (p.brands || '').split(',')[0].trim();
-          return { img: p.image_front_url || p.image_front_small_url, src: 'off', cap: title || brand || 'Product',
-                   sub: brand, score: overlap(qt, title + ' ' + brand), i: i };
+          var title = (p.product_name || '').trim(), brand = (p.brands || '').split(',')[0].trim();
+          return { img: p.image_front_url || p.image_front_small_url, cap: title || brand || 'Product', sub: brand,
+                   score: overlap(qt, title + ' ' + brand), i: i };
         })
-        .filter(function (c) { if (seen[c.img]) return false; seen[c.img] = 1; return true; })
+        .filter(function (c) { if (seen[c.img]) return false; seen[c.img] = 1; return c.score > 0; })
         .sort(function (a, b) { return b.score - a.score || a.i - b.i; })
-        .slice(0, 9);
-    }).catch(function () { return []; });
-  }
+        .slice(0, 8);
+    })
+    .catch(function () { return []; })
+    .finally(function () { clearTimeout(timer); });
+}
 
-  // Generic foods: bananas, eggs, cilantro.
-  function searchWikipedia(q) {
-    var url = 'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=6' +
-      '&prop=pageimages&piprop=thumbnail&pithumbsize=400&pilimit=6&gsrsearch=' + encodeURIComponent(q);
-    return getJSON(url).then(function (d) {
-      var pages = d.query && d.query.pages ? Object.keys(d.query.pages).map(function (k) { return d.query.pages[k]; }) : [];
-      return pages.filter(function (p) { return p.thumbnail && p.thumbnail.source && !/\.svg/i.test(p.thumbnail.source); })
-        .sort(function (a, b) { return a.index - b.index; })
-        .map(function (p) { return { img: p.thumbnail.source, src: 'wiki', cap: p.title, sub: 'Wikipedia', title: p.title }; });
-    }).catch(function () { return []; });
-  }
+// Accepts a plain image link, a Google "imgres?imgurl=" link, or a copied data:image.
+function cleanImageLink(raw) {
+  var u = (raw || '').trim();
+  if (/^data:image\//i.test(u)) return u.length < 600000 ? u : null;
+  try {
+    var parsed = new URL(u);
+    if (!/^https?:$/.test(parsed.protocol)) return null;
+    var inner = parsed.searchParams.get('imgurl') || parsed.searchParams.get('mediaurl');
+    if (inner && /^https?:\/\//i.test(inner)) return inner;
+    if (/(^|\.)google\.[a-z.]+$/.test(parsed.hostname) && /^\/(search|imgres)/.test(parsed.pathname)) return null;
+    return parsed.href;
+  } catch (e) { return null; }
+}
 
-  // Both sources, best guess first. A plain food name ("bananas") favors Wikipedia;
-  // anything with a brand or flavor ("Silk ... Strawberry") favors the product database.
-  var FILLER = /\b(dairy|free|non|gmo|organic|natural|the|of|and|with|style|flavou?red?)\b/gi;
-  function findPictures(q) {
-    return Promise.all([searchFoodFacts(q), searchWikipedia(q)]).then(function (r) {
-      var off = r[0], wiki = r[1];
-      // Long product names can over-constrain the product search; retry with the label words dropped.
-      var shorter = q.replace(/-/g, ' ').replace(FILLER, ' ').replace(/\s+/g, ' ').trim();
-      if (!off.length && shorter && shorter.toLowerCase() !== q.toLowerCase()) {
-        return searchFoodFacts(shorter).then(function (o) { return rank(q, o, wiki); });
-      }
-      return rank(q, off, wiki);
-    });
-  }
-  function rank(q, off, wiki) {
-    var wikiFits = wiki.length && overlap(tokens(q), wiki[0].title) === 1;
-    return wikiFits ? wiki.slice(0, 1).concat(off, wiki.slice(1)) : off.concat(wiki);
-  }
+/* ---------- writes ---------- */
+function report(err) { if (isDenied(err)) denied(); else console.error(err); }
+function itemRef(id) { return doc(db, 'grocery', id); }
 
-  function lookup(item) {
-    if (looking[item.id]) return;
-    looking[item.id] = true; render();
-    findPictures(item.name).then(function (list) {
-      candidates[item.id] = list;
-      var it = byId(item.id);
-      if (it && !it.img && list.length) {
-        it.img = list[0].img; it.src = list[0].src; it.cap = list[0].cap;
-        state.cache[keyOf(it.name)] = { img: it.img, src: it.src, cap: it.cap };
-      }
-      if (it && !it.img) it.missing = true;
-    }).finally(function () { delete looking[item.id]; save(); render(); });
-  }
-  function byId(id) { for (var i = 0; i < state.items.length; i++) if (state.items[i].id === id) return state.items[i]; return null; }
+function setPicture(it, pic) {
+  var data = pic ? { img: pic.img, cap: pic.cap || null } : { img: null, cap: null };
+  updateDoc(itemRef(it.id), data).catch(report);
+  var k = doc(db, 'groceryPics', picKey(it.name));
+  (pic ? setDoc(k, { img: pic.img, cap: pic.cap || null, name: it.name }) : deleteDoc(k)).catch(report);
+}
 
-  /* ---------- list ---------- */
-  var grid = document.getElementById('grid');
-  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-
-  function picture(img, name) {
-    var well = el('div', 'well');
-    if (img) {
-      var im = el('img'); im.src = img; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.referrerPolicy = 'no-referrer';
-      im.addEventListener('error', function () { im.replaceWith(el('span', 'letter', (name || '?').charAt(0).toUpperCase())); });
-      well.appendChild(im);
-    } else {
-      well.appendChild(el('span', 'letter', (name || '?').charAt(0).toUpperCase()));
-    }
-    return well;
-  }
-
-  function render() {
-    grid.textContent = '';
-    state.items.forEach(function (it) {
-      var li = el('li', 'tile' + (it.done ? ' done' : ''));
-      var hit = el('button', 'hit'); hit.type = 'button';
-      hit.setAttribute('aria-pressed', String(!!it.done));
-      hit.setAttribute('aria-label', (it.done ? 'Got ' : 'Check off ') + it.name);
-      var well = picture(it.img, it.name);
-      if (looking[it.id]) well.classList.add('loading');
-      well.appendChild(el('span', 'check', '✓'));
-      hit.appendChild(well);
-      hit.addEventListener('click', function () { it.done = !it.done; save(); render(); focusTile(it.id); });
-      li.appendChild(hit);
-      li.appendChild(el('div', 'name', it.name));
-      if (looking[it.id]) li.appendChild(el('div', 'status', 'Finding a picture…'));
-      else if (!it.img && it.missing) li.appendChild(el('div', 'status', 'No picture found'));
-      var act = el('div', 'actions');
-      var pic = el('button', null, it.img ? 'Picture' : 'Add picture'); pic.type = 'button';
-      pic.setAttribute('aria-label', 'Change picture for ' + it.name);
-      pic.addEventListener('click', function () { openPicker(it.id); });
-      var del = el('button', null, 'Remove'); del.type = 'button';
-      del.setAttribute('aria-label', 'Remove ' + it.name);
-      del.addEventListener('click', function () { state.items = state.items.filter(function (x) { return x !== it; }); save(); render(); });
-      act.appendChild(pic); act.appendChild(del);
-      li.appendChild(act);
-      li.dataset.id = it.id;
-      grid.appendChild(li);
-    });
-    var left = state.items.filter(function (i) { return !i.done; }).length;
-    document.getElementById('count').textContent = state.items.length
-      ? (left ? left + ' to get' : 'Got everything') + (state.items.length - left ? ' · ' + (state.items.length - left) + ' in the cart' : '')
-      : '';
-    document.getElementById('empty').style.display = state.items.length ? 'none' : 'block';
-  }
-  function focusTile(id) { var b = grid.querySelector('li[data-id="' + id + '"] .hit'); if (b) b.focus(); }
-
-  document.getElementById('addForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var input = document.getElementById('newItem');
-    var name = input.value.trim().replace(/\s+/g, ' '); if (!name) return;
-    var known = state.cache[keyOf(name)];
-    var it = { id: 'i' + Date.now(), name: name, img: known ? known.img : null, src: known ? known.src : null, cap: known ? known.cap : null, done: false };
-    state.items.unshift(it); save(); render();
-    input.value = ''; input.focus();
-    if (!known) lookup(it);
+function seedOnce(user) {
+  return runTransaction(db, async function (tx) {
+    var meta = doc(db, 'meta', 'grocery');
+    if ((await tx.get(meta)).exists()) return false;
+    tx.set(itemRef('silk'), { name: FIRST_ITEM, img: null, cap: null, done: false, order: Date.now() });
+    tx.set(meta, { seeded: true, at: serverTimestamp(), by: user.email });
+    return true;
   });
-  document.getElementById('clearDone').addEventListener('click', function () {
-    var n = state.items.filter(function (i) { return i.done; }).length;
-    if (!n || !confirm('Remove ' + n + ' checked ' + (n === 1 ? 'item' : 'items') + '?')) return;
-    state.items = state.items.filter(function (i) { return !i.done; }); save(); render();
+}
+
+/* ---------- list ---------- */
+var grid = document.getElementById('grid');
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function picture(img, name) {
+  var well = el('div', 'well');
+  var letter = function () { return el('span', 'letter', (name || '?').trim().charAt(0).toUpperCase()); };
+  if (img) {
+    var im = el('img'); im.src = img; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.referrerPolicy = 'no-referrer';
+    im.addEventListener('error', function () { im.replaceWith(letter()); });
+    well.appendChild(im);
+  } else {
+    well.appendChild(letter());
+  }
+  return well;
+}
+
+function render() {
+  grid.textContent = '';
+  items.slice().sort(function (a, b) { return (!!a.done - !!b.done) || (b.order || 0) - (a.order || 0); }).forEach(function (it) {
+    var img = it.img || (pics[picKey(it.name)] || {}).img || null;
+    var li = el('li', 'tile' + (it.done ? ' done' : ''));
+    var hit = el('button', 'hit'); hit.type = 'button';
+    hit.setAttribute('aria-pressed', String(!!it.done));
+    hit.setAttribute('aria-label', (it.done ? 'Got ' : 'Check off ') + it.name);
+    var well = picture(img, it.name);
+    well.appendChild(el('span', 'check', '✓'));
+    hit.appendChild(well);
+    hit.addEventListener('click', function () { focusAfter = it.id; updateDoc(itemRef(it.id), { done: !it.done }).catch(report); });
+    li.appendChild(hit);
+    li.appendChild(el('div', 'name', it.name));
+    var act = el('div', 'actions');
+    var pic = el('button', img ? null : 'needs', img ? 'Picture' : 'Add picture'); pic.type = 'button';
+    pic.setAttribute('aria-label', (img ? 'Change picture for ' : 'Add a picture for ') + it.name);
+    pic.addEventListener('click', function () { openPicker(it.id); });
+    var del = el('button', null, 'Remove'); del.type = 'button';
+    del.setAttribute('aria-label', 'Remove ' + it.name);
+    del.addEventListener('click', function () { deleteDoc(itemRef(it.id)).catch(report); });
+    act.appendChild(pic); act.appendChild(del);
+    li.appendChild(act);
+    li.dataset.id = it.id;
+    grid.appendChild(li);
   });
+  var left = items.filter(function (i) { return !i.done; }).length, got = items.length - left;
+  document.getElementById('count').textContent = !loaded ? 'Loading…' : !items.length ? '' :
+    (left ? left + ' to get' : 'Got everything') + (got ? ' · ' + got + ' in the cart' : '');
+  document.getElementById('empty').style.display = loaded && !items.length ? 'block' : 'none';
+  if (focusAfter) { var b = grid.querySelector('li[data-id="' + focusAfter + '"] .hit'); if (b) b.focus(); focusAfter = null; }
+  if (pickingId) refreshPickerMarks();
+}
+var focusAfter = null;
 
-  /* ---------- picker ---------- */
-  var dlg = document.getElementById('picker'), pkGrid = document.getElementById('pkGrid'), pkMsg = document.getElementById('pkMsg');
-  var pkQuery = document.getElementById('pkQuery'), pickingId = null;
+document.getElementById('addForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var input = document.getElementById('newItem');
+  var name = input.value.trim().replace(/\s+/g, ' '); if (!name) return;
+  var known = pics[picKey(name)];
+  setDoc(doc(collection(db, 'grocery')), { name: name, img: known ? known.img : null, cap: known ? known.cap || null : null, done: false, order: Date.now() })
+    .catch(report);
+  input.value = ''; input.focus();
+});
+document.getElementById('clearDone').addEventListener('click', function () {
+  var doneItems = items.filter(function (i) { return i.done; }), n = doneItems.length;
+  if (!n || !confirm('Remove ' + n + ' checked ' + (n === 1 ? 'item' : 'items') + '?')) return;
+  var b = writeBatch(db); doneItems.forEach(function (i) { b.delete(itemRef(i.id)); }); b.commit().catch(report);
+});
 
-  function choose(it, c) {
-    it.img = c ? c.img : null; it.src = c ? c.src : null; it.cap = c ? c.cap : null; it.missing = !c;
-    var k = keyOf(it.name);
-    if (c) state.cache[k] = { img: it.img, src: it.src, cap: it.cap }; else delete state.cache[k];
-    save(); render(); closePicker();
-  }
-  function showCandidates(it, list) {
-    pkGrid.textContent = '';
-    pkMsg.textContent = list.length ? '' : 'Nothing found. Try fewer words, or paste an image link below.';
-    list.forEach(function (c) {
-      var li = el('li'), b = el('button'); b.type = 'button';
-      b.setAttribute('aria-pressed', String(c.img === it.img));
-      b.appendChild(picture(c.img, c.cap));
-      var cap = el('span', 'cap'); cap.appendChild(el('b', null, c.cap));
-      if (c.sub && c.sub !== c.cap) cap.appendChild(document.createTextNode(c.sub));
-      b.appendChild(cap);
-      b.addEventListener('click', function () { choose(it, c); });
-      li.appendChild(b); pkGrid.appendChild(li);
-    });
-  }
-  function runSearch(it, q) {
-    pkGrid.textContent = ''; pkMsg.textContent = 'Searching…';
-    findPictures(q).then(function (list) {
-      if (pickingId !== it.id) return;
-      candidates[it.id] = list; showCandidates(it, list);
-    });
-  }
-  function openPicker(id) {
-    var it = byId(id); if (!it) return;
-    pickingId = id;
-    document.getElementById('pkTitle').textContent = it.name;
-    pkQuery.value = it.name;
-    document.getElementById('pkUrlInput').value = '';
-    if (candidates[id] && candidates[id].length) showCandidates(it, candidates[id]); else runSearch(it, it.name);
-    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
-  }
-  function closePicker() { if (dlg.close) dlg.close(); else { dlg.removeAttribute('open'); pickingId = null; } }
+/* ---------- picker ---------- */
+var dlg = document.getElementById('picker'), pkGrid = document.getElementById('pkGrid'), pkMsg = document.getElementById('pkMsg');
+var pkErr = document.getElementById('pkErr'), pkUrlInput = document.getElementById('pkUrlInput'), pickingId = null;
+function byId(id) { for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i]; return null; }
 
-  document.getElementById('pkSearch').addEventListener('submit', function (e) {
-    e.preventDefault(); var it = byId(pickingId); var q = pkQuery.value.trim(); if (it && q) runSearch(it, q);
+function choose(c) { var it = byId(pickingId); if (it) setPicture(it, c); closePicker(); }
+function refreshPickerMarks() {
+  var it = byId(pickingId); if (!it) return;
+  pkGrid.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.img === it.img)); });
+}
+function showCandidates(list) {
+  pkGrid.textContent = '';
+  pkMsg.textContent = list.length ? '' : 'No package photos found for this one. Google is the way to go.';
+  list.forEach(function (c) {
+    var li = el('li'), b = el('button'); b.type = 'button'; b.dataset.img = c.img;
+    b.appendChild(picture(c.img, c.cap));
+    var cap = el('span', 'cap'); cap.appendChild(el('b', null, c.cap));
+    if (c.sub && c.sub !== c.cap) cap.appendChild(document.createTextNode(c.sub));
+    b.appendChild(cap);
+    b.addEventListener('click', function () { choose({ img: c.img, cap: c.cap }); });
+    li.appendChild(b); pkGrid.appendChild(li);
   });
-  document.getElementById('pkUrl').addEventListener('submit', function (e) {
-    e.preventDefault(); var it = byId(pickingId); var u = document.getElementById('pkUrlInput').value.trim();
-    if (it && /^https?:\/\//i.test(u)) choose(it, { img: u, src: 'link', cap: 'Your link' });
-  });
-  document.getElementById('pkNone').addEventListener('click', function () { var it = byId(pickingId); if (it) choose(it, null); });
-  document.getElementById('pkClose').addEventListener('click', closePicker);
-  dlg.addEventListener('click', function (e) { if (e.target === dlg) closePicker(); });
-  dlg.addEventListener('close', function () { var id = pickingId; pickingId = null; if (id) focusTile(id); });
+  refreshPickerMarks();
+}
+function openPicker(id) {
+  var it = byId(id); if (!it) return;
+  pickingId = id;
+  document.getElementById('pkTitle').textContent = it.name;
+  document.getElementById('pkGoogle').href = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(it.name);
+  pkUrlInput.value = ''; pkErr.style.display = 'none';
+  var key = picKey(it.name);
+  if (candidates[key]) showCandidates(candidates[key]);
+  else {
+    pkGrid.textContent = ''; pkMsg.textContent = 'Looking for package photos…';
+    searchPackages(it.name).then(function (list) { candidates[key] = list; if (pickingId === id) showCandidates(list); });
+  }
+  dlg.showModal();
+}
+function closePicker() { if (dlg.open) dlg.close(); }
 
-  /* ---------- start ---------- */
-  render();
-  state.items.forEach(function (it) { if (!it.img && !it.missing) lookup(it); });
-})();
+document.getElementById('pkUrl').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var u = cleanImageLink(pkUrlInput.value);
+  if (!u) { pkErr.style.display = 'block'; return; }
+  choose({ img: u, cap: null });
+});
+pkUrlInput.addEventListener('input', function () { pkErr.style.display = 'none'; });
+document.getElementById('pkNone').addEventListener('click', function () { choose(null); });
+document.getElementById('pkClose').addEventListener('click', closePicker);
+dlg.addEventListener('click', function (e) { if (e.target === dlg) closePicker(); });
+dlg.addEventListener('close', function () { var id = pickingId; pickingId = null; if (id) { focusAfter = id; render(); } });
+
+/* ---------- start ---------- */
+function stop() { unsubs.forEach(function (u) { u(); }); unsubs = []; }
+startGate({
+  onSignedIn: function (user) {
+    seedOnce(user).catch(report);
+    stop();
+    unsubs.push(onSnapshot(collection(db, 'grocery'), function (snap) {
+      items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      loaded = true; render();
+    }, report));
+    unsubs.push(onSnapshot(collection(db, 'groceryPics'), function (snap) {
+      pics = {}; snap.docs.forEach(function (d) { pics[d.id] = d.data(); }); render();
+    }, report));
+  },
+  onSignedOut: function () { stop(); items = []; pics = {}; loaded = false; render(); }
+});
+render();
 </script>
 </body>
 </html>
