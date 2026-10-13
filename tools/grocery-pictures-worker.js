@@ -164,7 +164,7 @@ async function claudePick(q, cands, key) {
       'Kroger catalog photos are clean studio shots, so prefer one when it matches equally well. ' +
       'Avoid infographics, images with lots of text, people, recipes, dishes, collages, ads, logos alone, nutrition labels and screenshots.\n' +
       '2. ' + NAME_RULES + '\n\n' +
-      'Reply with only JSON: {"pick": <image number>, "name": "<name>", "size": "<size or empty>"}'
+      'Reply with only the JSON, no other text: {"pick": <image number>, "name": "<name>", "size": "<size or empty>"}'
   }];
   const numbers = [];
   cands.forEach((o, i) => {
@@ -176,8 +176,9 @@ async function claudePick(q, cands, key) {
     content.push({ type: 'image', source: { type: 'base64', media_type: imgs[i].type, data: imgs[i].data } });
   });
 
-  const text = await callClaude(content, 120, key);
+  const { text, stop } = await callClaude(content, 1500, key);
   const out = parseJSON(text);
+  if (out.pick == null && !/\d/.test(text)) throw new Error('no answer (stop: ' + stop + ') ' + text.slice(0, 80));
   const n = parseInt(out.pick != null ? out.pick : (text.match(/\d+/) || [])[0], 10);
   return {
     pick: numbers.includes(n) ? n - 1 : (numbers.length ? numbers[0] - 1 : null),
@@ -209,15 +210,17 @@ async function callClaude(content, maxTokens, key) {
     throw new Error('Claude ' + r.status + (detail ? ' ' + detail.slice(0, 160) : ''));
   }
   const d = await r.json();
-  return (d.content || []).map(c => c.text || '').join(' ');
+  const text = (d.content || []).filter(c => c.type === 'text').map(c => c.text || '').join(' ');
+  return { text, stop: d.stop_reason || '' };
 }
 
 async function claudeTidy(q, cap, size, key) {
   const text = await callClaude([{ type: 'text', text:
     'Someone typed "' + q + '" on our grocery list.' +
     (cap ? ' The picture we chose for it is: "' + cap + '"' + (size ? ' (size: ' + size + ')' : '') + '.' : '') + '\n' +
-    NAME_RULES + '\nReply with only JSON: {"name": "<name>", "size": "<size or empty>"}' }], 80, key);
-  const out = parseJSON(text);
+    NAME_RULES + '\nReply with only the JSON, no other text: {"name": "<name>", "size": "<size or empty>"}' }], 1000, key);
+  const out = parseJSON(text.text);
+  if (!tidy(out.name)) throw new Error('no name in reply (stop: ' + text.stop + ') ' + text.text.slice(0, 80));
   return { name: tidy(out.name) || null, size: typeof out.size === 'string' ? tidy(out.size) : null };
 }
 
