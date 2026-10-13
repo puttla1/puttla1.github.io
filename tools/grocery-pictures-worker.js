@@ -33,7 +33,7 @@ export default {
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     const url = new URL(request.url);
-    if (url.pathname !== '/pick') return reply(404, { error: 'not found' });
+    if (url.pathname !== '/pick' && url.pathname !== '/tidy') return reply(404, { error: 'not found' });
 
     // Only signed-in, approved accounts can spend the search quota.
     const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
@@ -44,6 +44,15 @@ export default {
 
     const q = (url.searchParams.get('q') || '').trim().slice(0, 120);
     if (!q) return reply(400, { error: 'missing q' });
+
+    // /tidy: just fix the name and size of an item that already has a picture (text only, no image search).
+    if (url.pathname === '/tidy') {
+      if (!env.ANTHROPIC_API_KEY) return reply(500, { error: 'ANTHROPIC_API_KEY is not set' });
+      try {
+        const out = await claudeTidy(q, (url.searchParams.get('cap') || '').slice(0, 200), (url.searchParams.get('size') || '').slice(0, 40), env.ANTHROPIC_API_KEY);
+        return reply(200, out);
+      } catch (e) { return reply(502, { error: e.message }); }
+    }
     if (!env.SERPAPI_KEY && !env.KROGER_CLIENT_ID) return reply(500, { error: 'no image source is set up' });
 
     // Streamed as lines of JSON so the page can show something right away:
@@ -154,9 +163,7 @@ async function claudePick(q, cands, key) {
       '(for a packaged product, its package; for produce or a generic food, a clear photo of the food itself). ' +
       'Kroger catalog photos are clean studio shots, so prefer one when it matches equally well. ' +
       'Avoid infographics, images with lots of text, people, recipes, dishes, collages, ads, logos alone, nutrition labels and screenshots.\n' +
-      '2. Write the item name as it should appear on a tidy shopping list: fix spelling and capitalization, use the brand\'s own styling ' +
-      '(e.g. "Chips Ahoy!", "Cosmic Crisp Apples"), and keep the same level of detail they typed. Do not add a flavor, variety or brand they did not ask for. Leave the size out of the name.\n' +
-      '3. Give the size or unit: if they typed one, normalize it (e.g. "20 oz" soda -> "20 fl oz"); otherwise use the package size of the product in the picture you picked when its listing shows one; for loose produce or when unsure, use "".\n\n' +
+      '2. ' + NAME_RULES + '\n\n' +
       'Reply with only JSON: {"pick": <image number>, "name": "<name>", "size": "<size or empty>"}'
   }];
   const numbers = [];
@@ -169,23 +176,49 @@ async function claudePick(q, cands, key) {
     content.push({ type: 'image', source: { type: 'base64', media_type: imgs[i].type, data: imgs[i].data } });
   });
 
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: MODEL, max_tokens: 120, messages: [{ role: 'user', content }] })
-  });
-  if (!r.ok) throw new Error('Claude ' + r.status);
-  const d = await r.json();
-  const text = (d.content || []).map(c => c.text || '').join(' ');
-  let out = {};
-  try { out = JSON.parse((text.match(/\{[\s\S]*\}/) || ['{}'])[0]); } catch (e) {}
+  const text = await callClaude(content, 120, key);
+  const out = parseJSON(text);
   const n = parseInt(out.pick != null ? out.pick : (text.match(/\d+/) || [])[0], 10);
-  const tidy = s => (typeof s === 'string' ? s.replace(/\s+/g, ' ').trim().slice(0, 80) : '');
   return {
     pick: numbers.includes(n) ? n - 1 : (numbers.length ? numbers[0] - 1 : null),
     name: tidy(out.name) || null,
     size: typeof out.size === 'string' ? tidy(out.size) : null
   };
+}
+
+const tidy = s => (typeof s === 'string' ? s.replace(/\s+/g, ' ').trim().slice(0, 80) : '');
+function parseJSON(text) {
+  try { return JSON.parse((text.match(/\{[\s\S]*\}/) || ['{}'])[0]); } catch (e) { return {}; }
+}
+const NAME_RULES =
+  'Write the item name as it should appear on a tidy shopping list: fix spelling and capitalization, use the brand\'s own styling ' +
+  '(e.g. "Chips Ahoy!", "Cosmic Crisp Apples", "Mountain Dew Baja Blast"), and keep the same level of detail they typed. ' +
+  'Do not add a flavor, variety or brand they did not ask for. Leave the size out of the name.\n' +
+  'For the size: if they typed one, normalize it (e.g. "20 oz" soda -> "20 fl oz"); otherwise use the package size of the pictured product when known; ' +
+  'for loose produce or when unsure, use "".';
+
+async function callClaude(content, maxTokens, key) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
+    body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, messages: [{ role: 'user', content }] })
+  });
+  if (!r.ok) {
+    let detail = '';
+    try { const e = await r.json(); detail = (e.error && (e.error.type + ': ' + e.error.message)) || ''; } catch (e) {}
+    throw new Error('Claude ' + r.status + (detail ? ' ' + detail.slice(0, 160) : ''));
+  }
+  const d = await r.json();
+  return (d.content || []).map(c => c.text || '').join(' ');
+}
+
+async function claudeTidy(q, cap, size, key) {
+  const text = await callClaude([{ type: 'text', text:
+    'Someone typed "' + q + '" on our grocery list.' +
+    (cap ? ' The picture we chose for it is: "' + cap + '"' + (size ? ' (size: ' + size + ')' : '') + '.' : '') + '\n' +
+    NAME_RULES + '\nReply with only JSON: {"name": "<name>", "size": "<size or empty>"}' }], 80, key);
+  const out = parseJSON(text);
+  return { name: tidy(out.name) || null, size: typeof out.size === 'string' ? tidy(out.size) : null };
 }
 
 async function toBase64Image(src) {

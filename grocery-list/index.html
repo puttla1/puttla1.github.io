@@ -183,7 +183,8 @@ var PICTURE_HELPER = 'https://grocery-pictures.puneeth-uttla.workers.dev';
 var FIRST_ITEM = 'Silk Yogurt Dairy-Free Strawberry';
 var items = [], pics = {}, loaded = false, unsubs = [];
 var candidates = {};   // item name key -> package-photo results (this session only)
-var looking = {}, attempted = {};   // item id -> picture lookup running / already tried this session
+var looking = {}, attempted = {}, streaming = {}, tidyTried = {};
+var DEBUG = /[?&]debug\b/.test(location.search);   // item id -> picture lookup running / already tried this session
 
 /* ---------- text helpers ---------- */
 function singular(w) {
@@ -251,13 +252,14 @@ function setPicture(it, pic, extra) {
   updateDoc(itemRef(it.id), data).catch(report);
   var k = doc(db, 'groceryPics', typedKey(it));
   var name = extra && extra.name || it.name, size = extra && 'size' in extra ? extra.size : (it.size || null);
-  (pic ? setDoc(k, { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null, name: name, size: size || null }) : deleteDoc(k)).catch(report);
+  var tidied = !!(extra && extra.tidied || it.tidied);
+  (pic ? setDoc(k, { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null, name: name, size: size || null, tidied: tidied }) : deleteDoc(k)).catch(report);
 }
 
 // Ask the helper for the best picture. Used automatically for new items, and by "Search" in the picker.
 async function findPicture(it, query) {
   if (!PICTURE_HELPER || looking[it.id]) return;
-  looking[it.id] = true; attempted[it.id] = true; render();
+  looking[it.id] = true; attempted[it.id] = true; streaming[it.id] = true; render();
   try {
     var token = await auth.currentUser.getIdToken();
     var r = await fetch(PICTURE_HELPER.replace(/\/$/, '') + '/pick?q=' + encodeURIComponent(query || it.name), { headers: { Authorization: 'Bearer ' + token } });
@@ -291,7 +293,8 @@ async function findPicture(it, query) {
         if (!options || !options.length) { updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report); return; }
         var now = byId(it.id) || it;
         var extra = {};
-        if (!query && m.name) extra.name = m.name;                       // tidy the name only for what was typed, not re-searches
+        if (!query && m.name) { extra.name = m.name; extra.tidied = true; }   // tidy the name only for what was typed, not re-searches
+        extra.pickedBy = m.by || null;
         if (!query && typeof m.size === 'string') extra.size = m.size || null;
         var userChose = now.img && shown && now.img !== shown.img;       // someone already picked a different picture
         var pick = options[m.index] || options[0];
@@ -301,7 +304,7 @@ async function findPicture(it, query) {
         } else if (Object.keys(extra).length) {
           updateDoc(itemRef(it.id), extra).catch(report);
           var k = doc(db, 'groceryPics', typedKey(now));
-          setDoc(k, { name: extra.name || now.name, size: 'size' in extra ? extra.size : (now.size || null) }, { merge: true }).catch(report);
+          if (extra.tidied) setDoc(k, { name: extra.name, size: 'size' in extra ? extra.size : (now.size || null), tidied: true }, { merge: true }).catch(report);
         }
       }
     };
@@ -319,8 +322,33 @@ async function findPicture(it, query) {
     console.error(e);
     updateDoc(itemRef(it.id), { autoTried: true }).catch(report);
   } finally {
-    delete looking[it.id]; render();
+    delete looking[it.id]; delete streaming[it.id]; render(); autoTidy();
   }
+}
+// Fix the name and size of items that have a picture but never got a tidied name (older items, or if the pick step failed).
+async function tidyName(it) {
+  tidyTried[it.id] = true;
+  try {
+    var token = await auth.currentUser.getIdToken();
+    var u = PICTURE_HELPER.replace(/\/$/, '') + '/tidy?q=' + encodeURIComponent(it.typed || it.name) +
+      '&cap=' + encodeURIComponent(it.cap || '') + '&size=' + encodeURIComponent(it.size || '');
+    var r = await fetch(u, { headers: { Authorization: 'Bearer ' + token } });
+    var d = await r.json().catch(function () { return {}; });
+    if (!r.ok || !d.name) throw new Error(d.error || ('tidy ' + r.status));
+    var upd = { name: d.name, size: d.size || null, tidied: true, tidyError: null };
+    if (!it.typed) upd.typed = it.name;   // keep what was originally typed for remembering pictures
+    await updateDoc(itemRef(it.id), upd);
+    setDoc(doc(db, 'groceryPics', picKey(it.typed || it.name)), { name: d.name, size: d.size || null, tidied: true }, { merge: true }).catch(report);
+  } catch (e) {
+    console.error(e);
+    updateDoc(itemRef(it.id), { tidyError: String(e.message || e).slice(0, 200) }).catch(report);
+  }
+}
+function autoTidy() {
+  if (!PICTURE_HELPER) return;
+  items.forEach(function (it) {
+    if (!it.tidied && (it.img || it.autoTried) && !streaming[it.id] && !looking[it.id] && !tidyTried[it.id]) tidyName(it);
+  });
 }
 function autoFind() {
   items.forEach(function (it) {
@@ -375,6 +403,7 @@ function render() {
     li.appendChild(hit);
     li.appendChild(el('div', 'name', it.name));
     if (it.size) li.appendChild(el('div', 'size', it.size));
+    if (DEBUG) li.appendChild(el('div', 'status', 'pick: ' + (it.pickedBy || '?') + (it.tidied ? ' · tidied' : '') + (it.tidyError ? ' · tidy error: ' + it.tidyError : '')));
     if (looking[it.id]) li.appendChild(el('div', 'status', 'Finding a picture…'));
     var act = el('div', 'actions');
     var pic = el('button', img || looking[it.id] ? null : 'needs', img || looking[it.id] ? 'Picture' : 'Add picture'); pic.type = 'button';
@@ -406,7 +435,7 @@ document.getElementById('addForm').addEventListener('submit', function (e) {
   var input = document.getElementById('newItem');
   var name = input.value.trim().replace(/\s+/g, ' '); if (!name) return;
   var known = pics[picKey(name)];
-  setDoc(doc(collection(db, 'grocery')), { typed: name, name: known && known.name || name, size: known && known.size || null,
+  setDoc(doc(collection(db, 'grocery')), { typed: name, name: known && known.name || name, size: known && known.size || null, tidied: !!(known && known.tidied),
     img: known ? known.img : null, thumb: known ? known.thumb || null : null, cap: known ? known.cap || null : null, done: false, order: Date.now() })
     .catch(report);
   input.value = ''; input.focus();
@@ -490,7 +519,7 @@ startGate({
     stop();
     unsubs.push(onSnapshot(collection(db, 'grocery'), function (snap) {
       items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      loaded = true; render(); autoFind();
+      loaded = true; render(); autoFind(); autoTidy();
     }, report));
     unsubs.push(onSnapshot(collection(db, 'groceryPics'), function (snap) {
       pics = {}; snap.docs.forEach(function (d) { pics[d.id] = d.data(); }); render();
