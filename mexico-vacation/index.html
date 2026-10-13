@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a single reading column (~880px) — hero with Cerro de la Silla ridge, at-a-glance strip,
-   booking checklist, hotel/credit math, four day timelines, food + hike, budget, need-to-knows. */
+   booking checklist, hotel plan, four day timelines, food + hike, budget, need-to-knows. */
 :root{
   --bg:#F1F3F2;          /* limestone, faint green-grey */
   --surface:#FFFFFF;
@@ -154,8 +154,6 @@ th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vert
 th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 td small{display:block;color:var(--muted);font-size:13px}
-tr.credit td{color:var(--agave)}
-tr.credit.off td{color:var(--muted);text-decoration:line-through}
 tfoot td{font-weight:700;border-bottom:0;font-size:17px}
 tfoot td.num{color:var(--accent)}
 .split{display:flex;height:16px;border-radius:4px;overflow:hidden;background:var(--line)}
@@ -198,7 +196,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
 <header class="hero">
   <span class="eyebrow">Thu Dec 31, 2026 → Sun Jan 3, 2027 · 2 travelers · 3 nights</span>
   <h1>Año Nuevo<br>en <span>Monterrey</span></h1>
-  <p class="sub">A long weekend of museums, two Michelin-star dinners, tacos, and one easy mountain walk. Night one at the Crowne Plaza downtown, nights two and three at the InterContinental with Sapphire Reserve credits.</p>
+  <p class="sub">A long weekend of museums, two Michelin-star dinners, tacos, and one easy mountain walk. Night one at the Crowne Plaza downtown, nights two and three at the InterContinental in San Pedro.</p>
   <svg class="ridge" viewBox="0 0 900 120" role="img" aria-label="Outline of Cerro de la Silla and the Sierra Madre">
     <path d="M0 120 L0 92 L70 80 L130 86 L190 64 L250 72 L300 50 L345 58 L380 38 L420 70 L455 62 L500 82 L560 70 L620 88 L700 76 L780 90 L900 84 L900 120 Z" fill="var(--ridge)"/>
     <path d="M0 120 L0 104 L120 98 L240 104 L330 96 L420 100 L470 64 L505 30 L530 56 L555 72 L585 50 L612 22 L640 58 L690 94 L780 100 L900 98 L900 120 Z" fill="var(--ridge2)"/>
@@ -214,7 +212,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
   <div class="glance">
     <div><span class="eyebrow">All-in, for two</span><span class="v accent mono" id="g-total">$2,325</span><small id="g-pp">≈ $1,163 per person</small></div>
     <div><span class="eyebrow">Night one</span><span class="v mono">Booked</span><small>Crowne Plaza Monterrey, Dec 31</small></div>
-    <div><span class="eyebrow">Card credits</span><span class="v mono" id="g-credits">$250</span><small id="g-credits-sub">+$300 more if travel credit is unused</small></div>
+    <div><span class="eyebrow">Flights</span><span class="v mono">$871</span><small>Viva nonstop, round trip for two</small></div>
     <div><span class="eyebrow">January weather</span><span class="v mono">50–72°F</span><small>Cold fronts can dip near freezing</small></div>
   </div>
 </section>
@@ -224,13 +222,13 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     <span class="eyebrow">Do these now</span>
     <h2>Booking checklist</h2>
   </div>
-  <p class="lede">New Year's Eve fills up, and the Chase hotel credit only counts if you pay in 2026. Your ticks are saved in this browser.</p>
+  <p class="lede">New Year's Eve fills up, so book the rest soon. Your ticks are saved in this browser.</p>
   <span class="progress" id="progress">0 of 8 done</span>
   <ul class="checks" id="checks">
     <li><label><input type="checkbox" id="c1"><span><span class="t">Book the Viva flights, with bags in the fare</span><span class="n">Viva's cheapest fare includes only a personal item. Adding a carry-on during booking is cheaper than at the airport.</span></span><span class="when">This week</span></label></li>
     <li><label><input type="checkbox" id="c2" checked><span><span class="t">Book Crowne Plaza Monterrey for Dec 31</span><span class="n">Booked: 1 king, Early Saver member rate, Puneeth and Alaina on the reservation.</span></span><span class="when">Done</span></label></li>
-    <li><label><input type="checkbox" id="c3"><span><span class="t">Book InterContinental Presidente Monterrey, Jan 1–3, in Chase Travel</span><span class="n">Choose "Pay now", pay with the Sapphire Reserve, and confirm the "Eligible for $250 select hotel credit" label shows.</span></span><span class="when">By Dec 31</span></label></li>
-    <li><label><input type="checkbox" id="c4"><span><span class="t">Link IHG One Rewards in your Chase benefits</span><span class="n">Sapphire Reserve gives IHG Platinum Elite. The Crowne Plaza is IHG too, so add your IHG number to both reservations and ask for late checkout on Sunday.</span></span><span class="when">Before trip</span></label></li>
+    <li><label><input type="checkbox" id="c3"><span><span class="t">Book InterContinental Presidente Monterrey, Jan 1–3</span><span class="n">Budgeted at about $600 for two nights, taxes in.</span></span><span class="when">Soon</span></label></li>
+    <li><label><input type="checkbox" id="c4"><span><span class="t">Add your IHG One Rewards number to both reservations</span><span class="n">Both hotels are IHG. Ask for late checkout on Sunday.</span></span><span class="when">Before trip</span></label></li>
     <li><label><input type="checkbox" id="c5"><span><span class="t">Reserve KOLI for Sat Jan 2, around 8:30 PM</span><span class="n">Michelin one star. Tasting menus start around MXN 1,700 per person.</span></span><span class="when">Now</span></label></li>
     <li><label><input type="checkbox" id="c6"><span><span class="t">Reserve Pangea for Fri Jan 1 and confirm it's open on the holiday</span><span class="n">If Pangea is closed, book Fonda San Francisco (Michelin recommended, also in San Pedro).</span></span><span class="when">Now</span></label></li>
     <li><label><input type="checkbox" id="c7"><span><span class="t">Buy Chipinque tickets online the day before</span><span class="n">The park has no ticket booth. About MXN 88 per adult.</span></span><span class="when">Dec 31</span></label></li>
@@ -260,13 +258,11 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
       <span class="nights">Nights 2–3 · Fri Jan 1 → Sun Jan 3</span>
       <h3>InterContinental Presidente Monterrey</h3>
       <dl>
-        <dt>Pay with</dt><dd>Sapphire Reserve, prepaid in Chase Travel</dd>
         <dt>Est. cost</dt><dd>~$600 for 2 nights, taxes in</dd>
-        <dt>Credits</dt><dd>$250 select-hotel credit, maybe +$300 travel credit</dd>
         <dt>On site</dt><dd>Spa, gym, Epicentro gin bar; no pool</dd>
         <dt>Times</dt><dd>Check-in 3 PM · checkout 12 PM</dd>
       </dl>
-      <p style="font-size:14px;color:var(--muted)">Recent listed rates ran about $250–$335/night. Check the exact Chase Travel price.</p>
+      <p style="font-size:14px;color:var(--muted)">Recent listed rates ran about $250–$335/night. Check the current price when you book.</p>
     </article>
   </div>
 </section>
@@ -298,7 +294,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
       <li><span class="time">10:30 AM</span><span class="what"><b>Check out, drop bags at the InterContinental</b><span>About 15–20 minutes to San Pedro by Uber. The bell desk holds bags until 3 PM check-in.</span></span><span class="meta"><span class="chip c-move">Ride</span><span class="cost">~$10</span></span></li>
       <li><span class="time">11:00 AM</span><span class="what"><b>Parque Ecológico Chipinque</b><span>15–20 min by Uber from San Pedro. Walk a short trail to the overlooks (details below). Bring water and snacks.</span></span><span class="meta"><span class="chip c-hike">Hike</span><span class="cost">~$27</span></span></li>
       <li><span class="time">2:30 PM</span><span class="what"><b>Late lunch in San Pedro</b><span>Cara de Vaca on José Vasconcelos for cabrito or organic chicken off the fire. Check holiday hours.</span></span><span class="meta"><span class="chip c-food">Casual</span><span class="cost">~$45</span></span></li>
-      <li><span class="time">3:30 PM</span><span class="what"><b>Check in at the InterContinental, rest or spa</b><span>Ask about the Platinum upgrade.</span></span><span class="meta"><span class="chip c-casual">Hotel</span></span></li>
+      <li><span class="time">3:30 PM</span><span class="what"><b>Check in at the InterContinental, rest or spa</b><span>Rest up before dinner.</span></span><span class="meta"><span class="chip c-casual">Hotel</span></span></li>
       <li><span class="time">8:00 PM</span><span class="what"><b>Dinner at Pangea</b><span>Michelin one star, chef Guillermo González Beristáin. À la carte plates from about MXN 400. Backup: Fonda San Francisco.</span></span><span class="meta"><span class="chip c-food">Fine dining</span><span class="cost">~$155</span></span></li>
     </ul>
   </article>
@@ -390,10 +386,6 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     <h2>Budget</h2>
   </div>
   <p class="lede">Prices are converted at MXN 18 per US dollar (the rate was about 17.9 in early October). Restaurant figures include drinks and a 15% tip.</p>
-  <div class="toggle" role="group" aria-label="Budget scenario">
-    <button type="button" id="s-base" aria-pressed="true">$250 hotel credit only</button>
-    <button type="button" id="s-best" aria-pressed="false">+ $300 travel credit</button>
-  </div>
   <div class="split" id="split" aria-hidden="true"></div>
   <div class="bl" id="bl"></div>
   <div class="btable-wrap">
@@ -428,9 +420,6 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
 <section id="sources">
   <span class="eyebrow">Sources</span>
   <ol class="sources">
-    <li><a href="https://loyaltylobby.com/2026/01/02/chase-sapphire-reserve-additional-250-hotel-credit-2026-select-brands-only/">LoyaltyLobby: $250 select-hotel credit terms</a></li>
-    <li><a href="https://viewfromthewing.com/30-chase-sapphire-reserve-benefits-credits-and-rules-even-seasoned-cardmembers-miss/">View from the Wing: 2026 credits for 2027 stays</a></li>
-    <li><a href="https://www.chase.com/sapphire-cards/personal/reserve">Chase: Sapphire Reserve benefits, IHG Platinum</a></li>
     <li><a href="https://upgradedpoints.com/news/presidente-intercontinental-monterrey-opening-this-summer">Upgraded Points: InterContinental Presidente Monterrey</a></li>
     <li><a href="https://www.expedia.com/es/Monterrey-Hoteles-Hoteles-Con-Estacionamiento.0-0-d2448-tHotelesconestacionamiento.Guia-Viajes-Filter-Hoteles">Expedia: recent InterContinental rate</a></li>
     <li><a href="https://www.nl.gob.mx/es/boletines/disfruta-de-la-temporada-navidena-en-los-museos-de-historia">Nuevo León: holiday museum closures</a></li>
@@ -492,9 +481,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     {cat:'Flights',item:'Viva round trip, SAT ⇄ MTY, 2 passengers',note:'Fare from your Google Flights screenshot',usd:871},
     {cat:'Flights',item:'One carry-on each way (estimate)',note:'Skip with personal items only',usd:70},
     {cat:'Hotel',item:'Crowne Plaza Monterrey, Dec 31',note:'Booked; Early Saver rate not yet added',usd:0,label:'booked'},
-    {cat:'Hotel',item:'InterContinental Presidente, Jan 1–3 (estimate)',note:'Prepaid in Chase Travel',usd:600},
-    {cat:'Hotel',item:'$250 select-hotel credit',note:'Book and pay before Dec 31, 2026',usd:-250,credit:'always'},
-    {cat:'Hotel',item:'$300 annual travel credit',note:'Only if unused this card year',usd:-300,credit:'best'},
+    {cat:'Hotel',item:'InterContinental Presidente, Jan 1–3 (estimate)',note:'Cash rate, taxes in',usd:600},
     {cat:'Food',item:'NYE toast',note:'Hotel bar or nearby',usd:40},
     {cat:'Food',item:'Fri: breakfast, snacks, late lunch, Pangea dinner',note:'Pangea ≈ MXN 2,800 with wine and tip',usd:25+10+45+155},
     {cat:'Food',item:'Sat: Doña Mary, El Lingote, KOLI tasting',note:'KOLI ≈ MXN 4,750 with drinks and tip',usd:26+50+265},
@@ -506,14 +493,12 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     {cat:'Activities & buffer',item:'Tips and buffer',note:'',usd:75}
   ];
   function fmt(n){ var s=Math.abs(Math.round(n)).toLocaleString('en-US'); return (n<0?'−$':'$')+s; }
-  var mode='base';
   function render(){
     var tb=document.getElementById('btbody'); tb.innerHTML='';
     var total=0, byCat={};
     rows.forEach(function(r){
-      var on = !r.credit || r.credit==='always' || (r.credit==='best' && mode==='best');
+      var on = true;
       var tr=document.createElement('tr');
-      if(r.credit){ tr.className='credit'+(on?'':' off'); }
       var td1=document.createElement('td');
       td1.textContent=r.item;
       if(r.note){ var sm=document.createElement('small'); sm.textContent=r.note; td1.appendChild(sm); }
@@ -528,8 +513,6 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
     document.getElementById('t-pp').textContent=fmt(pp);
     document.getElementById('g-total').textContent=fmt(total);
     document.getElementById('g-pp').textContent='≈ '+fmt(pp)+' per person';
-    document.getElementById('g-credits').textContent= mode==='best' ? '$550' : '$250';
-    document.getElementById('g-credits-sub').textContent= mode==='best' ? 'Select-hotel + travel credit' : '+$300 more if travel credit is unused';
     var split=document.getElementById('split'), bl=document.getElementById('bl');
     split.innerHTML=''; bl.innerHTML='';
     cats.forEach(function(c){
@@ -537,11 +520,7 @@ footer{margin-top:40px;font-size:13px;color:var(--muted)}
       var d=document.createElement('div'); d.style.flex=String(v); d.style.background=c.c; split.appendChild(d);
       var s=document.createElement('span'); s.innerHTML='<i style="background:'+c.c+'"></i>'; s.appendChild(document.createTextNode(c.k+' '+fmt(v)+' · '+Math.round(v/total*100)+'%')); bl.appendChild(s);
     });
-    document.getElementById('s-base').setAttribute('aria-pressed',mode==='base');
-    document.getElementById('s-best').setAttribute('aria-pressed',mode==='best');
   }
-  document.getElementById('s-base').addEventListener('click',function(){mode='base';render();});
-  document.getElementById('s-best').addEventListener('click',function(){mode='best';render();});
   render();
 })();
 </script>
