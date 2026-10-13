@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Puneeth's Birthday Weekend</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Plan: a bluebonnet-night hero with the I-35 corridor (Austin – New Braunfels – San Antonio) drawn as the
+   one memorable element; below it a quiet column: airport board, four days, BBQ, going out, need-to-knows. */
+:root{
+  --bg:#EEF1F5;            /* pale winter sky */
+  --surface:#FFFFFF;
+  --ink:#17203A;
+  --muted:#59627A;
+  --line:#D3D9E3;
+  --night:#1E2A57;         /* bluebonnet night */
+  --night-ink:#F2F4FA;
+  --night-muted:#A9B3D3;
+  --ember:#D9541E;         /* smoker ember */
+  --ember-soft:#FBE4D8;
+  --sage:#3F7A5A;          /* hill-country live oak */
+  --sage-soft:#DDEEE3;
+  --gold:#9A6A12;
+  --gold-soft:#F6EBCF;
+  --f-display:"Zilla Slab",Rockwell,Georgia,serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10131C;--surface:#181D2A;--ink:#E8EBF3;--muted:#9AA3BA;--line:#2A3145;
+  --night:#141B38;--night-ink:#EEF1FA;--night-muted:#9AA6CC;
+  --ember:#F07A45;--ember-soft:#3A2016;--sage:#7CC39C;--sage-soft:#16302A;--gold:#E0B25A;--gold-soft:#33280F;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#10131C;--surface:#181D2A;--ink:#E8EBF3;--muted:#9AA3BA;--line:#2A3145;
+  --night:#141B38;--night-ink:#EEF1FA;--night-muted:#9AA6CC;
+  --ember:#F07A45;--ember-soft:#3A2016;--sage:#7CC39C;--sage-soft:#16302A;--gold:#E0B25A;--gold-soft:#33280F;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration-color:var(--ember);text-underline-offset:3px}
+a:hover{color:var(--ember)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:2px}
+
+/* Hero */
+.hero{background:var(--night);color:var(--night-ink);padding:calc(env(safe-area-inset-top,0px) + clamp(36px,8vw,72px)) 16px 0;overflow:hidden}
+.hero-in{max-width:880px;margin:0 auto}
+.back{color:var(--night-muted);font-size:14px;text-decoration:none}
+.back:hover{color:var(--night-ink)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(46px,11vw,96px);line-height:.92;letter-spacing:-.015em;margin:18px 0 0}
+.dates{font-family:var(--f-display);font-weight:500;font-size:clamp(22px,4.6vw,34px);color:var(--night-muted);margin:10px 0 0}
+.lede{max-width:56ch;color:var(--night-muted);margin:18px 0 0}
+.corridor{display:block;width:100%;height:auto;margin:clamp(28px,6vw,48px) 0 0}
+.corridor .road,.corridor-m .road{stroke:var(--night-muted);stroke-width:2;stroke-dasharray:2 7;stroke-linecap:round;fill:none}
+.corridor .stop,.corridor-m .stop{fill:var(--night)}
+.corridor .ring,.corridor-m .ring{fill:none;stroke:var(--night-ink);stroke-width:2.5}
+.corridor .home,.corridor-m .home{fill:var(--ember)}
+.corridor .city,.corridor-m .city{font-family:var(--f-display);font-weight:700;font-size:26px;fill:var(--night-ink)}
+.corridor .note,.corridor-m .note{font-family:var(--f-body);font-size:15px;fill:var(--night-muted)}
+.corridor .drive,.corridor-m .drive{font-family:var(--f-body);font-size:14px;fill:var(--night-muted);text-anchor:middle}
+.ground{height:18px;background:var(--bg);border-radius:18px 18px 0 0;margin-top:22px}
+
+/* Body column */
+main{max-width:880px;margin:0 auto;padding:12px 16px 72px}
+section{margin-top:clamp(48px,8vw,72px)}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,5.4vw,42px);line-height:1.05;margin:0 0 6px}
+.intro{color:var(--muted);margin:0 0 22px;max-width:62ch}
+h3{font-family:var(--f-display);font-weight:700;font-size:24px;margin:0}
+p{margin:0}
+
+/* Airport board */
+.board{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.board table{width:100%;border-collapse:collapse}
+.board th{text-align:left;font-size:13px;font-weight:600;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line)}
+.board td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+.board tr:last-child td{border-bottom:0}
+.when{white-space:nowrap;font-weight:600}
+.when small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.kind{display:inline-block;font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.in{background:var(--sage-soft);color:var(--sage)}
+.out{background:var(--ember-soft);color:var(--ember)}
+.who{font-weight:600}
+.sub{color:var(--muted);font-size:14px}
+.board .early td{background:color-mix(in srgb,var(--ember-soft) 45%,transparent)}
+@media (max-width:620px){
+  .board thead{display:none}
+  .board tr{display:grid;grid-template-columns:108px 1fr;gap:3px 12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .board tr:last-child{border-bottom:0}
+  .board td{padding:0;border:0;background:none!important}
+  .board .when{white-space:normal}
+  .board td.t{grid-column:1;grid-row:1 / span 3}
+  .board td:not(.t){grid-column:2}
+  .board .early{background:color-mix(in srgb,var(--ember-soft) 45%,transparent)}
+}
+.corridor-m{display:none}
+@media (max-width:620px){
+  .corridor{display:none}
+  .corridor-m{display:block;width:100%;max-width:360px;height:auto;margin:28px 0 0}
+}
+
+/* Days */
+.day{display:grid;grid-template-columns:150px 1fr;gap:0 28px;padding:26px 0;border-top:1px solid var(--line)}
+.day:last-child{border-bottom:1px solid var(--line)}
+.day-head h3{font-size:28px;line-height:1}
+.day-head .date{color:var(--muted);margin-top:6px;font-size:15px}
+.day-head .theme{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;color:var(--gold);background:var(--gold-soft);padding:2px 9px;border-radius:999px}
+.slots{list-style:none;margin:0;padding:0}
+.slots li{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:10px 0}
+.slots li+li{border-top:1px dashed var(--line)}
+.slots time{font-weight:600;color:var(--muted);font-size:15px;padding-top:1px}
+.slots .what{font-weight:600}
+.slots .detail{color:var(--muted);font-size:15px;margin-top:2px}
+.slots li.air time{color:var(--sage)}
+.slots li.air.leave time{color:var(--ember)}
+.opt{font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:6px;white-space:nowrap}
+@media (max-width:620px){
+  .day{grid-template-columns:1fr;gap:14px}
+  .slots li{grid-template-columns:78px 1fr}
+}
+
+/* Picks */
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.pick{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 16px}
+.pick h3{font-size:22px}
+.pick .where{color:var(--muted);font-size:14px;margin-top:2px}
+.pick p{margin-top:10px;font-size:15px}
+.veg{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--sage-soft);color:var(--ink);font-size:14px}
+.veg b{color:var(--sage)}
+.veg.ask{background:var(--gold-soft)}
+.veg.ask b{color:var(--gold)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:700px){.split{grid-template-columns:1fr}}
+.split h3{font-size:26px;padding-bottom:8px;border-bottom:3px solid var(--ember);display:inline-block}
+.list{list-style:none;margin:14px 0 0;padding:0}
+.list li{padding:11px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list b{display:block}
+.list span{color:var(--muted);font-size:15px}
+
+/* Grill menu */
+.grill{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media (max-width:620px){.grill{grid-template-columns:1fr}}
+.grill .col{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.grill h3{font-size:20px}
+.grill ul{margin:10px 0 0;padding-left:18px}
+.grill li{margin:4px 0}
+
+/* Need to know */
+.know{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 28px}
+.know div{padding:14px 0;border-top:1px solid var(--line)}
+.know b{display:block;margin-bottom:2px}
+.know span{color:var(--muted);font-size:15px}
+.open{margin-top:22px;background:var(--gold-soft);border-radius:10px;padding:16px 18px}
+.open b{color:var(--gold)}
+.open ul{margin:8px 0 0;padding-left:18px}
+
+footer{margin-top:64px;color:var(--muted);font-size:14px}
+footer ul{margin:8px 0 0;padding-left:18px}
+footer li{margin:3px 0}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-in">
+    <a class="back" href="/">puneeth-alaina.com</a>
+    <h1>Puneeth's birthday weekend</h1>
+    <p class="dates">Thursday, Dec 3 – Sunday, Dec 6</p>
+    <p class="lede">Home base is Puneeth's place in New Braunfels. A night out in Austin, a night out in San Antonio, a day at the pool and grill, and plenty of barbecue in between.</p>
+
+    <svg class="corridor" viewBox="0 0 860 190" role="img" aria-labelledby="corr-t">
+      <title id="corr-t">The I-35 corridor: Austin is about 50 minutes north of New Braunfels, San Antonio is about 35 minutes south.</title>
+      <path class="road" d="M70 70 C 250 70, 300 120, 430 120 S 640 150, 790 150"/>
+      <text class="drive" x="250" y="132">~50 min</text>
+      <text class="drive" x="620" y="168">~35 min</text>
+      <circle class="stop" cx="70" cy="70" r="11"/><circle class="ring" cx="70" cy="70" r="11"/>
+      <text class="city" x="46" y="34">Austin</text>
+      <text class="note" x="46" y="102">AUS airport · Friday night</text>
+      <circle class="home" cx="430" cy="120" r="13"/>
+      <text class="city" x="380" y="80">New Braunfels</text>
+      <text class="note" x="380" y="153" text-anchor="start">home base · pool &amp; grill</text>
+      <circle class="stop" cx="790" cy="150" r="11"/><circle class="ring" cx="790" cy="150" r="11"/>
+      <text class="city" x="814" y="112" text-anchor="end">San Antonio</text>
+      <text class="note" x="814" y="184" text-anchor="end">Saturday night</text>
+    </svg>
+    <svg class="corridor-m" viewBox="0 0 360 310" role="img" aria-labelledby="corr-m-t">
+      <title id="corr-m-t">Austin is about 50 minutes north of New Braunfels; San Antonio is about 35 minutes south.</title>
+      <path class="road" d="M30 26 L30 274"/>
+      <circle class="stop" cx="30" cy="26" r="11"/><circle class="ring" cx="30" cy="26" r="11"/>
+      <text class="city" x="58" y="34">Austin</text>
+      <text class="note" x="58" y="56">AUS airport · Friday night</text>
+      <text class="drive" x="58" y="104" style="text-anchor:start">~50 min down I-35</text>
+      <circle class="home" cx="30" cy="150" r="13"/>
+      <text class="city" x="58" y="158">New Braunfels</text>
+      <text class="note" x="58" y="180">home base · pool &amp; grill</text>
+      <text class="drive" x="58" y="226" style="text-anchor:start">~35 min</text>
+      <circle class="stop" cx="30" cy="274" r="11"/><circle class="ring" cx="30" cy="274" r="11"/>
+      <text class="city" x="58" y="282">San Antonio</text>
+      <text class="note" x="58" y="300" dy="-2">Saturday night</text>
+    </svg>
+  </div>
+  <div class="ground"></div>
+</header>
+
+<main>
+
+<section id="airport" style="margin-top:28px">
+  <h2>Airport runs</h2>
+  <p class="intro">Everyone flies into and out of Austin (AUS). Drop-off times give two hours before the flight.</p>
+  <div class="board">
+    <table>
+      <thead><tr><th>When</th><th></th><th>Who</th><th>Flight</th></tr></thead>
+      <tbody>
+        <tr><td class="t when">Thu 9:30 PM<small>lands</small></td><td class="k"><span class="kind in">Pickup</span></td><td><span class="who">Yash + crew</span></td><td class="sub">Flight # TBD</td></tr>
+        <tr><td class="t when">Thu 11:30 PM<small>lands</small></td><td class="k"><span class="kind in">Pickup</span></td><td><span class="who">Shreyas</span></td><td class="sub">Flight # TBD</td></tr>
+        <tr><td class="t when">Fri 12:45 PM<small>lands</small></td><td class="k"><span class="kind in">Pickup</span></td><td><span class="who">Allentown traveler</span> <span class="sub">(name TBD)</span></td><td class="sub">DL 4948 / DL 2011 from ABE via ATL</td></tr>
+        <tr class="early"><td class="t when">Sun 5:20 AM<small>be at AUS · flight 7:20</small></td><td class="k"><span class="kind out">Drop-off</span></td><td><span class="who">Yash + crew</span></td><td class="sub">Leave New Braunfels by ~4:20 AM</td></tr>
+        <tr><td class="t when">Sun 11:00 AM<small>be at AUS · flight 1:00</small></td><td class="k"><span class="kind out">Drop-off</span></td><td><span class="who">Shreyas</span></td><td class="sub">Flight # TBD</td></tr>
+        <tr><td class="t when">Sun 1:05 PM<small>be at AUS · flight 3:05</small></td><td class="k"><span class="kind out">Drop-off</span></td><td><span class="who">Allentown traveler</span></td><td class="sub">DL 2104 / DL 5085 to ABE via ATL</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="plan">
+  <h2>The plan</h2>
+  <p class="intro">A loose shape for the weekend. Everything marked optional can be dropped if people are tired.</p>
+
+  <article class="day">
+    <div class="day-head"><h3>Thursday</h3><p class="date">Dec 3</p><span class="theme">Arrivals</span></div>
+    <ul class="slots">
+      <li><time>6–8:30 PM</time><div><p class="what">Wassailfest in downtown New Braunfels <span class="opt">optional</span></p><p class="detail">Free wassail tastings, lights, and choirs around Main Plaza. Only works for whoever's driving to the airport, and only if they leave by about 8:30.</p></div></li>
+      <li class="air"><time>9:30 PM</time><div><p class="what">Pick up Yash + crew at AUS</p><p class="detail">Expect them at the curb around 9:50 once bags are out.</p></div></li>
+      <li><time>10–11:15 PM</time><div><p class="what">Kill two hours on East Riverside, about 12 minutes from the airport</p><p class="detail">Frazier's Long &amp; Low for $2 Coors on Thursdays, burgers, and pool (open till 2). The Potluck for wings if people are starving (open till 3). Check Shreyas's flight status before you leave.</p></div></li>
+      <li class="air"><time>11:30 PM</time><div><p class="what">Pick up Shreyas at AUS</p></div></li>
+      <li><time>~Midnight</time><div><p class="what">Drive home to New Braunfels</p><p class="detail">About 50 minutes down I-35.</p></div></li>
+    </ul>
+  </article>
+
+  <article class="day">
+    <div class="day-head"><h3>Friday</h3><p class="date">Dec 4</p><span class="theme">Austin</span></div>
+    <ul class="slots">
+      <li><time>Morning</time><div><p class="what">Slow start at home</p><p class="detail">Late night before. Coffee and breakfast tacos.</p></div></li>
+      <li><time>11:45 AM</time><div><p class="what">Everyone drives up to Austin together</p></div></li>
+      <li class="air"><time>12:45 PM</time><div><p class="what">Pick up the Allentown traveler at AUS</p></div></li>
+      <li><time>1:30 PM</time><div><p class="what">BBQ lunch at Terry Black's on Barton Springs Road</p><p class="detail">Open lunch and dinner every day, so no 4-hour Franklin line. Vegetarian notes are in the BBQ section below.</p></div></li>
+      <li><time>Afternoon</time><div><p class="what">Walk it off: South Congress and Lady Bird Lake</p><p class="detail">Both are a few minutes from Terry Black's.</p></div></li>
+      <li><time>Evening</time><div><p class="what">Night out in Austin</p><p class="detail">Dinner on the East Side, then bars on East 6th or Rainey Street. Picks are in the going-out section.</p></div></li>
+      <li><time>Late</time><div><p class="what">Drive home with a designated driver</p><p class="detail">About 50 minutes. A rideshare all the way to New Braunfels gets expensive, so pick the driver before the first drink.</p></div></li>
+    </ul>
+  </article>
+
+  <article class="day">
+    <div class="day-head"><h3>Saturday</h3><p class="date">Dec 5</p><span class="theme">Birthday day</span></div>
+    <ul class="slots">
+      <li><time>Noon</time><div><p class="what">Pool and grill at home</p><p class="detail">The average high is in the mid-60s, so the grill is the main event and the pool is for whoever's brave. Check whether the pool is heated or the hot tub is open. Grill menu below.</p></div></li>
+      <li><time>1–5 PM</time><div><p class="what">Free afternoon show at Gruene Hall <span class="opt">optional</span></p><p class="detail">Red Iron Push, no cover. It's billed as Texas's oldest continuously running dance hall, about 10 minutes from home.</p></div></li>
+      <li><time>6:30 PM</time><div><p class="what">Drive to San Antonio</p><p class="detail">About 35 minutes. Same designated-driver rule.</p></div></li>
+      <li><time>7:30 PM</time><div><p class="what">Birthday dinner in San Antonio</p><p class="detail">See the going-out section for options with good vegetarian choices.</p></div></li>
+      <li><time>After dinner</time><div><p class="what">River Walk holiday lights and drinks</p><p class="detail">The lights usually run from late November into early January. Then the Pearl or the St. Mary's Strip for drinks.</p></div></li>
+      <li><time>Plan B</time><div><p class="what">Stay local at Gruene Hall instead <span class="opt">optional</span></p><p class="detail">8 PM: An Evening of Jerry Jeff Walker music with Django Walker and the Jerry Jeff Walker Band, $37.50.</p></div></li>
+      <li><time>Early night</time><div><p class="what">Home at a reasonable hour</p><p class="detail">Yash's crew has to leave for the airport around 4:20 AM.</p></div></li>
+    </ul>
+  </article>
+
+  <article class="day">
+    <div class="day-head"><h3>Sunday</h3><p class="date">Dec 6</p><span class="theme">Departures</span></div>
+    <ul class="slots">
+      <li class="air leave"><time>4:20 AM</time><div><p class="what">Leave New Braunfels with Yash + crew</p><p class="detail">7:20 AM flight. If no one's in shape to drive, book a rideshare the night before.</p></div></li>
+      <li><time>Morning</time><div><p class="what">Sleep</p></div></li>
+      <li class="air leave"><time>10:00 AM</time><div><p class="what">Leave with Shreyas and the Allentown traveler</p><p class="detail">Drop Shreyas by 11 for his 1:00 PM flight. Then brunch in Austin with the Allentown traveler and drop them by 1:05 for the 3:05 PM flight.</p></div></li>
+    </ul>
+  </article>
+</section>
+
+<section id="bbq">
+  <h2>Barbecue, with real options for vegetarians</h2>
+  <p class="intro">Most Texas BBQ joints have only a few meat-free sides, and beans often have pork in them. Plan the grill day around the vegetarians and treat the restaurants as a bonus.</p>
+
+  <div class="picks">
+    <div class="pick">
+      <h3>Terry Black's Barbecue</h3>
+      <p class="where">1003 Barton Springs Rd, Austin · Friday lunch</p>
+      <p>Classic Central Texas brisket and ribs, and it's open seven days a week for lunch and dinner. You don't need to line up at dawn.</p>
+      <div class="veg ask"><b>Vegetarian:</b> mac &amp; cheese, creamed corn, and green beans list no meat. The pinto beans have pork. Confirm at the counter.</div>
+    </div>
+    <div class="pick">
+      <h3>Mission Burger Co.</h3>
+      <p class="where">Mueller, Austin · all plant-based</p>
+      <p>A vegan burger spot that has done a smoky mushroom “brisket” burger and BBQ plate. It's a good stop if the vegetarians want BBQ flavor instead of sides.</p>
+      <div class="veg"><b>Vegetarian:</b> the whole menu. Check the current menu for the BBQ items.</div>
+    </div>
+    <div class="pick">
+      <h3>Curry Boys BBQ</h3>
+      <p class="where">536 E Courtland Pl, San Antonio · open 11–10 daily</p>
+      <p>Texas smoked meats served with Southeast Asian curries, like brisket with green curry. It's fun for a birthday group, and they serve beer and wine.</p>
+      <div class="veg ask"><b>Vegetarian:</b> not confirmed. Call (210) 560-2763 and ask about meat-free curries before you commit.</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px;font-size:26px">Grill menu for Saturday</h3>
+  <div class="grill">
+    <div class="col">
+      <h3>For the meat-eaters</h3>
+      <ul>
+        <li>Brisket or tri-tip, or pick up a pound of brisket in Austin on Friday</li>
+        <li>Sausage links and chicken thighs</li>
+        <li>Burgers for the late crowd</li>
+      </ul>
+    </div>
+    <div class="col">
+      <h3>For the vegetarians</h3>
+      <ul>
+        <li>Paneer tikka and halloumi skewers</li>
+        <li>Portobello caps, veggie burgers, and elote</li>
+        <li>Grilled peppers, onions, and pineapple</li>
+        <li>Keep a separate side of the grill, or use foil, so nothing touches meat</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="out">
+  <h2>Going out</h2>
+  <p class="intro">One night in each city.</p>
+  <div class="split">
+    <div>
+      <h3>Austin, Friday</h3>
+      <ul class="list">
+        <li><b>Kemuri Tatsu-Ya</b><span>Texan-Japanese izakaya on E 2nd St with smoked meats and strong cocktails. Call ahead about vegetarian dishes.</span></li>
+        <li><b>East 6th Street</b><span>A string of bars and patios. It's more relaxed than Dirty Sixth downtown.</span></li>
+        <li><b>Rainey Street</b><span>Bungalow bars close together, so you can walk between them all night.</span></li>
+        <li><b>High Noon</b><span>East Cesar Chavez bar with a Mexican food truck out front. Open till 2.</span></li>
+        <li><b>Skip the Trail of Lights</b><span>It doesn't open until Dec 10. Dec 4 is only a limited-capacity preview party.</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>San Antonio, Saturday</h3>
+      <ul class="list">
+        <li><b>Dinner near the Pearl</b><span>Curry Boys BBQ is on Courtland Place, a few minutes from the Pearl.</span></li>
+        <li><b>Veg-first dinner</b><span>Viva Vegeria has all-vegan Tex-Mex. Green Vegetarian Cuisine has Texas comfort food.</span></li>
+        <li><b>River Walk lights</b><span>Holiday lights along the river. Walk a loop after dinner.</span></li>
+        <li><b>The Pearl and the St. Mary's Strip</b><span>Bars and a later crowd, both just north of downtown.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="know">
+  <h2>Good to know</h2>
+  <div class="know">
+    <div><b>Weather</b><span>Early December averages about 64°F during the day and 42°F at night, with a low chance of rain. Bring a jacket for the nights out.</span></div>
+    <div><b>Drives</b><span>New Braunfels to AUS is about 50 minutes, and to downtown San Antonio about 35.</span></div>
+    <div><b>Designated drivers</b><span>Both nights out end with a drive home. Decide who's driving before you go.</span></div>
+    <div><b>Sunday is early</b><span>The first airport run leaves at about 4:20 AM, so keep Saturday reasonable.</span></div>
+  </div>
+  <div class="open">
+    <b>Still to sort out</b>
+    <ul>
+      <li>Who's on the Allentown booking?</li>
+      <li>Flight numbers for Yash's crew and Shreyas, for tracking delays</li>
+      <li>Whether the pool is heated or the hot tub is open in December</li>
+      <li>Who's driving on Friday and Saturday nights</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <p>Sources</p>
+  <ul>
+    <li><a href="https://gruenehall.com/events/month/2026-12/">Gruene Hall, December 2026 calendar</a></li>
+    <li><a href="https://www.tourtexas.com/all-events/84625/Wassailfest">Wassailfest, Dec 3, 2026</a></li>
+    <li><a href="https://austin.culturemap.com/news/entertainment/trail-of-lights-2026-tickets/">Trail of Lights 2026 dates, CultureMap Austin</a></li>
+    <li><a href="https://www.texasmonthly.com/bbq/best-bbq-joints-in-austin/">Best barbecue in Austin, Texas Monthly</a></li>
+    <li><a href="https://www.goldbelly.com/terry-blacks-barbecue/terry-blacks-famous-side-dishes">Terry Black's sides and ingredients</a></li>
+    <li><a href="https://www.texasmonthly.com/restaurant/curry-boys-bbq-san-antonio/">Curry Boys BBQ, Texas Monthly</a></li>
+    <li><a href="https://bittersweetblog.com/2024/12/02/austin-vegan-bbq/">Vegan BBQ in Austin, BitterSweet</a></li>
+    <li><a href="https://satxtoday.6amcity.com/city-guide/live/vegan-and-vegetarian-eats-in-san-antonio-tx">Vegan and vegetarian eats in San Antonio, SATX Today</a></li>
+    <li><a href="https://www.visitsanantonio.com/holidays/holiday-lights/">San Antonio holiday lights, Visit San Antonio</a></li>
+    <li><a href="https://weatheronthisday.com/78130/12/5">New Braunfels weather on Dec 5</a></li>
+  </ul>
+</footer>
+</main>
+</body>
+</html>

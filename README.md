@@ -12,6 +12,7 @@ Each page lives in its own folder as `index.html`:
 | `india-trip/index.html` | puneeth-alaina.com/india-trip |
 | `thank-you-sticker/index.html` | puneeth-alaina.com/thank-you-sticker |
 | `to-do/index.html` | puneeth-alaina.com/to-do |
+| `birthday-weekend/index.html` | puneeth-alaina.com/birthday-weekend |
 | `print-studio/index.html` | puneeth-alaina.com/print-studio |
 
 To add a page: create `new-page-name/index.html` (a complete HTML document) and add a link to it in the root `index.html`.
