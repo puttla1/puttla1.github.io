@@ -41,6 +41,10 @@ button.primary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .well{aspect-ratio:1;background:var(--well);display:grid;place-items:center;overflow:hidden;position:relative}
 .well img{width:100%;height:100%;object-fit:contain;padding:10px;display:block}
 .well .letter{font-family:var(--f-display);font-size:56px;font-weight:500;color:#B9B6AD}
+.well.loading::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(179,18,90,.10) 50%,transparent 70%);background-size:200% 100%;animation:sheen 1.2s linear infinite}
+@keyframes sheen{from{background-position:120% 0}to{background-position:-80% 0}}
+@media (prefers-reduced-motion:reduce){.well.loading::after{animation:none}}
+.status{padding:2px 12px 0;color:var(--muted);font-size:12px}
 .check{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:none;place-items:center;font-size:16px;font-weight:600}
 .name{padding:10px 12px 0;font-weight:500;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
 .actions{display:flex;gap:14px;white-space:nowrap;padding:6px 12px 10px;margin-top:auto}
@@ -90,6 +94,10 @@ a.google:hover,a.google:focus-visible{border-color:var(--accent);color:var(--acc
 .pk-msg{color:var(--muted);font-size:14px;margin:0}
 .pk-err{color:var(--accent);font-size:14px;margin:0;display:none}
 .pk-foot{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+.pk details{border-top:1px solid var(--line);padding-top:12px}
+.pk summary{cursor:pointer;color:var(--muted);font-size:14px}
+.pk details[open] summary{margin-bottom:12px}
+.pk details > *:not(summary){margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -125,7 +133,7 @@ a.google:hover,a.google:focus-visible{border-color:var(--accent);color:var(--acc
       <button type="button" id="clearDone">Remove checked items</button>
     </div>
 
-    <footer>Tap a picture to check it off. A picture you choose is remembered the next time you add that item. Signed in as <span class="who"></span> · <button class="link js-signout" type="button">Sign out</button></footer>
+    <footer>Tap a picture to check it off. Pictures are picked automatically; tap “Picture” to choose a different one, and that choice is remembered next time. Signed in as <span class="who"></span> · <button class="link js-signout" type="button">Sign out</button></footer>
   </div>
 </main>
 
@@ -136,35 +144,44 @@ a.google:hover,a.google:focus-visible{border-color:var(--accent);color:var(--acc
       <button type="button" class="close" id="pkClose">Done</button>
     </div>
 
-    <h3>From Google</h3>
-    <a class="google" id="pkGoogle" href="#" target="_blank" rel="noopener">Search Google Images ↗</a>
-    <ol>
-      <li>Press and hold the picture you want (right-click on a computer).</li>
-      <li>Choose “Copy Image Address” or “Copy Image Link”.</li>
-      <li>Come back and paste it here.</li>
-    </ol>
-    <form id="pkUrl" autocomplete="off">
-      <label class="sr" for="pkUrlInput">Image link</label>
-      <input type="text" id="pkUrlInput" placeholder="Paste the image link" inputmode="url">
-      <button class="primary" type="submit">Use</button>
-    </form>
-    <p class="pk-err" id="pkErr" role="alert">That doesn’t look like an image link. Try “Copy Image Address” instead of copying the page link.</p>
-
-    <h3>Or pick a package photo</h3>
+    <h3 id="pkOptsTitle">Other results</h3>
     <p class="pk-msg" id="pkMsg" aria-live="polite"></p>
     <ul class="pk-grid" id="pkGrid"></ul>
+
+    <form id="pkSearch" autocomplete="off">
+      <label class="sr" for="pkQuery">Search with different words</label>
+      <input type="text" id="pkQuery" maxlength="120">
+      <button class="primary" type="submit">Search</button>
+    </form>
+
+    <details>
+      <summary>Use your own picture</summary>
+      <a class="google" id="pkGoogle" href="#" target="_blank" rel="noopener">Search Google Images ↗</a>
+      <p class="pk-msg">Press and hold the picture you want, choose “Copy Image Address”, then paste it here.</p>
+      <form id="pkUrl" autocomplete="off">
+        <label class="sr" for="pkUrlInput">Image link</label>
+        <input type="text" id="pkUrlInput" placeholder="Paste the image link" inputmode="url">
+        <button class="primary" type="submit">Use</button>
+      </form>
+      <p class="pk-err" id="pkErr" role="alert">That doesn’t look like an image link. Try “Copy Image Address” instead of copying the page link.</p>
+    </details>
 
     <div class="pk-foot"><button type="button" class="link" id="pkNone">Remove the picture</button></div>
   </div>
 </dialog>
 
 <script type="module">
-import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp,
+import { auth, db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch, runTransaction, serverTimestamp,
   startGate, denied, isDenied } from '/shared/firebase.js';
+
+// The picture helper (a Cloudflare Worker, see tools/grocery-pictures-worker.js) searches Google Images
+// and has Claude pick the best match. Leave empty to fall back to package photos only.
+var PICTURE_HELPER = '';
 
 var FIRST_ITEM = 'Silk Yogurt Dairy-Free Strawberry';
 var items = [], pics = {}, loaded = false, unsubs = [];
 var candidates = {};   // item name key -> package-photo results (this session only)
+var looking = {}, attempted = {};   // item id -> picture lookup running / already tried this session
 
 /* ---------- text helpers ---------- */
 function singular(w) {
@@ -226,11 +243,36 @@ function cleanImageLink(raw) {
 function report(err) { if (isDenied(err)) denied(); else console.error(err); }
 function itemRef(id) { return doc(db, 'grocery', id); }
 
-function setPicture(it, pic) {
-  var data = pic ? { img: pic.img, cap: pic.cap || null } : { img: null, cap: null };
+function setPicture(it, pic, extra) {
+  var data = Object.assign(pic ? { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null } : { img: null, thumb: null, cap: null }, extra || {});
   updateDoc(itemRef(it.id), data).catch(report);
   var k = doc(db, 'groceryPics', picKey(it.name));
-  (pic ? setDoc(k, { img: pic.img, cap: pic.cap || null, name: it.name }) : deleteDoc(k)).catch(report);
+  (pic ? setDoc(k, { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null, name: it.name }) : deleteDoc(k)).catch(report);
+}
+
+// Ask the helper for the best picture. Used automatically for new items, and by "Search" in the picker.
+async function findPicture(it, query) {
+  if (!PICTURE_HELPER || looking[it.id]) return;
+  looking[it.id] = true; attempted[it.id] = true; render();
+  try {
+    var token = await auth.currentUser.getIdToken();
+    var r = await fetch(PICTURE_HELPER.replace(/\/$/, '') + '/pick?q=' + encodeURIComponent(query || it.name), { headers: { Authorization: 'Bearer ' + token } });
+    var d = await r.json();
+    if (!r.ok) throw new Error(d.error || r.status);
+    var options = (d.options || []).map(function (o) { return { img: o.img, thumb: o.thumb || null, cap: o.cap || null }; });
+    if (d.pick) setPicture(it, options[0], { options: options, autoTried: true });
+    else updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report);
+  } catch (e) {
+    console.error(e);
+    updateDoc(itemRef(it.id), { autoTried: true }).catch(report);
+  } finally {
+    delete looking[it.id]; render();
+  }
+}
+function autoFind() {
+  items.forEach(function (it) {
+    if (!it.img && !pics[picKey(it.name)] && !it.autoTried && !attempted[it.id] && !it.done) findPicture(it);
+  });
 }
 
 function seedOnce(user) {
@@ -247,12 +289,15 @@ function seedOnce(user) {
 var grid = document.getElementById('grid');
 function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-function picture(img, name) {
+function picture(img, name, thumb) {
   var well = el('div', 'well');
   var letter = function () { return el('span', 'letter', (name || '?').trim().charAt(0).toUpperCase()); };
-  if (img) {
-    var im = el('img'); im.src = img; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.referrerPolicy = 'no-referrer';
-    im.addEventListener('error', function () { im.replaceWith(letter()); });
+  if (img || thumb) {
+    var im = el('img'); im.src = img || thumb; im.alt = ''; im.loading = 'lazy'; im.decoding = 'async'; im.referrerPolicy = 'no-referrer';
+    im.addEventListener('error', function () {
+      if (thumb && im.src !== thumb) { im.src = thumb; return; }
+      im.replaceWith(letter());
+    });
     well.appendChild(im);
   } else {
     well.appendChild(letter());
@@ -263,19 +308,22 @@ function picture(img, name) {
 function render() {
   grid.textContent = '';
   items.slice().sort(function (a, b) { return (!!a.done - !!b.done) || (b.order || 0) - (a.order || 0); }).forEach(function (it) {
-    var img = it.img || (pics[picKey(it.name)] || {}).img || null;
+    var saved = it.img ? it : (pics[picKey(it.name)] || {});
+    var img = saved.img || null, thumb = saved.thumb || null;
     var li = el('li', 'tile' + (it.done ? ' done' : ''));
     var hit = el('button', 'hit'); hit.type = 'button';
     hit.setAttribute('aria-pressed', String(!!it.done));
     hit.setAttribute('aria-label', (it.done ? 'Got ' : 'Check off ') + it.name);
-    var well = picture(img, it.name);
+    var well = picture(img, it.name, thumb);
+    if (looking[it.id]) well.classList.add('loading');
     well.appendChild(el('span', 'check', '✓'));
     hit.appendChild(well);
     hit.addEventListener('click', function () { focusAfter = it.id; updateDoc(itemRef(it.id), { done: !it.done }).catch(report); });
     li.appendChild(hit);
     li.appendChild(el('div', 'name', it.name));
+    if (looking[it.id]) li.appendChild(el('div', 'status', 'Finding a picture…'));
     var act = el('div', 'actions');
-    var pic = el('button', img ? null : 'needs', img ? 'Picture' : 'Add picture'); pic.type = 'button';
+    var pic = el('button', img || looking[it.id] ? null : 'needs', img || looking[it.id] ? 'Picture' : 'Add picture'); pic.type = 'button';
     pic.setAttribute('aria-label', (img ? 'Change picture for ' : 'Add a picture for ') + it.name);
     pic.addEventListener('click', function () { openPicker(it.id); });
     var del = el('button', null, 'Remove'); del.type = 'button';
@@ -291,7 +339,11 @@ function render() {
     (left ? left + ' to get' : 'Got everything') + (got ? ' · ' + got + ' in the cart' : '');
   document.getElementById('empty').style.display = loaded && !items.length ? 'block' : 'none';
   if (focusAfter) { var b = grid.querySelector('li[data-id="' + focusAfter + '"] .hit'); if (b) b.focus(); focusAfter = null; }
-  if (pickingId) refreshPickerMarks();
+  if (pickingId) {
+    var open = byId(pickingId);
+    if (open && open.options && open.options.length && !looking[open.id] && pkMsg.textContent === 'Searching…') showCandidates(open.options);
+    refreshPickerMarks();
+  }
 }
 var focusAfter = null;
 
@@ -300,7 +352,8 @@ document.getElementById('addForm').addEventListener('submit', function (e) {
   var input = document.getElementById('newItem');
   var name = input.value.trim().replace(/\s+/g, ' '); if (!name) return;
   var known = pics[picKey(name)];
-  setDoc(doc(collection(db, 'grocery')), { name: name, img: known ? known.img : null, cap: known ? known.cap || null : null, done: false, order: Date.now() })
+  setDoc(doc(collection(db, 'grocery')), { name: name, img: known ? known.img : null, thumb: known ? known.thumb || null : null,
+    cap: known ? known.cap || null : null, done: false, order: Date.now() })
     .catch(report);
   input.value = ''; input.focus();
 });
@@ -316,20 +369,21 @@ var pkErr = document.getElementById('pkErr'), pkUrlInput = document.getElementBy
 function byId(id) { for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i]; return null; }
 
 function choose(c) { var it = byId(pickingId); if (it) setPicture(it, c); closePicker(); }
+var pkQuery = document.getElementById('pkQuery');
 function refreshPickerMarks() {
   var it = byId(pickingId); if (!it) return;
   pkGrid.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.img === it.img)); });
 }
 function showCandidates(list) {
   pkGrid.textContent = '';
-  pkMsg.textContent = list.length ? '' : 'No package photos found for this one. Google is the way to go.';
+  pkMsg.textContent = list.length ? '' : 'Nothing found. Try different words below.';
   list.forEach(function (c) {
     var li = el('li'), b = el('button'); b.type = 'button'; b.dataset.img = c.img;
-    b.appendChild(picture(c.img, c.cap));
+    b.appendChild(picture(c.img, c.cap, c.thumb));
     var cap = el('span', 'cap'); cap.appendChild(el('b', null, c.cap));
     if (c.sub && c.sub !== c.cap) cap.appendChild(document.createTextNode(c.sub));
     b.appendChild(cap);
-    b.addEventListener('click', function () { choose({ img: c.img, cap: c.cap }); });
+    b.addEventListener('click', function () { choose({ img: c.img, thumb: c.thumb || null, cap: c.cap }); });
     li.appendChild(b); pkGrid.appendChild(li);
   });
   refreshPickerMarks();
@@ -339,9 +393,12 @@ function openPicker(id) {
   pickingId = id;
   document.getElementById('pkTitle').textContent = it.name;
   document.getElementById('pkGoogle').href = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(it.name);
-  pkUrlInput.value = ''; pkErr.style.display = 'none';
+  pkUrlInput.value = ''; pkErr.style.display = 'none'; pkQuery.value = it.name;
+  document.querySelector('.pk details').open = false;
   var key = picKey(it.name);
-  if (candidates[key]) showCandidates(candidates[key]);
+  if (it.options && it.options.length) showCandidates(it.options);
+  else if (PICTURE_HELPER) { pkGrid.textContent = ''; pkMsg.textContent = looking[it.id] ? 'Searching…' : 'Tap Search to look this one up.'; }
+  else if (candidates[key]) showCandidates(candidates[key]);
   else {
     pkGrid.textContent = ''; pkMsg.textContent = 'Looking for package photos…';
     searchPackages(it.name).then(function (list) { candidates[key] = list; if (pickingId === id) showCandidates(list); });
@@ -349,6 +406,14 @@ function openPicker(id) {
   dlg.showModal();
 }
 function closePicker() { if (dlg.open) dlg.close(); }
+
+document.getElementById('pkSearch').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var it = byId(pickingId), q = pkQuery.value.trim(); if (!it || !q) return;
+  if (PICTURE_HELPER) { pkGrid.textContent = ''; pkMsg.textContent = 'Searching…'; findPicture(it, q); return; }
+  pkGrid.textContent = ''; pkMsg.textContent = 'Searching…';
+  searchPackages(q).then(function (list) { if (pickingId === it.id) showCandidates(list); });
+});
 
 document.getElementById('pkUrl').addEventListener('submit', function (e) {
   e.preventDefault();
@@ -370,7 +435,7 @@ startGate({
     stop();
     unsubs.push(onSnapshot(collection(db, 'grocery'), function (snap) {
       items = snap.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
-      loaded = true; render();
+      loaded = true; render(); autoFind();
     }, report));
     unsubs.push(onSnapshot(collection(db, 'groceryPics'), function (snap) {
       pics = {}; snap.docs.forEach(function (d) { pics[d.id] = d.data(); }); render();
