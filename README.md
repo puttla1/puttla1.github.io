@@ -28,3 +28,7 @@ To add a page: create `new-page-name/index.html` (a complete HTML document) and 
 ## Shared lists (Firebase)
 
 `to-do/` and `grocery-list/` read and write a shared Firestore database (project `puneeth-alaina`) through `shared/firebase.js`. Visitors sign in with Google; the Firestore security rules decide which accounts can see or edit anything. The Firebase config in `shared/firebase.js` is public by design.
+
+## Icons
+
+`icons/` holds the tab and home-screen icons: `amp` (home and misc pages), `check` (to-do), `basket` (grocery list), `plane` (trip pages). Each has an `.svg` for browser tabs, a `-32.png` fallback and a `-180.png` for iPhone home screens. New pages should link one in their `<head>`. `favicon.ico` at the root is the default for anything that doesn't.
