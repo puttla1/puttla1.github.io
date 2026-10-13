@@ -176,7 +176,7 @@ import { auth, db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, wr
 
 // The picture helper (a Cloudflare Worker, see tools/grocery-pictures-worker.js) searches Google Images
 // and has Claude pick the best match. Leave empty to fall back to package photos only.
-var PICTURE_HELPER = '';
+var PICTURE_HELPER = 'https://grocery-pictures.puneeth-uttla.workers.dev';
 
 var FIRST_ITEM = 'Silk Yogurt Dairy-Free Strawberry';
 var items = [], pics = {}, loaded = false, unsubs = [];
