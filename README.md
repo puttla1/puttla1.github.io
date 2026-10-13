@@ -37,4 +37,4 @@ To add a page: create `new-page-name/index.html` (a complete HTML document) and 
 
 ## Food log (`fitness/`)
 
-Collections: `fitnessLog` (one doc per logged item, keyed by `wd` = person_date), `fitnessFoods` (shared food library; scanned foods are stored as `bc` + 13-digit barcode), `fitnessProfiles` (daily targets per person). Barcodes are looked up in the library first, then Open Food Facts, then USDA FoodData Central. Search uses USDA (`USDA_KEY` at the top of the page script; `DEMO_KEY` until a free key is added). `fitness/vendor/` holds the barcode reader used on phones without a built-in one (iPhone Safari).
+Collections: `fitnessLog` (one doc per logged item, keyed by `wd` = person_date), `fitnessFoods` (shared food library; scanned foods are stored as `bc` + 13-digit barcode), `fitnessProfiles` (daily targets per person). Barcodes are looked up in the library first, then Open Food Facts, then USDA FoodData Central. Search uses USDA (`USDA_KEY` at the top of the page script, Puneeth's free key). `fitness/vendor/` holds the barcode reader used on phones without a built-in one (iPhone Safari).

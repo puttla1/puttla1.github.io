@@ -416,9 +416,8 @@ import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBat
 import { query, where } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 
 /* ---------- settings ---------- */
-// USDA FoodData Central key. DEMO_KEY works but allows about 30 searches an hour per phone.
-// A free personal key (https://fdc.nal.usda.gov/api-key-signup) raises that to 1,000.
-var USDA_KEY = 'DEMO_KEY';
+// Puneeth's free USDA FoodData Central key (1,000 searches an hour). Not a secret: it's free and only reads public food data.
+var USDA_KEY = 'FiFObHPiefWj91XUQfk8NxxyzCOaV9hV5vd6XjI2';
 var PEOPLE = [{ id: 'puneeth', name: 'Puneeth' }, { id: 'alaina', name: 'Alaina' }];
 var EMAIL_TO_PERSON = { 'puneeth.uttla@gmail.com': 'puneeth', 'alaina.milam@gmail.com': 'alaina' };
 var MEALS = [{ id: 'breakfast', name: 'Breakfast' }, { id: 'lunch', name: 'Lunch' }, { id: 'dinner', name: 'Dinner' }, { id: 'snacks', name: 'Snacks' }];
