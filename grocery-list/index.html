@@ -45,6 +45,8 @@ button.primary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 @keyframes sheen{from{background-position:120% 0}to{background-position:-80% 0}}
 @media (prefers-reduced-motion:reduce){.well.loading::after{animation:none}}
 .status{padding:2px 12px 0;color:var(--muted);font-size:12px}
+.size{padding:2px 12px 0;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.tile.done .size{text-decoration:line-through}
 .check{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:none;place-items:center;font-size:16px;font-weight:600}
 .name{padding:10px 12px 0;font-weight:500;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
 .actions{display:flex;gap:14px;white-space:nowrap;padding:6px 12px 10px;margin-top:auto}
@@ -197,6 +199,7 @@ function tokens(s) {
 }
 // "Bananas" and "banana" share one remembered picture.
 function picKey(name) { return tokens(name).join('-').slice(0, 300) || 'item'; }
+function typedKey(it) { return picKey(it.typed || it.name); }
 function overlap(qt, text) {
   if (!qt.length) return 0;
   var have = {}; tokens(text).forEach(function (t) { have[t] = 1; });
@@ -246,8 +249,9 @@ function itemRef(id) { return doc(db, 'grocery', id); }
 function setPicture(it, pic, extra) {
   var data = Object.assign(pic ? { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null } : { img: null, thumb: null, cap: null }, extra || {});
   updateDoc(itemRef(it.id), data).catch(report);
-  var k = doc(db, 'groceryPics', picKey(it.name));
-  (pic ? setDoc(k, { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null, name: it.name }) : deleteDoc(k)).catch(report);
+  var k = doc(db, 'groceryPics', typedKey(it));
+  var name = extra && extra.name || it.name, size = extra && 'size' in extra ? extra.size : (it.size || null);
+  (pic ? setDoc(k, { img: pic.img, thumb: pic.thumb || null, cap: pic.cap || null, name: name, size: size || null }) : deleteDoc(k)).catch(report);
 }
 
 // Ask the helper for the best picture. Used automatically for new items, and by "Search" in the picker.
@@ -257,7 +261,7 @@ async function findPicture(it, query) {
   try {
     var token = await auth.currentUser.getIdToken();
     var r = await fetch(PICTURE_HELPER.replace(/\/$/, '') + '/pick?q=' + encodeURIComponent(query || it.name), { headers: { Authorization: 'Bearer ' + token } });
-    var clean = function (list) { return (list || []).map(function (o) { return { img: o.img, thumb: o.thumb || null, cap: o.cap || null }; }); };
+    var clean = function (list) { return (list || []).map(function (o) { return { img: o.img, thumb: o.thumb || null, cap: o.cap || null, size: o.size || null, source: o.source || null }; }); };
     if (!r.ok) { var bad = await r.json().catch(function () { return {}; }); throw new Error(bad.error || r.status); }
 
     if (!/ndjson/.test(r.headers.get('content-type') || '')) {
@@ -270,19 +274,35 @@ async function findPicture(it, query) {
 
     // Streaming helper: show the top Google result immediately, then switch to Claude's pick if it differs.
     var reader = r.body.getReader(), dec = new TextDecoder(), buf = '', options = null;
+    var shown = null;   // the picture shown first (Kroger's top result, or Google's if Kroger had none)
     var onMessage = function (m) {
       if (m.error) throw new Error(m.error);
       if (m.options) {
         options = clean(m.options);
-        if (!options.length) { updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report); return; }
-        setPicture(it, options[0], { options: options, autoTried: true });
-        delete looking[it.id]; render();
+        if (!shown && options.length) {
+          shown = options[0];
+          setPicture(it, shown, { options: options, autoTried: true });
+          delete looking[it.id]; render();
+        } else if (shown) {
+          updateDoc(itemRef(it.id), { options: options }).catch(report);
+        }
       }
-      if (m.done && options && m.index > 0 && options[m.index]) {
-        var now = byId(it.id);
-        if (now && now.img && now.img !== options[0].img) return;   // someone already chose a different picture
-        var pick = options[m.index];
-        setPicture(it, pick, { options: [pick].concat(options.filter(function (_, i) { return i !== m.index; })) });
+      if (m.done) {
+        if (!options || !options.length) { updateDoc(itemRef(it.id), { autoTried: true, options: [] }).catch(report); return; }
+        var now = byId(it.id) || it;
+        var extra = {};
+        if (!query && m.name) extra.name = m.name;                       // tidy the name only for what was typed, not re-searches
+        if (!query && typeof m.size === 'string') extra.size = m.size || null;
+        var userChose = now.img && shown && now.img !== shown.img;       // someone already picked a different picture
+        var pick = options[m.index] || options[0];
+        if (!userChose && pick.img !== shown.img) {
+          extra.options = [pick].concat(options.filter(function (o) { return o !== pick; }));
+          setPicture(now, pick, extra);
+        } else if (Object.keys(extra).length) {
+          updateDoc(itemRef(it.id), extra).catch(report);
+          var k = doc(db, 'groceryPics', typedKey(now));
+          setDoc(k, { name: extra.name || now.name, size: 'size' in extra ? extra.size : (now.size || null) }, { merge: true }).catch(report);
+        }
       }
     };
     for (;;) {
@@ -304,7 +324,7 @@ async function findPicture(it, query) {
 }
 function autoFind() {
   items.forEach(function (it) {
-    if (!it.img && !pics[picKey(it.name)] && !it.autoTried && !attempted[it.id] && !it.done) findPicture(it);
+    if (!it.img && !pics[typedKey(it)] && !it.autoTried && !attempted[it.id] && !it.done) findPicture(it);
   });
 }
 
@@ -341,7 +361,7 @@ function picture(img, name, thumb) {
 function render() {
   grid.textContent = '';
   items.slice().sort(function (a, b) { return (!!a.done - !!b.done) || (b.order || 0) - (a.order || 0); }).forEach(function (it) {
-    var saved = it.img ? it : (pics[picKey(it.name)] || {});
+    var saved = it.img ? it : (pics[typedKey(it)] || {});
     var img = saved.img || null, thumb = saved.thumb || null;
     var li = el('li', 'tile' + (it.done ? ' done' : ''));
     var hit = el('button', 'hit'); hit.type = 'button';
@@ -354,6 +374,7 @@ function render() {
     hit.addEventListener('click', function () { focusAfter = it.id; updateDoc(itemRef(it.id), { done: !it.done }).catch(report); });
     li.appendChild(hit);
     li.appendChild(el('div', 'name', it.name));
+    if (it.size) li.appendChild(el('div', 'size', it.size));
     if (looking[it.id]) li.appendChild(el('div', 'status', 'Finding a picture…'));
     var act = el('div', 'actions');
     var pic = el('button', img || looking[it.id] ? null : 'needs', img || looking[it.id] ? 'Picture' : 'Add picture'); pic.type = 'button';
@@ -374,7 +395,7 @@ function render() {
   if (focusAfter) { var b = grid.querySelector('li[data-id="' + focusAfter + '"] .hit'); if (b) b.focus(); focusAfter = null; }
   if (pickingId) {
     var open = byId(pickingId);
-    if (open && open.options && open.options.length && !looking[open.id] && pkMsg.textContent === 'Searching…') showCandidates(open.options);
+    if (open && open.options && open.options.length && !looking[open.id] && (pkMsg.textContent === 'Searching…' || pkGrid.children.length !== open.options.length)) showCandidates(open.options);
     refreshPickerMarks();
   }
 }
@@ -385,8 +406,8 @@ document.getElementById('addForm').addEventListener('submit', function (e) {
   var input = document.getElementById('newItem');
   var name = input.value.trim().replace(/\s+/g, ' '); if (!name) return;
   var known = pics[picKey(name)];
-  setDoc(doc(collection(db, 'grocery')), { name: name, img: known ? known.img : null, thumb: known ? known.thumb || null : null,
-    cap: known ? known.cap || null : null, done: false, order: Date.now() })
+  setDoc(doc(collection(db, 'grocery')), { typed: name, name: known && known.name || name, size: known && known.size || null,
+    img: known ? known.img : null, thumb: known ? known.thumb || null : null, cap: known ? known.cap || null : null, done: false, order: Date.now() })
     .catch(report);
   input.value = ''; input.focus();
 });
@@ -414,7 +435,8 @@ function showCandidates(list) {
     var li = el('li'), b = el('button'); b.type = 'button'; b.dataset.img = c.img;
     b.appendChild(picture(c.img, c.cap, c.thumb));
     var cap = el('span', 'cap'); cap.appendChild(el('b', null, c.cap));
-    if (c.sub && c.sub !== c.cap) cap.appendChild(document.createTextNode(c.sub));
+    var sub = [c.source || c.sub, c.size].filter(Boolean).join(' · ');
+    if (sub && sub !== c.cap) cap.appendChild(document.createTextNode(sub));
     b.appendChild(cap);
     b.addEventListener('click', function () { choose({ img: c.img, thumb: c.thumb || null, cap: c.cap }); });
     li.appendChild(b); pkGrid.appendChild(li);
@@ -428,7 +450,7 @@ function openPicker(id) {
   document.getElementById('pkGoogle').href = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(it.name);
   pkUrlInput.value = ''; pkErr.style.display = 'none'; pkQuery.value = it.name;
   document.querySelector('.pk details').open = false;
-  var key = picKey(it.name);
+  var key = typedKey(it);
   if (it.options && it.options.length) showCandidates(it.options);
   else if (PICTURE_HELPER) { pkGrid.textContent = ''; pkMsg.textContent = looking[it.id] ? 'Searching…' : 'Tap Search to look this one up.'; }
   else if (candidates[key]) showCandidates(candidates[key]);
