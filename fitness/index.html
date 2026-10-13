@@ -559,12 +559,31 @@ async function offByCode(code) {
   }
   return null;
 }
+// Products from a search. When a hit has no nutrition attached, keep it as a stub and fetch the full product on tap.
+function offHits(list) {
+  return (list || []).map(function (p) {
+    var f = fromOFF(p);
+    if (f) return f;
+    var name = smartCase(p.product_name_en || p.product_name || '');
+    var code = normCode(p.code);
+    if (!name || code.length < 8) return null;
+    return { stub: true, id: 'bc' + code, code: code, name: name, brand: String(p.brands || '').split(',')[0].trim() };
+  }).filter(Boolean);
+}
+async function getJSON(url, who) {
+  var r;
+  try { r = await fetch(url); } catch (e) { throw new Error(who + ': blocked'); }
+  if (r.status === 429) throw new Error(who + ': limit');
+  if (!r.ok) throw new Error(who + ': ' + r.status);
+  try { return await r.json(); } catch (e) { throw new Error(who + ': bad reply'); }
+}
 async function offSearch(q) {
-  var r = await fetch('https://us.openfoodfacts.org/cgi/search.pl?search_simple=1&action=process&json=1&page_size=20&search_terms=' +
-    encodeURIComponent(q) + '&fields=' + OFF_FIELDS);
-  if (!r.ok) throw new Error('off ' + r.status);
-  var j = await r.json();
-  return (j.products || []).map(function (p) { return fromOFF(p); }).filter(Boolean);
+  // Open Food Facts' current search service, US products first.
+  var base = 'https://search.openfoodfacts.org/search?page_size=20&langs=en&fields=' + OFF_FIELDS + '&q=';
+  var j = await getJSON(base + encodeURIComponent(q + ' countries_tags:"en:united-states"'), 'Open Food Facts');
+  var hits = offHits(j.hits);
+  if (!hits.length) hits = offHits((await getJSON(base + encodeURIComponent(q), 'Open Food Facts')).hits);
+  return hits;
 }
 
 /* ---------- USDA FoodData Central ---------- */
@@ -608,11 +627,8 @@ function fromUSDA(x) {
   return food;
 }
 async function usdaSearch(q, types, size) {
-  var r = await fetch('https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + USDA_KEY + '&pageSize=' + size +
-    '&dataType=' + types.map(encodeURIComponent).join(',') + '&query=' + encodeURIComponent(q));
-  if (r.status === 429) throw new Error('limit');
-  if (!r.ok) throw new Error('usda ' + r.status);
-  var j = await r.json();
+  var j = await getJSON('https://api.nal.usda.gov/fdc/v1/foods/search?api_key=' + USDA_KEY + '&pageSize=' + size +
+    '&dataType=' + types.map(encodeURIComponent).join(',') + '&query=' + encodeURIComponent(q), 'USDA');
   return j.foods || [];
 }
 async function usdaByCode(code) {
@@ -842,11 +858,18 @@ function libraryMatches(q) {
 }
 function resultRow(food) {
   var li = el('li'), b = el('button'); b.type = 'button';
-  var d = describe(food);
+  var d = food.stub ? { kcal: null, label: 'tap for nutrition' } : describe(food);
   b.appendChild(el('span', 'nm', food.name));
-  b.appendChild(el('span', 'kc', kc(d.kcal)));
-  b.appendChild(el('span', 'sub', [food.brand, d.label].filter(Boolean).join(' · ')));
-  b.addEventListener('click', function () { $('searchDlg').close(); openFood(food); });
+  b.appendChild(el('span', 'kc', d.kcal == null ? '' : kc(d.kcal)));
+  var sub = el('span', 'sub', [food.brand, d.label].filter(Boolean).join(' · '));
+  b.appendChild(sub);
+  b.addEventListener('click', async function () {
+    if (!food.stub) { $('searchDlg').close(); openFood(food); return; }
+    sub.textContent = 'Loading…';
+    var full = await offByCode(food.code);
+    if (full) { $('searchDlg').close(); openFood(full); }
+    else sub.textContent = 'No nutrition info for this one. Try another, or make it.';
+  });
   li.appendChild(b); return li;
 }
 function renderResults() {
@@ -878,14 +901,15 @@ $('searchForm').addEventListener('submit', async function (ev) {
   if (/^\d{8,14}$/.test(q)) { $('searchDlg').close(); handleCode(q, ''); return; }
   $('q').blur();
   searching = true; renderResults();
-  var items = [], error = null;
-  try {
-    var raw = await usdaSearch(q, ['Foundation', 'SR Legacy', 'Survey (FNDDS)', 'Branded'], 30);
-    items = raw.map(fromUSDA).filter(Boolean);
-  } catch (e) {
-    try { items = await offSearch(q); }
-    catch (e2) { error = e.message === 'limit' ? 'Search limit reached for this hour. Scanning still works.' : 'Search isn’t reachable right now. Scanning still works.'; }
-  }
+  // Ask both databases at once and use whatever comes back. USDA first: better for generic foods and US brands.
+  var res = await Promise.allSettled([
+    usdaSearch(q, ['Foundation', 'SR Legacy', 'Survey (FNDDS)', 'Branded'], 30).then(function (raw) { return raw.map(fromUSDA).filter(Boolean); }),
+    offSearch(q)
+  ]);
+  var items = [], error = null, why = [];
+  res.forEach(function (r) { if (r.status === 'fulfilled') items = items.concat(r.value); else why.push(r.reason && r.reason.message || 'error'); });
+  if (why.length) console.warn('Food search:', why.join(' · '));
+  if (!items.length && why.length === res.length) error = 'Search isn’t working right now (' + why.join(' · ') + '). Scanning and Make a food still work.';
   searching = false;
   lastResults = { q: q, items: items, error: error };
   renderResults();
