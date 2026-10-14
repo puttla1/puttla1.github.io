@@ -16,6 +16,7 @@ Each page lives in its own folder as `index.html`:
 | `calendar/index.html` | puneeth-alaina.com/calendar |
 | `birthday-weekend/index.html` | puneeth-alaina.com/birthday-weekend |
 | `print-studio/index.html` | puneeth-alaina.com/print-studio |
+| `wedding-venues/index.html` | puneeth-alaina.com/wedding-venues |
 | `fitness/index.html` | puneeth-alaina.com/fitness (unlisted: not linked from the home page) |
 
 To add a page: create `new-page-name/index.html` (a complete HTML document) and add a link to it in the root `index.html`.
@@ -29,12 +30,16 @@ To add a page: create `new-page-name/index.html` (a complete HTML document) and 
 
 ## Shared lists (Firebase)
 
-`to-do/`, `grocery-list/`, `calendar/` and `fitness/` read and write a shared Firestore database (project `puneeth-alaina`) through `shared/firebase.js`. Visitors sign in with Google; the Firestore security rules decide which accounts can see or edit anything. The Firebase config in `shared/firebase.js` is public by design.
+`to-do/`, `grocery-list/`, `calendar/`, `fitness/` and `wedding-venues/` read and write a shared Firestore database (project `puneeth-alaina`) through `shared/firebase.js`. Visitors sign in with Google; the Firestore security rules decide which accounts can see or edit anything. The Firebase config in `shared/firebase.js` is public by design.
 
 ## Icons
 
-`icons/` holds the tab and home-screen icons: `amp` (home and misc pages), `check` (to-do), `basket` (grocery list), `calendar` (calendar), `plane` (trip pages), `apple` (food log). Each has an `.svg` for browser tabs, a `-32.png` fallback and a `-180.png` for iPhone home screens. New pages should link one in their `<head>`. `favicon.ico` at the root is the default for anything that doesn't.
+`icons/` holds the tab and home-screen icons: `amp` (home and misc pages), `check` (to-do), `basket` (grocery list), `calendar` (calendar), `plane` (trip pages), `apple` (food log), `venue` (wedding venues). Each has an `.svg` for browser tabs, a `-32.png` fallback and a `-180.png` for iPhone home screens. New pages should link one in their `<head>`. `favicon.ico` at the root is the default for anything that doesn't.
 
 ## Food log (`fitness/`)
 
 Collections: `fitnessLog` (one doc per logged item, keyed by `wd` = person_date), `fitnessFoods` (shared food library; scanned foods are stored as `bc` + 13-digit barcode), `fitnessProfiles` (daily targets per person). Barcodes are looked up in the library first, then Open Food Facts, then USDA FoodData Central. Search uses USDA (`USDA_KEY` at the top of the page script, Puneeth's free key). `fitness/vendor/` holds the barcode reader used on phones without a built-in one (iPhone Safari).
+
+## Wedding venues (`wedding-venues/`)
+
+Collection `weddingVenues`, one doc per venue. Text fields are free text; `est` is a number (rough all-in cost) with `estNote`; `rP`/`rA` are 0–5 star ratings; `tour` is a local `YYYY-MM-DDTHH:MM` string. The first three venues and their research were written once by the page itself (guarded by `meta/weddingVenues`). Columns are defined in the `COLS` list at the top of the page script.

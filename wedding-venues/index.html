@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Venues">
+<title>Wedding Venues</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Peacock and marigold. One bold thing: the marigold toran strung under the hero.
+   Everything below is a quiet, dense sheet built for comparing venues side by side. */
+:root{
+  --paper:#EEF2EF;--surface:#FFFFFF;--ink:#132A2F;--muted:#58696C;--line:#D3DCD8;--line-soft:#E5EBE8;--cell-hover:#F4F8F6;
+  --peacock:#0D4A53;--peacock-2:#0A3C44;--hero-ink:#F3F6F2;--hero-muted:#A9C4C3;--hero-line:#2A6670;
+  --marigold:#E39A12;--marigold-ink:#8A5700;--marigold-soft:#FCEFD3;--rani:#B3125A;--rani-soft:#F8DDE8;--leaf:#2F7D4F;--leaf-soft:#DCEFE2;
+  --sky:#2A6B9C;--sky-soft:#DDEAF5;--grey-soft:#E7ECEA;
+  --f-display:"Bodoni Moda",Didot,"Bodoni 72",Georgia,serif;
+  --f-body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1719;--surface:#152024;--ink:#E6EEEC;--muted:#97AAAB;--line:#26363A;--line-soft:#1D2B2F;--cell-hover:#1A272B;
+  --peacock:#0A3036;--peacock-2:#082A2F;--hero-ink:#EEF4F1;--hero-muted:#93B3B2;--hero-line:#1F525A;
+  --marigold:#F2AE36;--marigold-ink:#F2C46E;--marigold-soft:#3A2C10;--rani:#F0679F;--rani-soft:#3D1627;--leaf:#6CC492;--leaf-soft:#173225;
+  --sky:#7DB4E0;--sky-soft:#16293A;--grey-soft:#1E2B2E;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1719;--surface:#152024;--ink:#E6EEEC;--muted:#97AAAB;--line:#26363A;--line-soft:#1D2B2F;--cell-hover:#1A272B;
+  --peacock:#0A3036;--peacock-2:#082A2F;--hero-ink:#EEF4F1;--hero-muted:#93B3B2;--hero-line:#1F525A;
+  --marigold:#F2AE36;--marigold-ink:#F2C46E;--marigold-soft:#3A2C10;--rani:#F0679F;--rani-soft:#3D1627;--leaf:#6CC492;--leaf-soft:#173225;
+  --sky:#7DB4E0;--sky-soft:#16293A;--grey-soft:#1E2B2E;
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--marigold)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--marigold);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+[data-show]{display:none}
+body[data-auth="loading"] [data-show="loading"],body[data-auth="out"] [data-show="out"],
+body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denied"]{display:block}
+
+/* Hero */
+.hero{background:var(--peacock);color:var(--hero-ink);padding:calc(env(safe-area-inset-top,0px) + clamp(26px,5vw,52px)) 16px 0;position:relative}
+.hero-in{padding-bottom:34px}
+.back{color:var(--hero-muted);font-size:14px;text-decoration:none}
+.back:hover{color:var(--hero-ink)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(44px,9vw,92px);line-height:.95;letter-spacing:-.01em;margin:12px 0 0}
+.lede{color:var(--hero-muted);margin:12px 0 0;max-width:58ch}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 48px;align-items:end;margin-top:28px}
+.tours{margin:0;padding:0;list-style:none}
+.tours li{display:grid;grid-template-columns:max-content 4.6em minmax(0,1fr);gap:4px 20px;align-items:baseline;padding:8px 0;border-top:1px solid var(--hero-line)}
+.tours li:last-child{border-bottom:1px solid var(--hero-line)}
+.tours .d{font-family:var(--f-display);font-weight:500;font-size:22px;color:var(--marigold);white-space:nowrap}
+.tours .t{color:var(--hero-muted);font-size:15px;white-space:nowrap}
+.tours .v{font-weight:600;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.tours .none{display:block;color:var(--hero-muted);border:0;padding:0}
+.counts{display:flex;gap:28px;margin:0;color:var(--hero-muted);font-size:14px}
+.counts b{display:block;font-family:var(--f-display);font-weight:500;font-size:40px;line-height:1;color:var(--hero-ink)}
+@media (max-width:720px){
+  .hero-grid{grid-template-columns:1fr}
+  .tours li{grid-template-columns:auto auto;gap:0 12px}
+  .tours .v{grid-column:1/-1}
+}
+/* Marigold toran hanging across the bottom of the hero */
+.toran{height:26px;background:
+  radial-gradient(circle at 9px 6px,var(--marigold) 5.5px,transparent 6px) 0 0/18px 14px repeat-x,
+  radial-gradient(ellipse 3px 6px at 9px 8px,var(--leaf) 90%,transparent) 9px 10px/18px 18px repeat-x,
+  radial-gradient(circle at 9px 6px,#F6C04A 3px,transparent 3.5px) 0 0/18px 14px repeat-x;
+  position:relative;margin-bottom:-14px;z-index:1}
+.toran::before{content:"";position:absolute;left:0;right:0;top:5px;height:1px;background:var(--marigold-ink);opacity:.5}
+
+/* Gate panels */
+.panel{padding:40px 16px 72px}
+.panel p{color:var(--muted);max-width:56ch}
+
+/* Buttons */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:14px;line-height:1.2}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--peacock);border-color:var(--peacock);color:#fff}
+.btn.primary:hover{filter:brightness(1.15)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{background:var(--marigold);border-color:var(--marigold);color:#1B1300}}
+:root[data-theme="dark"] .btn.primary{background:var(--marigold);border-color:var(--marigold);color:#1B1300}
+.btn.danger{color:var(--rani)}
+
+main{padding:30px 16px 72px}
+.bar{max-width:none;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;margin:0 0 12px}
+.bar .grow{flex:1 1 200px;min-width:0}
+.search{width:100%;max-width:300px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px}
+.bar select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px;font-weight:500;font-size:14px}
+.groups{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;align-items:center}
+.groups span{color:var(--muted);font-size:13px;margin-right:4px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 11px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;margin-left:6px}
+.meta-line{font-size:13px;color:var(--muted);margin:0 0 8px;display:flex;gap:16px;flex-wrap:wrap}
+.err{color:var(--rani);font-size:14px;min-height:0;margin:0}
+
+/* The sheet */
+.sheet{position:relative;overflow:auto;max-height:calc(100dvh - 96px);border:1px solid var(--line);border-radius:12px;background:var(--surface);overscroll-behavior:contain}
+table{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%}
+th,td{border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);text-align:left;vertical-align:top}
+thead th{position:sticky;background:var(--surface);z-index:2}
+thead tr.g th{top:0;height:32px;padding:6px 12px;font-family:var(--f-display);font-weight:700;font-size:15px;border-bottom:0}
+thead tr.c th{top:32px;padding:0;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--muted)}
+thead tr.c th button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:6px;width:100%;padding:6px 12px 8px;cursor:pointer}
+thead tr.c th button:hover{color:var(--ink)}
+thead tr.c th button:focus-visible{outline:2px solid var(--marigold);outline-offset:-2px}
+.arrow{font-size:10px;opacity:0}
+th[aria-sort="ascending"] .arrow,th[aria-sort="descending"] .arrow{opacity:1;color:var(--ink)}
+.gstart{border-left:2px solid var(--line)}
+.namecol{position:sticky;left:0;z-index:1;background:var(--surface);width:230px;min-width:230px;max-width:230px;border-right:1px solid var(--line)}
+thead th.namecol{z-index:4;vertical-align:bottom}
+td{padding:10px 12px;font-size:14px;cursor:text}
+td:not(.namecol):hover{background:var(--cell-hover)}
+td:focus{outline:2px solid var(--marigold);outline-offset:-2px}
+td.namecol{cursor:default}
+tbody tr:last-child td{border-bottom:0}
+tr.out td:not(.namecol) > *{opacity:.5}
+tr.out .vname{text-decoration:line-through;text-decoration-color:var(--muted)}
+.clamp{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;overflow-wrap:anywhere}
+.full .clamp{display:block;-webkit-line-clamp:unset}
+.empty{color:var(--muted);opacity:0;font-size:13px}
+td:hover .empty,td:focus .empty{opacity:.7}
+.vname{all:unset;cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.15;display:block;overflow-wrap:anywhere}
+.vname:hover{color:var(--rani)}
+.vname:focus-visible{outline:2px solid var(--marigold);outline-offset:2px}
+.site{display:inline-block;font-size:12.5px;color:var(--muted);margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.edited{display:block;font-size:12px;color:var(--leaf);margin-top:4px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.s-research{background:var(--grey-soft);color:var(--muted)}
+.s-tobook{background:var(--rani-soft);color:var(--rani)}
+.s-booked-tour{background:var(--marigold-soft);color:var(--marigold-ink)}
+.s-toured{background:var(--sky-soft);color:var(--sky)}
+.s-short{background:var(--leaf-soft);color:var(--leaf)}
+.s-booked{background:var(--peacock);color:#fff}
+.s-out{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.when b{display:block;font-weight:600}
+.when span{color:var(--muted);font-size:13px}
+.when.past b{color:var(--muted)}
+.money b{display:block;font-family:var(--f-display);font-weight:700;font-size:20px;line-height:1.1}
+.money .clamp{color:var(--muted);font-size:12.5px;margin-top:4px}
+.stars{display:inline-flex;gap:1px}
+.stars button{all:unset;cursor:pointer;width:20px;height:20px;display:grid;place-items:center;border-radius:4px;color:var(--line)}
+.stars button.on{color:var(--marigold)}
+.stars button:hover{color:var(--marigold-ink)}
+.stars button:focus-visible{outline:2px solid var(--marigold)}
+.stars svg{width:17px;height:17px;fill:currentColor}
+td.stars-cell{cursor:default}
+.dbody .stars button{width:40px;height:40px}
+.dbody .stars svg{width:26px;height:26px}
+.links a{display:block;font-size:13px;margin-bottom:3px;overflow-wrap:anywhere}
+.empty-sheet{padding:40px 20px;color:var(--muted);text-align:left;max-width:52ch}
+
+/* Inline cell editor */
+.scrim-clear{position:fixed;inset:0;z-index:30}
+.ed{position:fixed;z-index:31;background:var(--surface);border:2px solid var(--marigold);border-radius:10px;box-shadow:0 12px 32px rgba(10,40,45,.22);padding:10px;display:flex;flex-direction:column;gap:8px}
+.ed textarea,.ed input{width:100%;border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:8px 10px;font-size:14px;line-height:1.45;resize:vertical}
+.ed textarea{min-height:90px;max-height:60vh}
+.ed .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.ed .opts{display:flex;flex-direction:column;gap:4px}
+.ed .opts button{all:unset;cursor:pointer;padding:6px 8px;border-radius:6px}
+.ed .opts button:hover,.ed .opts button:focus-visible{background:var(--cell-hover)}
+.ed .opts button[aria-current="true"]{box-shadow:inset 0 0 0 2px var(--marigold)}
+.ed label{font-size:12px;color:var(--muted);font-weight:600}
+
+/* Venue drawer */
+.dscrim{position:fixed;inset:0;background:rgba(6,25,28,.45);z-index:40;opacity:0;transition:opacity .18s}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(480px,100%);background:var(--surface);z-index:41;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease;box-shadow:-12px 0 40px rgba(6,25,28,.25)}
+body.dopen .dscrim{opacity:1}
+body.dopen .drawer{transform:none}
+body.dopen{overflow:hidden}
+.dhead{padding:calc(env(safe-area-inset-top,0px) + 14px) 18px 14px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.dhead .names{flex:1;min-width:0}
+.dname{width:100%;border:0;background:none;font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1.1;padding:2px 0}
+.dname:focus{outline:none;box-shadow:0 2px 0 var(--marigold)}
+.durl{display:flex;gap:8px;align-items:center;margin-top:4px}
+.durl input{flex:1;min-width:0;border:0;background:none;color:var(--muted);font-size:13px;padding:2px 0}
+.durl input:focus{outline:none;box-shadow:0 1px 0 var(--marigold)}
+.durl a{font-size:13px;font-weight:600;white-space:nowrap}
+.x{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border-radius:8px;font-size:22px;color:var(--muted)}
+.x:hover{background:var(--cell-hover);color:var(--ink)}
+.x:focus-visible{outline:2px solid var(--marigold)}
+.dbody{flex:1;overflow:auto;padding:4px 18px 24px;overscroll-behavior:contain}
+.dbody h3{font-family:var(--f-display);font-weight:700;font-size:18px;margin:22px 0 8px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.dbody h3:first-child{border-top:0;padding-top:0}
+.field{margin:0 0 12px}
+.field > label,.field > .lbl{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:0 0 4px}
+.field textarea,.field input,.field select{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--paper);padding:8px 10px;font-size:14px;line-height:1.45}
+.field textarea{field-sizing:content;min-height:3.2em;resize:vertical}
+.field textarea:focus,.field input:focus,.field select:focus{outline:none;border-color:var(--marigold);box-shadow:0 0 0 2px var(--marigold-soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dfoot{border-top:1px solid var(--line);padding:12px 18px calc(env(safe-area-inset-bottom,0px) + 12px);display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+
+/* Add dialog */
+dialog{border:0;border-radius:14px;padding:0;background:var(--surface);color:var(--ink);width:min(420px,calc(100% - 32px));box-shadow:0 20px 50px rgba(6,25,28,.35)}
+dialog::backdrop{background:rgba(6,25,28,.45)}
+dialog form{padding:20px}
+dialog h2{font-family:var(--f-display);font-weight:700;font-size:26px;margin:0 0 14px}
+dialog .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+
+@media (max-width:720px){
+  main{padding:26px 10px 60px}
+  .namecol{width:150px;min-width:150px;max-width:150px}
+  .vname{font-size:16px}
+  td{padding:9px 10px;font-size:13.5px}
+  .sheet{max-height:calc(100dvh - 60px)}
+  .search{max-width:none}
+}
+@media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}
+</style>
+<link rel="icon" href="/icons/venue.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/venue-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/venue-180.png">
+</head>
+<body data-auth="loading">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="star" viewBox="0 0 24 24"><path d="M12 2.6l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.4l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></symbol></svg>
+
+<header class="hero">
+  <div class="hero-in">
+    <a class="back" href="/">Puneeth &amp; Alaina</a>
+    <h1>Wedding venues</h1>
+    <p class="lede" data-show="out">Every venue we’re looking at for fall 2027, side by side. Sign in to see it.</p>
+    <div data-show="in">
+      <div class="hero-grid">
+        <div>
+          <ul class="tours" id="tours" aria-label="Upcoming tours"></ul>
+        </div>
+        <p class="counts" id="counts" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <div class="toran" aria-hidden="true"></div>
+</header>
+
+<div data-show="loading"><div class="panel"><p>Loading…</p></div></div>
+
+<div data-show="out"><div class="panel">
+  <p>Sign in with the Google account you use for the grocery list.</p>
+  <button class="btn primary js-signin" type="button">Sign in with Google</button>
+</div></div>
+
+<div data-show="denied"><div class="panel">
+  <p><span class="who"></span> doesn’t have access to the venue list.</p>
+  <button class="btn js-signout" type="button">Use a different account</button>
+</div></div>
+
+<main data-show="in">
+  <div class="bar">
+    <button class="btn primary" type="button" id="addBtn">Add venue</button>
+    <div class="grow"><label class="sr" for="q">Search venues</label><input class="search" id="q" type="search" placeholder="Search venues and notes" autocomplete="off"></div>
+    <label class="sr" for="filter">Show</label>
+    <select id="filter"></select>
+  </div>
+  <div class="groups" id="groups" role="group" aria-label="Column groups"></div>
+  <div class="meta-line"><span id="showing"></span><span>Edit any cell. Changes show up for both of you right away.</span></div>
+  <p class="err" id="err" role="alert"></p>
+  <div class="sheet" id="sheet"></div>
+</main>
+
+<div class="dscrim" id="dscrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dname" hidden>
+  <div class="dhead">
+    <div class="names">
+      <label class="sr" for="dname">Venue name</label>
+      <input class="dname" id="dname" autocomplete="off">
+      <div class="durl"><label class="sr" for="durl">Website</label><input id="durl" placeholder="Website" autocomplete="off" inputmode="url"><a id="dlink" target="_blank" rel="noopener">Open site</a></div>
+    </div>
+    <button class="x" type="button" id="dclose" aria-label="Close">×</button>
+  </div>
+  <div class="dbody" id="dbody"></div>
+  <div class="dfoot"><span id="dedited"></span><button class="btn danger" type="button" id="ddelete">Delete venue</button></div>
+</aside>
+
+<dialog id="addDlg">
+  <form method="dialog" id="addForm">
+    <h2>Add a venue</h2>
+    <div class="field"><label for="newName">Name</label><input id="newName" required autocomplete="off"></div>
+    <div class="field"><label for="newUrl">Website</label><input id="newUrl" placeholder="https://" autocomplete="off" inputmode="url"></div>
+    <div class="acts"><button class="btn" type="button" id="addCancel">Cancel</button><button class="btn primary" type="submit">Add venue</button></div>
+  </form>
+</dialog>
+
+<script type="module">
+import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp,
+  startGate, denied, isDenied } from '/shared/firebase.js';
+
+var COLL = 'weddingVenues';
+
+var STATUSES = [
+  { k: 'Researching', c: 's-research' },
+  { k: 'Tour to book', c: 's-tobook' },
+  { k: 'Tour booked', c: 's-booked-tour' },
+  { k: 'Toured', c: 's-toured' },
+  { k: 'Shortlist', c: 's-short' },
+  { k: 'Booked', c: 's-booked' },
+  { k: 'Ruled out', c: 's-out' }
+];
+var GROUPS = [
+  { k: 'visit', label: 'Visit' },
+  { k: 'place', label: 'Place' },
+  { k: 'space', label: 'Space' },
+  { k: 'day', label: 'Our day' },
+  { k: 'money', label: 'Money' },
+  { k: 'food', label: 'Food & drink' },
+  { k: 'take', label: 'Our take' },
+  { k: 'ref', label: 'Sources' }
+];
+var COLS = [
+  { k: 'status', g: 'visit', label: 'Status', type: 'status', w: 130 },
+  { k: 'tour', g: 'visit', label: 'Tour', type: 'datetime', w: 140 },
+  { k: 'contact', g: 'visit', label: 'Contact', type: 'long', w: 220 },
+  { k: 'town', g: 'place', label: 'Where', type: 'long', w: 190 },
+  { k: 'drive', g: 'place', label: 'Drive', type: 'long', w: 180 },
+  { k: 'setting', g: 'place', label: 'Setting', type: 'long', w: 270 },
+  { k: 'capacity', g: 'space', label: 'Capacity', type: 'long', w: 220 },
+  { k: 'spaces', g: 'space', label: 'Ceremony and reception spaces', type: 'long', w: 290 },
+  { k: 'rain', g: 'space', label: 'Rain plan', type: 'long', w: 200 },
+  { k: 'ready', g: 'space', label: 'Getting ready', type: 'long', w: 200 },
+  { k: 'hours', g: 'day', label: 'Hours and end time', type: 'long', w: 270 },
+  { k: 'southAsian', g: 'day', label: 'Indian wedding fit', type: 'long', w: 310 },
+  { k: 'fee', g: 'money', label: 'Venue fee', type: 'long', w: 270 },
+  { k: 'est', g: 'money', label: 'Rough all-in, 150 guests', type: 'money', w: 240 },
+  { k: 'catering', g: 'food', label: 'Catering', type: 'long', w: 290 },
+  { k: 'alcohol', g: 'food', label: 'Alcohol', type: 'long', w: 230 },
+  { k: 'rP', g: 'take', label: 'Puneeth', type: 'stars', w: 128 },
+  { k: 'rA', g: 'take', label: 'Alaina', type: 'stars', w: 128 },
+  { k: 'pros', g: 'take', label: 'Pros', type: 'long', w: 270 },
+  { k: 'cons', g: 'take', label: 'Cons', type: 'long', w: 270 },
+  { k: 'ask', g: 'take', label: 'Ask on the tour', type: 'long', w: 310 },
+  { k: 'notes', g: 'take', label: 'Notes', type: 'long', w: 250 },
+  { k: 'sources', g: 'ref', label: 'Where this came from', type: 'links', w: 240 }
+];
+var COL = {}; COLS.forEach(function (c) { COL[c.k] = c; });
+var PEOPLE = { 'puneeth.uttla@gmail.com': 'Puneeth', 'alaina.milam@gmail.com': 'Alaina' };
+
+/* ---------- research seed (written once, then it's all yours) ---------- */
+var SEED = [
+  {
+    id: 'whites-ferry-manor', order: 1,
+    name: 'Whites Ferry Manor', url: 'https://whitesferrymanor.com/',
+    status: 'Tour booked', tour: '2026-11-25T13:00',
+    contact: 'events@wfmanor.com\n571-528-7070',
+    town: 'Leesburg, VA\n42476 Whites Ferry Rd',
+    drive: 'About 25 min from Ashburn, 30 min from Dulles (rough estimate)',
+    setting: 'Manor on the Potomac with about a quarter mile of river frontage, gazebos, poolside patios, and its own brewery and winery next door.',
+    capacity: 'Grand Hall seats up to 450 (their FAQ says 400 seated indoors). 50-guest minimum.',
+    spaces: 'Grand Hall for the reception. Riverside or poolside patio for ceremonies and cocktails. Ceremony is free when the reception is here. One event per day.',
+    rain: 'Outdoor pavilion converts to a ceremony space, or the Grand Hall gets reset.',
+    ready: 'Getting-ready suites included, on the second floor (no elevator).',
+    hours: '11-hour block: 4 hrs setup, 6 hrs guest time, 1 hr breakdown. Extra hours $850++ each. Must end by 12:30am Fri/Sat, 11:30pm Sun–Thu.',
+    southAsian: 'Strongest fit of the three on paper: Asian-owned, staff speak Hindi, Punjabi and Urdu, and the in-house caterer has a full South Asian menu. Their vendor rules don’t mention a baraat or havan; open flames need management approval, so ask.',
+    fee: '2027 rates: Saturday $12,950 up to 150 guests, $15,950 up to 300. Fri/Sun $11,500 / $13,500. Weekdays $9,950. Plus 24% service charge and 6% tax.',
+    est: 37400,
+    estNote: 'Saturday rental (up to 150) + 4 extra hours + required $35/guest packages + South Asian buffet A ($48/guest), all with 24% service and 6% tax. Before alcohol, decor, DJ. Going over 150 guests adds $3,000+.',
+    catering: 'In-house Silk Catering, American and South Asian menus. South Asian buffets $38–48/guest (50 minimum). Required packages: equipment $25/guest, beverages $5/guest. Outside caterers allowed: licensed kitchen, $5M insurance, no cooking equipment on site.',
+    alcohol: 'Bring your own. With alcohol, mixers ($5/guest) and their beer and wine program (price not listed) are required. One bartender per 100 guests included.',
+    rP: 0, rA: 0,
+    pros: 'River and nature setting, close to Ashburn. Indian-owned with a South Asian menu. One wedding per day. Bring your own alcohol. Room to grow past 150.',
+    cons: 'Only 6 guest hours included, short for a baraat-to-reception day. 24% service charge on top of everything. Price jumps $3,000 past 150 guests. Stairs to the suites.',
+    ask: 'Can we do a baraat on the property (dhol, horse)?\nIs a havan fire OK, indoors or on the patio?\nWhere do guests go during the break between ceremonies?\nDo the required packages apply if we bring our own caterer?\nFall 2027 Saturday availability, and a Friday rate for the sangeet.',
+    notes: '',
+    sources: 'Their FAQ https://whitesferrymanor.com/faqs\n2027 rates and packages (PDF) https://img1.wsimg.com/blobby/go/38f53be8-d05e-46c1-ad51-4e76c2dc3532/downloads/9d5952aa-98d2-475c-a00a-8ce024285483/WFM%202027.pdf?ver=1781209667612\nSouth Asian catering menu (PDF) https://img1.wsimg.com/blobby/go/3167d5a5-5805-4a2f-a380-1c3752550b89/downloads/122d2616-322c-4e29-8526-f06d4d2b8f93/South%20Asian%20Catering%20Menu.pdf?ver=1763134546009\nVendor policies (PDF) https://img1.wsimg.com/blobby/go/38f53be8-d05e-46c1-ad51-4e76c2dc3532/2026%20VENDOR%20POLICIES%20%26%20AGREEMENT.pdf\nWeddingWire, 4.8 from 24 reviews https://www.weddingwire.com/biz/whites-ferry-manor/56d7fb65c82e7ad0.html'
+  },
+  {
+    id: 'atrium-at-meadowlark', order: 2,
+    name: 'The Atrium at Meadowlark', url: 'https://www.novaparks.com/weddings-catering/the-atrium-at-meadowlark',
+    status: 'Tour booked', tour: '2026-11-25T15:00',
+    contact: 'atrium@nvrpa.org\n703-255-3631 ext. 1700\nCatering: gbhweddings@nvrpa.org, 703-359-4610',
+    town: 'Vienna, VA\n9750 Meadowlark Gardens Ct',
+    drive: 'About 25 min from Ashburn, 20 min from Dulles (rough estimate)',
+    setting: 'Glass atrium inside a 95-acre botanical garden: live trees and a stream indoors, lake gazebo, Korean Bell Garden, Lilac Pavilion.',
+    capacity: '230 seated (260 with some layouts), 300 standing. One reviewer says it feels best at 160–180.',
+    spaces: 'Ceremony in the Atrium, on the terrace, at the Lake Caroline gazebo (existing benches only), Korean Bell Garden, or Lilac Pavilion. Reception in the Atrium. One event per day.',
+    rain: 'Outdoor parts move into the Atrium; the backup is set in advance.',
+    ready: 'Limited. A reviewer said the bridal party had to dress off-site. Ask.',
+    hours: '8-hour minimum block, including at least 2 hrs setup and 1 hr breakdown. Curfew 1am Fri/Sat, 11pm Sun–Thu.',
+    southAsian: 'Needs workarounds. The required caterer has no Indian menu; an approved Indian caterer can pass food through for a per-guest fee. No amplified sound outdoors except ceremony music, which may rule out a dhol baraat. Only enclosed candles, so a havan needs approval.',
+    fee: 'Rental about $3,570–$10,100 at peak (Zola), $2,550–$8,550 (Here Comes the Guide). Discount if the contract holder lives in Fairfax, Arlington or Loudoun. $1,000 refundable security deposit, 6% tax.',
+    est: null,
+    estNote: 'Need a quote. At least the rental (up to about $10k at peak) plus Great Blue Heron’s $8,000 food and beverage minimum.',
+    catering: 'Great Blue Heron (the park’s caterer) is required: full service with an $8,000 minimum, or pass-through, where an approved caterer brings food and Great Blue Heron serves it for a per-guest fee.',
+    alcohol: 'Must come through Great Blue Heron. No outside alcohol. Served only in your rental area.',
+    rP: 0, rA: 0,
+    pros: 'Most nature of the three: gardens, lake and greenery inside a glass room. Guests can wander 95 acres. Likely the lowest rental. In-county discount if a parent in Fairfax or Loudoun signs.',
+    cons: 'Tightest fit for 150 with a dance floor. Indian food and the baraat both need workarounds. No outside alcohol. Limited getting-ready space.',
+    ask: 'Rental for a fall 2027 Saturday, in and out of county.\nPass-through fee per guest for an Indian caterer.\nCan a dhol baraat happen outside?\nIs a havan allowed?\nCan we book 10–12 hours?\nGarden hours on a fall evening, for guests during the break.',
+    notes: '',
+    sources: 'NOVA Parks FAQ https://www.novaparks.com/weddings-catering/the-atrium-at-meadowlark/frequently-asked-questions\nZola listing and reviews https://zola.com/wedding-vendors/wedding-venues/the-atrium-at-meadowlark-botanical-gardens\nHere Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/the-atrium-at-meadowlark-botanical-gardens'
+  },
+  {
+    id: 'the-bellevue', order: 3,
+    name: 'The Bellevue', url: 'https://www.thebellevueva.com/',
+    status: 'Tour to book', tour: '',
+    contact: 'info@thebellevueva.com\n703-868-8289\nTours by appointment',
+    town: 'Chantilly, VA\n43350 Little River Tpke',
+    drive: 'About 20 min from Ashburn, 15 min from Dulles (rough estimate)',
+    setting: 'Conference and event center: marble ballrooms with chandeliers, plus the Vero Sky Lounge rooftop with Blue Ridge views. Little nature.',
+    capacity: 'Grand Marquesa ballroom seats up to 600. Bolour and Milan rooms about 200 each. Rooftop about 200 banquet.',
+    spaces: 'Four rooms, so ceremonies, the break and the reception can each have their own room, with the rooftop for cocktails. One review says other events can share the building.',
+    rain: 'Everything is indoors except the rooftop.',
+    ready: 'Preparation suite included. A 2024 review said it isn’t separated from other events.',
+    hours: 'Not published. Ask.',
+    southAsian: 'Not mentioned anywhere. Event listings say outside caterers are allowed, which would open up an Indian caterer. A big ballroom suits a large Indian reception.',
+    fee: 'Not published. WeddingWire’s average estimate is $20,700. Bar from $35/guest.',
+    est: null,
+    estNote: 'Need a quote. WeddingWire’s $20,700 average is a rough estimate, not a quote.',
+    catering: 'In-house catering. Cvent and Eventective listings say outside caterers are allowed; confirm the fee.',
+    alcohol: 'Licensed in-house bar from $35/guest.',
+    rP: 0, rA: 0,
+    pros: 'Room for any guest count, and separate rooms for each part of the day. Closest to Dulles and hotels. No rain risk.',
+    cons: 'Least nature. Reviews are split (The Knot 2.8/5): surprise fees, deposit disputes, slow communication. One review cites a 300-guest minimum for the main ballroom and a $1,500 fee for outside AV.',
+    ask: 'Guest minimum for each room.\nCan we bring an Indian caterer, and what’s the fee?\nHours included and end time.\nWill another event be in the building that day?\nThe full fee list in writing.',
+    notes: '',
+    sources: 'Their venue page https://www.thebellevueva.com/venue\nWeddingWire reviews https://www.weddingwire.com/reviews/the-bellevue-conference-event-center-chantilly/36d8971de5aa945c.html\nThe Knot https://www.theknot.com/marketplace/the-bellevue-conference-and-event-center-chantilly-va-966008\nCvent room list https://www.cvent.com/venues/fairfax/banquet-facility/the-bellevue-conference-event-center/venue-0a3d82a7-b86e-43e2-8247-35a2f861cb9a'
+  }
+];
+
+/* ---------- state ---------- */
+var venues = [];
+var me = '';
+var sort = { k: null, dir: 1 };
+var hidden = loadPref('wv-hidden', []);
+var fullText = loadPref('wv-full', false);
+var filterVal = 'all';
+var query = '';
+var unsub = null;
+var drawerId = null;
+var editor = null;
+var active = { r: 0, c: 0 };
+
+function loadPref(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+function savePref(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function statusOf(k) { for (var i = 0; i < STATUSES.length; i++) if (STATUSES[i].k === k) return STATUSES[i]; return STATUSES[0]; }
+function statusRank(k) { for (var i = 0; i < STATUSES.length; i++) if (STATUSES[i].k === k) return i; return 0; }
+function nameFor(email) { if (!email) return ''; return PEOPLE[email] || email.split('@')[0]; }
+function report(err) {
+  if (isDenied(err)) { denied(); return; }
+  console.error(err);
+  document.getElementById('err').textContent = 'That change didn’t save. Check your connection and try again.';
+}
+function clearErr() { document.getElementById('err').textContent = ''; }
+
+function parseLocal(v) { if (!v) return null; var d = new Date(v); return isNaN(d) ? null : d; }
+function fmtDay(d) { return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+function fmtTime(d) { return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).toLowerCase(); }
+function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function ago(ts) {
+  if (!ts) return '';
+  var t = ts.toMillis ? ts.toMillis() : (ts instanceof Date ? ts.getTime() : +ts);
+  var s = Math.max(0, (Date.now() - t) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.round(s / 60) + ' min ago';
+  if (s < 86400) return Math.round(s / 3600) + ' hr ago';
+  var d = Math.round(s / 86400);
+  return d === 1 ? 'yesterday' : d + ' days ago';
+}
+function tsMillis(ts) { return ts ? (ts.toMillis ? ts.toMillis() : +ts) : 0; }
+function normUrl(u) { u = (u || '').trim(); if (!u) return ''; return /^https?:\/\//i.test(u) ? u : 'https://' + u; }
+function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return u; } }
+
+/* Turn plain text into text nodes plus links (web, email, phone). Never uses innerHTML. */
+var LINK_RE = /(https?:\/\/[^\s]+)|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)|(\(?\b\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b)/g;
+function linkify(text, into) {
+  var last = 0, m;
+  LINK_RE.lastIndex = 0;
+  while ((m = LINK_RE.exec(text))) {
+    if (m.index > last) into.appendChild(document.createTextNode(text.slice(last, m.index)));
+    var a = el('a');
+    if (m[1]) { a.href = m[1]; a.textContent = hostOf(m[1]); a.target = '_blank'; a.rel = 'noopener'; }
+    else if (m[2]) { a.href = 'mailto:' + m[2]; a.textContent = m[2]; }
+    else { a.href = 'tel:' + m[3].replace(/[^\d]/g, ''); a.textContent = m[3]; }
+    a.addEventListener('click', function (e) { e.stopPropagation(); });
+    into.appendChild(a);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) into.appendChild(document.createTextNode(text.slice(last)));
+  return into;
+}
+function sourceLinks(text, into) {
+  (text || '').split('\n').forEach(function (line) {
+    line = line.trim(); if (!line) return;
+    var m = line.match(/https?:\/\/\S+/);
+    if (!m) { into.appendChild(el('div', null, line)); return; }
+    var label = line.replace(m[0], '').trim() || hostOf(m[0]);
+    var a = el('a', null, label); a.href = m[0]; a.target = '_blank'; a.rel = 'noopener';
+    a.addEventListener('click', function (e) { e.stopPropagation(); });
+    into.appendChild(a);
+  });
+  return into;
+}
+
+/* ---------- writes ---------- */
+function save(id, patch) {
+  clearErr();
+  var data = Object.assign({}, patch, { updatedAt: serverTimestamp(), updatedBy: me });
+  return updateDoc(doc(db, COLL, id), data).catch(report);
+}
+function setField(id, k, v) {
+  var cur = venues.find(function (x) { return x.id === id; });
+  if (cur && (cur[k] == null ? '' : cur[k]) === (v == null ? '' : v)) return;
+  var p = {}; p[k] = v; save(id, p);
+}
+
+/* ---------- hero ---------- */
+function renderHero() {
+  var tours = document.getElementById('tours');
+  tours.textContent = '';
+  var now = Date.now() - 3 * 3600 * 1000;
+  var up = venues.filter(function (v) { var d = parseLocal(v.tour); return d && d.getTime() >= now && v.status !== 'Ruled out'; })
+    .sort(function (a, b) { return parseLocal(a.tour) - parseLocal(b.tour); });
+  if (!up.length) {
+    tours.appendChild(el('li', 'none', 'No tours on the calendar yet.'));
+  } else {
+    up.slice(0, 5).forEach(function (v) {
+      var d = parseLocal(v.tour), li = el('li');
+      li.appendChild(el('span', 'd', fmtDay(d)));
+      li.appendChild(el('span', 't', fmtTime(d)));
+      li.appendChild(el('span', 'v', v.name));
+      tours.appendChild(li);
+    });
+  }
+  var counts = document.getElementById('counts');
+  counts.textContent = '';
+  var live = venues.filter(function (v) { return v.status !== 'Ruled out'; }).length;
+  var toBook = venues.filter(function (v) { return v.status === 'Tour to book'; }).length;
+  [[live, live === 1 ? 'venue in the running' : 'venues in the running'], [up.length, up.length === 1 ? 'tour booked' : 'tours booked'], [toBook, 'to book']].forEach(function (p) {
+    var s = el('span'); s.appendChild(el('b', null, String(p[0]))); s.appendChild(document.createTextNode(p[1])); counts.appendChild(s);
+  });
+}
+
+/* ---------- toolbar ---------- */
+function renderFilter() {
+  var sel = document.getElementById('filter');
+  var opts = [['all', 'All venues'], ['active', 'Still in the running']].concat(STATUSES.map(function (s) { return [s.k, s.k]; }));
+  sel.textContent = '';
+  opts.forEach(function (o) {
+    var n = o[0] === 'all' ? venues.length : o[0] === 'active' ? venues.filter(function (v) { return v.status !== 'Ruled out'; }).length : venues.filter(function (v) { return v.status === o[0]; }).length;
+    if (o[0] !== 'all' && o[0] !== 'active' && !n && filterVal !== o[0]) return;
+    var op = el('option', null, o[1] + ' (' + n + ')'); op.value = o[0]; sel.appendChild(op);
+  });
+  sel.value = filterVal;
+}
+function renderGroups() {
+  var g = document.getElementById('groups');
+  g.textContent = '';
+  g.appendChild(el('span', null, 'Columns'));
+  GROUPS.forEach(function (gr) {
+    var b = el('button', 'chip', gr.label); b.type = 'button';
+    b.setAttribute('aria-pressed', hidden.indexOf(gr.k) < 0 ? 'true' : 'false');
+    b.addEventListener('click', function () {
+      var i = hidden.indexOf(gr.k);
+      if (i < 0) hidden.push(gr.k); else hidden.splice(i, 1);
+      savePref('wv-hidden', hidden); renderGroups(); renderSheet();
+    });
+    g.appendChild(b);
+  });
+  var t = el('label', 'toggle'); var cb = el('input'); cb.type = 'checkbox'; cb.checked = fullText;
+  cb.addEventListener('change', function () { fullText = cb.checked; savePref('wv-full', fullText); renderSheet(); });
+  t.appendChild(cb); t.appendChild(document.createTextNode('Show full text')); g.appendChild(t);
+}
+
+/* ---------- the sheet ---------- */
+function visibleCols() { return COLS.filter(function (c) { return hidden.indexOf(c.g) < 0; }); }
+function rows() {
+  var q = query.trim().toLowerCase();
+  var list = venues.filter(function (v) {
+    if (filterVal === 'active' && v.status === 'Ruled out') return false;
+    if (filterVal !== 'all' && filterVal !== 'active' && v.status !== filterVal) return false;
+    if (!q) return true;
+    return COLS.concat([{ k: 'name' }, { k: 'estNote' }]).some(function (c) { var x = v[c.k]; return x != null && String(x).toLowerCase().indexOf(q) >= 0; });
+  });
+  var k = sort.k, dir = sort.dir;
+  list.sort(function (a, b) {
+    if (!k) return (a.order || 0) - (b.order || 0) || tsMillis(a.createdAt) - tsMillis(b.createdAt);
+    var x = a[k], y = b[k];
+    if (k === 'status') { x = statusRank(x); y = statusRank(y); }
+    else if (k === 'tour') { x = parseLocal(x); y = parseLocal(y); x = x ? +x : null; y = y ? +y : null; }
+    else if (COL[k] && (COL[k].type === 'money' || COL[k].type === 'stars')) { x = typeof x === 'number' && x ? x : null; y = typeof y === 'number' && y ? y : null; }
+    else { x = (x || '').toString().toLowerCase() || null; y = (y || '').toString().toLowerCase() || null; }
+    if (x == null && y == null) return 0;
+    if (x == null) return 1;
+    if (y == null) return -1;
+    return (x < y ? -1 : x > y ? 1 : 0) * dir;
+  });
+  return list;
+}
+
+function starIcon() { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '0 0 24 24'); var u = document.createElementNS('http://www.w3.org/2000/svg', 'use'); u.setAttribute('href', '#star'); s.appendChild(u); return s; }
+function starsEl(v, k) {
+  var wrap = el('span', 'stars'); wrap.setAttribute('role', 'group');
+  var who = COL[k] ? COL[k].label : (k === 'rP' ? 'Puneeth' : 'Alaina');
+  wrap.setAttribute('aria-label', who + '’s rating');
+  var val = v[k] || 0;
+  for (var i = 1; i <= 5; i++) (function (n) {
+    var b = el('button', n <= val ? 'on' : ''); b.type = 'button';
+    b.setAttribute('aria-label', n + (n === 1 ? ' star' : ' stars'));
+    b.setAttribute('aria-pressed', n === val ? 'true' : 'false');
+    b.tabIndex = -1;
+    b.appendChild(starIcon());
+    b.addEventListener('click', function (e) { e.stopPropagation(); setField(v.id, k, n === val ? 0 : n); });
+    wrap.appendChild(b);
+  })(i);
+  return wrap;
+}
+
+function cellContent(v, c) {
+  var val = v[c.k];
+  var box = el('div');
+  if (c.type === 'status') { var s = statusOf(val); box.appendChild(el('span', 'pill ' + s.c, s.k)); return box; }
+  if (c.type === 'datetime') {
+    var d = parseLocal(val);
+    if (!d) { box.appendChild(el('span', 'empty', 'Add a time')); return box; }
+    var w = el('div', 'when' + (d.getTime() < Date.now() ? ' past' : ''));
+    w.appendChild(el('b', null, fmtDay(d))); w.appendChild(el('span', null, fmtTime(d)));
+    box.appendChild(w); return box;
+  }
+  if (c.type === 'money') {
+    var m = el('div', 'money');
+    if (typeof val === 'number' && val) m.appendChild(el('b', null, money(val)));
+    if (v.estNote) m.appendChild(linkify(v.estNote, el('div', 'clamp')));
+    if (!m.childNodes.length) m.appendChild(el('span', 'empty', 'Add'));
+    box.appendChild(m); return box;
+  }
+  if (c.type === 'stars') { box.appendChild(starsEl(v, c.k)); return box; }
+  if (c.type === 'links') {
+    if (!val) { box.appendChild(el('span', 'empty', 'Add')); return box; }
+    box.appendChild(sourceLinks(val, el('div', 'links'))); return box;
+  }
+  if (!val) { box.appendChild(el('span', 'empty', 'Add')); return box; }
+  box.appendChild(linkify(String(val), el('div', 'clamp')));
+  return box;
+}
+
+function renderSheet() {
+  var sheet = document.getElementById('sheet');
+  var keepScroll = { x: sheet.scrollLeft, y: sheet.scrollTop };
+  var hadFocus = sheet.contains(document.activeElement) && document.activeElement.tagName === 'TD';
+  sheet.textContent = '';
+  sheet.classList.toggle('full', !!fullText);
+  var cols = visibleCols();
+  var list = rows();
+  document.getElementById('showing').textContent = list.length === venues.length
+    ? venues.length + (venues.length === 1 ? ' venue' : ' venues')
+    : 'Showing ' + list.length + ' of ' + venues.length;
+
+  if (!venues.length) {
+    var e = el('div', 'empty-sheet');
+    e.appendChild(el('p', null, 'No venues yet. Add the first one and it shows up here for both of you.'));
+    sheet.appendChild(e); return;
+  }
+
+  var table = el('table');
+  table.setAttribute('aria-label', 'Wedding venues');
+  var cg = el('colgroup');
+  var c0 = el('col'); cg.appendChild(c0);
+  cols.forEach(function (c) { var col = el('col'); col.style.width = c.w + 'px'; cg.appendChild(col); });
+  table.appendChild(cg);
+
+  var thead = el('thead');
+  var trg = el('tr', 'g'), trc = el('tr', 'c');
+  var thName = el('th', 'namecol'); thName.rowSpan = 2; thName.scope = 'col';
+  var nb = el('button'); nb.type = 'button'; nb.appendChild(document.createTextNode('Venue')); nb.appendChild(el('span', 'arrow', sort.dir > 0 ? '▲' : '▼'));
+  nb.addEventListener('click', function () { toggleSort('name'); });
+  thName.appendChild(nb);
+  thName.style.padding = '0';
+  if (sort.k === 'name') thName.setAttribute('aria-sort', sort.dir > 0 ? 'ascending' : 'descending');
+  nb.style.cssText = 'all:unset;box-sizing:border-box;display:flex;gap:6px;align-items:center;width:100%;padding:6px 12px 8px;cursor:pointer;font-family:var(--f-body);font-size:12.5px;font-weight:600;color:var(--muted)';
+  trg.appendChild(thName);
+  var lastG = null;
+  cols.forEach(function (c) {
+    if (c.g !== lastG) {
+      var span = cols.filter(function (x) { return x.g === c.g; }).length;
+      var gth = el('th', 'gstart', GROUPS.find(function (g) { return g.k === c.g; }).label);
+      gth.colSpan = span; gth.scope = 'colgroup'; trg.appendChild(gth); lastG = c.g;
+    }
+    var th = el('th', c === cols.find(function (x) { return x.g === c.g; }) ? 'gstart' : '');
+    th.scope = 'col';
+    if (sort.k === c.k) th.setAttribute('aria-sort', sort.dir > 0 ? 'ascending' : 'descending');
+    var b = el('button'); b.type = 'button'; b.appendChild(document.createTextNode(c.label)); b.appendChild(el('span', 'arrow', sort.dir > 0 ? '▲' : '▼'));
+    b.addEventListener('click', function () { toggleSort(c.k); });
+    th.appendChild(b); trc.appendChild(th);
+  });
+  thead.appendChild(trg); thead.appendChild(trc); table.appendChild(thead);
+
+  var tbody = el('tbody');
+  if (active.r >= list.length) active.r = Math.max(0, list.length - 1);
+  if (active.c > cols.length) active.c = cols.length;
+  list.forEach(function (v, ri) {
+    var tr = el('tr', v.status === 'Ruled out' ? 'out' : '');
+    var tdn = el('td', 'namecol');
+    tdn.dataset.r = ri; tdn.dataset.c = 0; tdn.dataset.id = v.id;
+    tdn.tabIndex = (ri === active.r && active.c === 0) ? 0 : -1;
+    var nm = el('button', 'vname', v.name || 'Untitled venue'); nm.type = 'button'; nm.tabIndex = -1;
+    nm.addEventListener('click', function () { openDrawer(v.id); });
+    tdn.appendChild(nm);
+    if (v.url) { var a = el('a', 'site', hostOf(v.url)); a.href = v.url; a.target = '_blank'; a.rel = 'noopener'; a.tabIndex = -1; tdn.appendChild(a); }
+    if (v.updatedBy && v.updatedBy !== me && Date.now() - tsMillis(v.updatedAt) < 3 * 86400000) {
+      tdn.appendChild(el('span', 'edited', nameFor(v.updatedBy) + ' edited ' + ago(v.updatedAt)));
+    }
+    tr.appendChild(tdn);
+    cols.forEach(function (c, ci) {
+      var td = el('td', (c === cols.find(function (x) { return x.g === c.g; }) ? 'gstart ' : '') + (c.type === 'stars' ? 'stars-cell' : ''));
+      td.dataset.r = ri; td.dataset.c = ci + 1; td.dataset.id = v.id; td.dataset.k = c.k;
+      td.tabIndex = (ri === active.r && active.c === ci + 1) ? 0 : -1;
+      td.appendChild(cellContent(v, c));
+      td.addEventListener('click', function (e) { if (e.target.closest('a,button')) return; setActive(ri, ci + 1, false); openCell(v.id, c.k, td); });
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  sheet.appendChild(table);
+  sheet.scrollLeft = keepScroll.x; sheet.scrollTop = keepScroll.y;
+  if (hadFocus && !editor) focusActive();
+}
+
+function toggleSort(k) {
+  if (sort.k !== k) { sort = { k: k, dir: 1 }; }
+  else if (sort.dir === 1) { sort.dir = -1; }
+  else { sort = { k: null, dir: 1 }; }
+  renderSheet();
+}
+
+/* Roving focus: arrow keys move between cells, Enter edits */
+function cellAt(r, c) { return document.querySelector('#sheet td[data-r="' + r + '"][data-c="' + c + '"]'); }
+function setActive(r, c, focus) {
+  var old = cellAt(active.r, active.c); if (old) old.tabIndex = -1;
+  active = { r: r, c: c };
+  var td = cellAt(r, c); if (td) { td.tabIndex = 0; if (focus) td.focus({ preventScroll: false }); }
+}
+function focusActive() { var td = cellAt(active.r, active.c); if (td) td.focus({ preventScroll: true }); }
+document.getElementById('sheet').addEventListener('keydown', function (e) {
+  var td = e.target.closest && e.target.closest('td'); if (!td || editor) return;
+  var r = +td.dataset.r, c = +td.dataset.c;
+  var maxR = document.querySelectorAll('#sheet tbody tr').length - 1, maxC = visibleCols().length;
+  var moves = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+  if (moves[e.key]) {
+    e.preventDefault();
+    setActive(Math.min(maxR, Math.max(0, r + moves[e.key][0])), Math.min(maxC, Math.max(0, c + moves[e.key][1])), true);
+  } else if (e.key === 'Enter' || e.key === 'F2') {
+    e.preventDefault();
+    if (c === 0) openDrawer(td.dataset.id);
+    else if (COL[td.dataset.k].type === 'stars') { var b = td.querySelector('.stars button'); if (b) b.focus(); }
+    else openCell(td.dataset.id, td.dataset.k, td);
+  }
+});
+document.getElementById('sheet').addEventListener('focusin', function (e) {
+  var td = e.target.closest && e.target.closest('td'); if (!td) return;
+  if (+td.dataset.r !== active.r || +td.dataset.c !== active.c) setActive(+td.dataset.r, +td.dataset.c, false);
+});
+
+/* ---------- inline editor (wide screens) / drawer (phones) ---------- */
+function narrow() { return window.matchMedia('(max-width: 720px), (pointer: coarse)').matches; }
+
+function openCell(id, k, td) {
+  var c = COL[k]; if (!c || c.type === 'stars') return;
+  if (narrow()) { openDrawer(id, k); return; }
+  closeEditor(true);
+  var v = venues.find(function (x) { return x.id === id; }); if (!v) return;
+  var r = td.getBoundingClientRect();
+  var scrim = el('div', 'scrim-clear');
+  var box = el('div', 'ed');
+  box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Edit ' + c.label + ' for ' + v.name);
+  var width = Math.max(r.width, c.type === 'status' ? 200 : 340);
+  var left = Math.min(r.left, window.innerWidth - width - 12);
+  box.style.left = Math.max(12, left) + 'px';
+  box.style.top = Math.max(12, r.top) + 'px';
+  box.style.width = width + 'px';
+  var getVal, first;
+  var foot = el('div', 'foot');
+
+  if (c.type === 'status') {
+    var opts = el('div', 'opts');
+    STATUSES.forEach(function (s) {
+      var b = el('button'); b.type = 'button'; b.appendChild(el('span', 'pill ' + s.c, s.k));
+      if ((v.status || 'Researching') === s.k) { b.setAttribute('aria-current', 'true'); first = b; }
+      b.addEventListener('click', function () { setField(id, 'status', s.k); closeEditor(false); });
+      opts.appendChild(b);
+    });
+    box.appendChild(opts);
+    getVal = null;
+  } else if (c.type === 'datetime') {
+    var lab = el('label', null, 'Tour date and time'); var inp = el('input'); inp.type = 'datetime-local'; inp.value = v.tour || ''; inp.id = 'edDt'; lab.htmlFor = 'edDt';
+    box.appendChild(lab); box.appendChild(inp); first = inp;
+    var clr = el('button', 'btn', 'Clear'); clr.type = 'button';
+    clr.addEventListener('click', function () { setField(id, 'tour', ''); closeEditor(false); });
+    foot.appendChild(clr);
+    getVal = function () { return [['tour', inp.value || '']]; };
+  } else if (c.type === 'money') {
+    var l1 = el('label', null, 'Rough all-in cost ($)'); l1.htmlFor = 'edNum';
+    var num = el('input'); num.id = 'edNum'; num.type = 'text'; num.inputMode = 'decimal'; num.value = typeof v.est === 'number' ? String(v.est) : '';
+    var l2 = el('label', null, 'How we got there'); l2.htmlFor = 'edNote';
+    var note = el('textarea'); note.id = 'edNote'; note.value = v.estNote || '';
+    box.appendChild(l1); box.appendChild(num); box.appendChild(l2); box.appendChild(note); first = num;
+    getVal = function () { var n = parseFloat(num.value.replace(/[$,\s]/g, '')); return [['est', isNaN(n) ? null : n], ['estNote', note.value.trim()]]; };
+  } else {
+    var ta = el('textarea'); ta.value = v[k] || ''; ta.setAttribute('aria-label', c.label);
+    if (c.type === 'links') ta.placeholder = 'One per line: a label, then the link';
+    box.appendChild(ta); first = ta;
+    getVal = function () { return [[k, ta.value.replace(/\s+$/, '')]]; };
+  }
+  if (c.type !== 'status') {
+    var hint = el('span', null, c.type === 'money' ? 'Enter in the amount to save, Esc to cancel' : 'Enter to save, Shift+Enter for a new line');
+    var sv = el('button', 'btn primary', 'Save'); sv.type = 'button';
+    sv.addEventListener('click', function () { closeEditor(true); });
+    foot.insertBefore(hint, foot.firstChild); foot.appendChild(sv);
+  }
+  box.appendChild(foot);
+  box.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeEditor(false); }
+    else if (e.key === 'Enter' && !e.shiftKey && !e.altKey && e.target.tagName !== 'BUTTON') {
+      if (e.target.tagName === 'TEXTAREA' && c.type === 'money') return;
+      e.preventDefault(); closeEditor(true);
+    }
+  });
+  scrim.addEventListener('mousedown', function (e) { e.preventDefault(); closeEditor(true); });
+  document.body.appendChild(scrim); document.body.appendChild(box);
+  editor = { id: id, k: k, box: box, scrim: scrim, getVal: getVal };
+  // keep the box inside the viewport
+  var br = box.getBoundingClientRect();
+  if (br.bottom > window.innerHeight - 12) box.style.top = Math.max(12, window.innerHeight - br.height - 12) + 'px';
+  if (first) { first.focus(); if (first.setSelectionRange && first.value && first.type !== 'datetime-local') { try { first.setSelectionRange(first.value.length, first.value.length); } catch (e) {} } }
+}
+function closeEditor(commit) {
+  if (!editor) return;
+  var ed = editor; editor = null;
+  if (commit && ed.getVal) {
+    var cur = venues.find(function (x) { return x.id === ed.id; });
+    var patch = {}, changed = false;
+    ed.getVal().forEach(function (p) {
+      var before = cur ? cur[p[0]] : undefined;
+      if ((before == null ? '' : before) !== (p[1] == null ? '' : p[1])) { patch[p[0]] = p[1]; changed = true; }
+    });
+    if (changed) save(ed.id, patch);
+  }
+  ed.box.remove(); ed.scrim.remove();
+  focusActive();
+}
+window.addEventListener('resize', function () { closeEditor(true); });
+
+/* ---------- drawer ---------- */
+var drawer = document.getElementById('drawer'), dscrim = document.getElementById('dscrim');
+var dname = document.getElementById('dname'), durl = document.getElementById('durl'), dlink = document.getElementById('dlink');
+var lastFocus = null;
+
+function buildDrawerBody() {
+  var body = document.getElementById('dbody');
+  body.textContent = '';
+  GROUPS.forEach(function (g) {
+    var cols = COLS.filter(function (c) { return c.g === g.k; });
+    body.appendChild(el('h3', null, g.label));
+    if (g.k === 'visit') {
+      var r2 = el('div', 'row2');
+      var f1 = el('div', 'field'); var l1 = el('label', null, 'Status'); l1.htmlFor = 'f-status';
+      var sel = el('select'); sel.id = 'f-status'; sel.dataset.k = 'status';
+      STATUSES.forEach(function (s) { var o = el('option', null, s.k); o.value = s.k; sel.appendChild(o); });
+      f1.appendChild(l1); f1.appendChild(sel);
+      var f2 = el('div', 'field'); var l2 = el('label', null, 'Tour'); l2.htmlFor = 'f-tour';
+      var dt = el('input'); dt.type = 'datetime-local'; dt.id = 'f-tour'; dt.dataset.k = 'tour';
+      f2.appendChild(l2); f2.appendChild(dt);
+      r2.appendChild(f1); r2.appendChild(f2); body.appendChild(r2);
+      cols = cols.filter(function (c) { return c.k !== 'status' && c.k !== 'tour'; });
+    }
+    if (g.k === 'take') {
+      var r3 = el('div', 'row2');
+      ['rP', 'rA'].forEach(function (k) {
+        var f = el('div', 'field'); f.appendChild(el('span', 'lbl', COL[k].label + '’s rating'));
+        var holder = el('div'); holder.dataset.stars = k; f.appendChild(holder); r3.appendChild(f);
+      });
+      body.appendChild(r3);
+      cols = cols.filter(function (c) { return c.type !== 'stars'; });
+    }
+    cols.forEach(function (c) {
+      if (c.type === 'money') {
+        var r4 = el('div', 'field'); var l = el('label', null, c.label + ' ($)'); l.htmlFor = 'f-est';
+        var n = el('input'); n.id = 'f-est'; n.inputMode = 'decimal'; n.dataset.k = 'est';
+        r4.appendChild(l); r4.appendChild(n); body.appendChild(r4);
+        var r5 = el('div', 'field'); var l5 = el('label', null, 'How we got there'); l5.htmlFor = 'f-estNote';
+        var t5 = el('textarea'); t5.id = 'f-estNote'; t5.dataset.k = 'estNote'; t5.rows = 3;
+        r5.appendChild(l5); r5.appendChild(t5); body.appendChild(r5);
+        return;
+      }
+      var f = el('div', 'field'); var lb = el('label', null, c.label); lb.htmlFor = 'f-' + c.k;
+      var ta = el('textarea'); ta.id = 'f-' + c.k; ta.dataset.k = c.k; ta.rows = 3;
+      if (c.type === 'links') ta.placeholder = 'One per line: a label, then the link';
+      f.appendChild(lb); f.appendChild(ta); body.appendChild(f);
+    });
+  });
+  body.addEventListener('change', function (e) {
+    var t = e.target; if (!drawerId || !t.dataset.k) return;
+    var k = t.dataset.k, val = t.value;
+    if (k === 'est') { var n = parseFloat(val.replace(/[$,\s]/g, '')); val = isNaN(n) ? null : n; }
+    else if (t.tagName === 'TEXTAREA') val = val.replace(/\s+$/, '');
+    setField(drawerId, k, val);
+  });
+}
+
+function fillDrawer() {
+  var v = venues.find(function (x) { return x.id === drawerId; });
+  if (!v) { closeDrawer(); return; }
+  var focused = document.activeElement;
+  if (focused !== dname) dname.value = v.name || '';
+  if (focused !== durl) durl.value = v.url || '';
+  dlink.hidden = !v.url; if (v.url) dlink.href = v.url;
+  document.querySelectorAll('#dbody [data-k]').forEach(function (inp) {
+    if (inp === focused) return;
+    var k = inp.dataset.k, val = v[k];
+    if (k === 'status') val = val || 'Researching';
+    if (k === 'est') val = typeof val === 'number' ? String(val) : '';
+    inp.value = val == null ? '' : val;
+  });
+  document.querySelectorAll('#dbody [data-stars]').forEach(function (h) { h.textContent = ''; var s = starsEl(v, h.dataset.stars); s.querySelectorAll('button').forEach(function (b) { b.tabIndex = 0; }); h.appendChild(s); });
+  var ed = document.getElementById('dedited');
+  ed.textContent = v.updatedBy ? 'Last edited by ' + (v.updatedBy === me ? 'you' : nameFor(v.updatedBy)) + ', ' + ago(v.updatedAt) : '';
+}
+
+function openDrawer(id, focusKey) {
+  closeEditor(true);
+  drawerId = id;
+  lastFocus = document.activeElement;
+  drawer.hidden = false; dscrim.hidden = false;
+  fillDrawer();
+  requestAnimationFrame(function () {
+    document.body.classList.add('dopen');
+    var target = focusKey ? document.querySelector('#dbody [data-k="' + (focusKey === 'est' ? 'est' : focusKey) + '"]') : null;
+    if (target) { target.scrollIntoView({ block: 'center' }); target.focus({ preventScroll: true }); }
+    else { document.getElementById('dbody').scrollTop = 0; document.getElementById('dclose').focus(); }
+  });
+}
+function closeDrawer() {
+  if (!drawerId) return;
+  if (document.activeElement && drawer.contains(document.activeElement)) document.activeElement.blur(); // fires change, which saves
+  drawerId = null;
+  document.body.classList.remove('dopen');
+  setTimeout(function () { if (!drawerId) { drawer.hidden = true; dscrim.hidden = true; } }, 240);
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus(); else focusActive();
+}
+dname.addEventListener('change', function () {
+  var n = dname.value.trim();
+  if (!n) { fillDrawer(); return; }
+  setField(drawerId, 'name', n);
+});
+durl.addEventListener('change', function () { setField(drawerId, 'url', normUrl(durl.value)); });
+document.getElementById('dclose').addEventListener('click', closeDrawer);
+dscrim.addEventListener('click', closeDrawer);
+drawer.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); return; }
+  if (e.key === 'Tab') {
+    var f = Array.prototype.filter.call(drawer.querySelectorAll('input,select,textarea,button,a[href]'), function (x) { return !x.hidden && x.offsetParent !== null; });
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  }
+});
+document.getElementById('ddelete').addEventListener('click', function () {
+  var v = venues.find(function (x) { return x.id === drawerId; }); if (!v) return;
+  if (!confirm('Delete ' + (v.name || 'this venue') + '? It disappears for both of you.')) return;
+  var id = drawerId; closeDrawer();
+  deleteDoc(doc(db, COLL, id)).catch(report);
+});
+
+/* ---------- add venue ---------- */
+var addDlg = document.getElementById('addDlg');
+document.getElementById('addBtn').addEventListener('click', function () {
+  document.getElementById('newName').value = ''; document.getElementById('newUrl').value = '';
+  if (addDlg.showModal) addDlg.showModal(); else addDlg.setAttribute('open', '');
+  document.getElementById('newName').focus();
+});
+document.getElementById('addCancel').addEventListener('click', function () { addDlg.close(); });
+document.getElementById('addForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var name = document.getElementById('newName').value.trim(); if (!name) return;
+  var ref = doc(collection(db, COLL));
+  var maxOrder = venues.reduce(function (m, v) { return Math.max(m, v.order || 0); }, 0);
+  var data = { name: name, url: normUrl(document.getElementById('newUrl').value), status: 'Researching', tour: '',
+    est: null, estNote: '', rP: 0, rA: 0, order: maxOrder + 1,
+    createdAt: serverTimestamp(), updatedAt: serverTimestamp(), updatedBy: me };
+  COLS.forEach(function (c) { if (!(c.k in data)) data[c.k] = ''; });
+  addDlg.close();
+  // Show it immediately; the live listener confirms it a moment later.
+  venues.push(Object.assign({ id: ref.id }, data, { createdAt: null, updatedAt: null }));
+  renderAll();
+  setDoc(ref, data).catch(report);
+  openDrawer(ref.id);
+});
+
+/* ---------- search / filter ---------- */
+document.getElementById('q').addEventListener('input', function (e) { query = e.target.value; renderSheet(); });
+document.getElementById('filter').addEventListener('change', function (e) { filterVal = e.target.value; renderSheet(); });
+
+function renderAll() { renderHero(); renderFilter(); renderSheet(); if (drawerId) fillDrawer(); }
+
+/* ---------- data ---------- */
+function seedOnce() {
+  return runTransaction(db, async function (tx) {
+    var meta = doc(db, 'meta', 'weddingVenues');
+    if ((await tx.get(meta)).exists()) return false;
+    SEED.forEach(function (s) {
+      var d = Object.assign({}, s); delete d.id;
+      d.createdAt = serverTimestamp(); d.updatedAt = serverTimestamp(); d.updatedBy = null;
+      tx.set(doc(db, COLL, s.id), d);
+    });
+    tx.set(meta, { seeded: true, at: serverTimestamp() });
+    return true;
+  });
+}
+
+buildDrawerBody();
+renderGroups();
+
+startGate({
+  onSignedIn: function (user) {
+    me = user.email || '';
+    if (unsub) { unsub(); unsub = null; }
+    seedOnce().catch(function (e) { if (isDenied(e)) denied(); else console.error(e); });
+    unsub = onSnapshot(collection(db, COLL), function (snap) {
+      var list = [];
+      snap.forEach(function (d) { var v = d.data(); v.id = d.id; list.push(v); });
+      venues = list;
+      renderAll();
+      if (editor && !venues.some(function (v) { return v.id === editor.id; })) closeEditor(false);
+    }, report);
+  },
+  onSignedOut: function () { if (unsub) { unsub(); unsub = null; } venues = []; closeDrawer(); }
+});
+
+// Refresh "edited 3 min ago" labels now and then.
+setInterval(function () { if (document.body.dataset.auth === 'in' && !editor) { renderSheet(); if (drawerId) fillDrawer(); } }, 60000);
+</script>
+</body>
+</html>
