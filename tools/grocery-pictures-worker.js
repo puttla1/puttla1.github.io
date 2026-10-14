@@ -1,4 +1,4 @@
-// Grocery picture helper: a Cloudflare Worker.
+// Grocery picture helper (and food-log label reader): a Cloudflare Worker.
 // Given what someone typed ("pepsi 20 oz"), it:
 //   1. searches Kroger's product catalog (fast, clean studio photos with package sizes) and shows that first,
 //   2. adds Google Images results (via SerpApi),
@@ -25,15 +25,15 @@ export default {
     const origin = request.headers.get('Origin') || '';
     const cors = {
       'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
-      'Access-Control-Allow-Headers': 'Authorization',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Vary': 'Origin'
     };
     const reply = (status, body) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     const url = new URL(request.url);
-    if (url.pathname !== '/pick' && url.pathname !== '/tidy') return reply(404, { error: 'not found' });
+    if (!['/pick', '/tidy', '/label'].includes(url.pathname)) return reply(404, { error: 'not found' });
 
     // Only signed-in, approved accounts can spend the search quota.
     const token = (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
@@ -41,6 +41,19 @@ export default {
     try { user = await verifyFirebaseToken(token); } catch (e) { return reply(401, { error: 'sign in again' }); }
     const allowed = (env.ALLOWED_EMAILS || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
     if (!user.email_verified || !allowed.includes(String(user.email).toLowerCase())) return reply(403, { error: 'not allowed' });
+
+    // /label: read a nutrition label photo for the food log (POST {image: base64 jpeg}).
+    if (url.pathname === '/label') {
+      if (request.method !== 'POST') return reply(405, { error: 'use POST' });
+      if (!env.ANTHROPIC_API_KEY) return reply(500, { error: 'ANTHROPIC_API_KEY is not set' });
+      let body;
+      try { body = await request.json(); } catch (e) { return reply(400, { error: 'bad request' }); }
+      const image = String(body.image || '');
+      const type = ['image/jpeg', 'image/png', 'image/webp'].includes(body.type) ? body.type : 'image/jpeg';
+      if (!image || image.length > 7_000_000) return reply(400, { error: 'missing or too large photo' });
+      try { return reply(200, await claudeLabel(image, type, env.ANTHROPIC_API_KEY)); }
+      catch (e) { return reply(502, { error: e.message }); }
+    }
 
     const q = (url.searchParams.get('q') || '').trim().slice(0, 120);
     if (!q) return reply(400, { error: 'missing q' });
@@ -93,6 +106,31 @@ export default {
     return new Response(readable, { headers: { ...cors, 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store' } });
   }
 };
+
+/* ---------- Food log: read a nutrition label photo ---------- */
+async function claudeLabel(data, type, key) {
+  const { text, stop } = await callClaude([
+    { type: 'image', source: { type: 'base64', media_type: type, data } },
+    { type: 'text', text:
+      'This is a photo of a food package, taken to log what someone ate. Read the Nutrition Facts panel ' +
+      '(and the front of the package, if visible, for the product name and brand).\n' +
+      'Give the numbers for ONE serving exactly as printed. If the label has columns for a serving and for the whole package, use the per-serving column.\n' +
+      '- name: short product name as on the package, normal capitalization (e.g. "Greek Yogurt, Vanilla"); "" if not visible\n' +
+      '- brand: brand name; "" if not visible\n' +
+      '- serving: the serving size text as printed (e.g. "2/3 cup (55g)", "1 bar (60g)")\n' +
+      '- grams: grams (or ml for drinks) in one serving as a number, or null if not printed\n' +
+      '- kcal, protein, carbs, fat: numbers per serving (carbs = Total Carbohydrate, fat = Total Fat), null if not shown\n' +
+      '- found: false if there is no readable nutrition label in the photo\n' +
+      'Reply with only the JSON, no other text: ' +
+      '{"found": true, "name": "", "brand": "", "serving": "", "grams": null, "kcal": null, "protein": null, "carbs": null, "fat": null}' }
+  ], 1500, key);
+  const out = parseJSON(text);
+  if (out.found == null && out.kcal == null) throw new Error('no answer (stop: ' + stop + ') ' + text.slice(0, 80));
+  const n = v => { const x = typeof v === 'number' ? v : parseFloat(String(v ?? '').replace(/[^\d.]/g, '')); return isFinite(x) ? x : null; };
+  const found = out.found !== false && n(out.kcal) != null;
+  return { found, name: tidy(out.name), brand: tidy(out.brand), serving: tidy(out.serving),
+    grams: n(out.grams), kcal: n(out.kcal), protein: n(out.protein), carbs: n(out.carbs), fat: n(out.fat) };
+}
 
 /* ---------- Kroger product catalog ---------- */
 let krogerToken = null;
