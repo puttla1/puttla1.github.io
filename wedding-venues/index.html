@@ -301,7 +301,7 @@ dialog .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
 </dialog>
 
 <script type="module">
-import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp,
+import { db, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, serverTimestamp,
   startGate, denied, isDenied } from '/shared/firebase.js';
 
 var COLL = 'weddingVenues';
@@ -353,284 +353,6 @@ var COLS = [
 var COL = {}; COLS.forEach(function (c) { COL[c.k] = c; });
 var PEOPLE = { 'puneeth.uttla@gmail.com': 'Puneeth', 'alaina.milam@gmail.com': 'Alaina' };
 
-/* ---------- research seed (written once, then it's all yours) ---------- */
-var SEED = [
-  {
-    id: 'whites-ferry-manor', order: 1,
-    name: 'Whites Ferry Manor', url: 'https://whitesferrymanor.com/',
-    status: 'Tour booked', tour: '2026-11-25T13:00',
-    contact: 'events@wfmanor.com\n571-528-7070',
-    town: 'Leesburg, VA\n42476 Whites Ferry Rd',
-    drive: 'About 25 min from Ashburn, 30 min from Dulles (rough estimate)',
-    setting: 'Manor on the Potomac with about a quarter mile of river frontage, gazebos, poolside patios, and its own brewery and winery next door.',
-    capacity: 'Grand Hall seats up to 450 (their FAQ says 400 seated indoors). 50-guest minimum.',
-    spaces: 'Grand Hall for the reception. Riverside or poolside patio for ceremonies and cocktails. Ceremony is free when the reception is here. One event per day.',
-    rain: 'Outdoor pavilion converts to a ceremony space, or the Grand Hall gets reset.',
-    ready: 'Getting-ready suites included, on the second floor (no elevator).',
-    hours: '11-hour block: 4 hrs setup, 6 hrs guest time, 1 hr breakdown. Extra hours $850++ each. Must end by 12:30am Fri/Sat, 11:30pm Sun–Thu.',
-    southAsian: 'Strongest fit of the three on paper: Asian-owned, staff speak Hindi, Punjabi and Urdu, and the in-house caterer has a full South Asian menu. Their vendor rules don’t mention a baraat or havan; open flames need management approval, so ask.',
-    fee: '2027 rates: Saturday $12,950 up to 150 guests, $15,950 up to 300. Fri/Sun $11,500 / $13,500. Weekdays $9,950. Plus 24% service charge and 6% tax.',
-    est: 37400,
-    estNote: 'Saturday rental (up to 150) + 4 extra hours + required $35/guest packages + South Asian buffet A ($48/guest), all with 24% service and 6% tax. Before alcohol, decor, DJ. Going over 150 guests adds $3,000+.',
-    catering: 'In-house Silk Catering, American and South Asian menus. South Asian buffets $38–48/guest (50 minimum). Required packages: equipment $25/guest, beverages $5/guest. Outside caterers allowed: licensed kitchen, $5M insurance, no cooking equipment on site.',
-    alcohol: 'Bring your own. With alcohol, mixers ($5/guest) and their beer and wine program (price not listed) are required. One bartender per 100 guests included.',
-    rP: 0, rA: 0,
-    pros: 'River and nature setting, close to Ashburn. Indian-owned with a South Asian menu. One wedding per day. Bring your own alcohol. Room to grow past 150.',
-    cons: 'Only 6 guest hours included, short for a baraat-to-reception day. 24% service charge on top of everything. Price jumps $3,000 past 150 guests. Stairs to the suites.',
-    ask: 'Can we do a baraat on the property (dhol, horse)?\nIs a havan fire OK, indoors or on the patio?\nWhere do guests go during the break between ceremonies?\nDo the required packages apply if we bring our own caterer?\nFall 2027 Saturday availability, and a Friday rate for the sangeet.',
-    notes: '',
-    sources: 'Their FAQ https://whitesferrymanor.com/faqs\n2027 rates and packages (PDF) https://img1.wsimg.com/blobby/go/38f53be8-d05e-46c1-ad51-4e76c2dc3532/downloads/9d5952aa-98d2-475c-a00a-8ce024285483/WFM%202027.pdf?ver=1781209667612\nSouth Asian catering menu (PDF) https://img1.wsimg.com/blobby/go/3167d5a5-5805-4a2f-a380-1c3752550b89/downloads/122d2616-322c-4e29-8526-f06d4d2b8f93/South%20Asian%20Catering%20Menu.pdf?ver=1763134546009\nVendor policies (PDF) https://img1.wsimg.com/blobby/go/38f53be8-d05e-46c1-ad51-4e76c2dc3532/2026%20VENDOR%20POLICIES%20%26%20AGREEMENT.pdf\nWeddingWire, 4.8 from 24 reviews https://www.weddingwire.com/biz/whites-ferry-manor/56d7fb65c82e7ad0.html'
-  },
-  {
-    id: 'atrium-at-meadowlark', order: 2,
-    name: 'The Atrium at Meadowlark', url: 'https://www.novaparks.com/weddings-catering/the-atrium-at-meadowlark',
-    status: 'Tour booked', tour: '2026-11-25T15:00',
-    contact: 'atrium@nvrpa.org\n703-255-3631 ext. 1700\nCatering: gbhweddings@nvrpa.org, 703-359-4610',
-    town: 'Vienna, VA\n9750 Meadowlark Gardens Ct',
-    drive: 'About 25 min from Ashburn, 20 min from Dulles (rough estimate)',
-    setting: 'Glass atrium inside a 95-acre botanical garden: live trees and a stream indoors, lake gazebo, Korean Bell Garden, Lilac Pavilion.',
-    capacity: '230 seated (260 with some layouts), 300 standing. One reviewer says it feels best at 160–180.',
-    spaces: 'Ceremony in the Atrium, on the terrace, at the Lake Caroline gazebo (existing benches only), Korean Bell Garden, or Lilac Pavilion. Reception in the Atrium. One event per day.',
-    rain: 'Outdoor parts move into the Atrium; the backup is set in advance.',
-    ready: 'Limited. A reviewer said the bridal party had to dress off-site. Ask.',
-    hours: '8-hour minimum block, including at least 2 hrs setup and 1 hr breakdown. Curfew 1am Fri/Sat, 11pm Sun–Thu.',
-    southAsian: 'Needs workarounds. The required caterer has no Indian menu; an approved Indian caterer can pass food through for a per-guest fee. No amplified sound outdoors except ceremony music, which may rule out a dhol baraat. Only enclosed candles, so a havan needs approval.',
-    fee: 'Rental about $3,570–$10,100 at peak (Zola), $2,550–$8,550 (Here Comes the Guide). Discount if the contract holder lives in Fairfax, Arlington or Loudoun. $1,000 refundable security deposit, 6% tax.',
-    est: null,
-    estNote: 'Need a quote. At least the rental (up to about $10k at peak) plus Great Blue Heron’s $8,000 food and beverage minimum.',
-    catering: 'Great Blue Heron (the park’s caterer) is required: full service with an $8,000 minimum, or pass-through, where an approved caterer brings food and Great Blue Heron serves it for a per-guest fee.',
-    alcohol: 'Must come through Great Blue Heron. No outside alcohol. Served only in your rental area.',
-    rP: 0, rA: 0,
-    pros: 'Most nature of the three: gardens, lake and greenery inside a glass room. Guests can wander 95 acres. Likely the lowest rental. In-county discount if a parent in Fairfax or Loudoun signs.',
-    cons: 'Tightest fit for 150 with a dance floor. Indian food and the baraat both need workarounds. No outside alcohol. Limited getting-ready space.',
-    ask: 'Rental for a fall 2027 Saturday, in and out of county.\nPass-through fee per guest for an Indian caterer.\nCan a dhol baraat happen outside?\nIs a havan allowed?\nCan we book 10–12 hours?\nGarden hours on a fall evening, for guests during the break.',
-    notes: '',
-    sources: 'NOVA Parks FAQ https://www.novaparks.com/weddings-catering/the-atrium-at-meadowlark/frequently-asked-questions\nZola listing and reviews https://zola.com/wedding-vendors/wedding-venues/the-atrium-at-meadowlark-botanical-gardens\nHere Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/the-atrium-at-meadowlark-botanical-gardens'
-  },
-  {
-    id: 'the-bellevue', order: 3,
-    name: 'The Bellevue', url: 'https://www.thebellevueva.com/',
-    status: 'Tour to book', tour: '',
-    contact: 'info@thebellevueva.com\n703-868-8289\nTours by appointment',
-    town: 'Chantilly, VA\n43350 Little River Tpke',
-    drive: 'About 20 min from Ashburn, 15 min from Dulles (rough estimate)',
-    setting: 'Conference and event center: marble ballrooms with chandeliers, plus the Vero Sky Lounge rooftop with Blue Ridge views. Little nature.',
-    capacity: 'Grand Marquesa ballroom seats up to 600. Bolour and Milan rooms about 200 each. Rooftop about 200 banquet.',
-    spaces: 'Four rooms, so ceremonies, the break and the reception can each have their own room, with the rooftop for cocktails. One review says other events can share the building.',
-    rain: 'Everything is indoors except the rooftop.',
-    ready: 'Preparation suite included. A 2024 review said it isn’t separated from other events.',
-    hours: 'Not published. Ask.',
-    southAsian: 'Not mentioned anywhere. Event listings say outside caterers are allowed, which would open up an Indian caterer. A big ballroom suits a large Indian reception.',
-    fee: 'Not published. WeddingWire’s average estimate is $20,700. Bar from $35/guest.',
-    est: null,
-    estNote: 'Need a quote. WeddingWire’s $20,700 average is a rough estimate, not a quote.',
-    catering: 'In-house catering. Cvent and Eventective listings say outside caterers are allowed; confirm the fee.',
-    alcohol: 'Licensed in-house bar from $35/guest.',
-    rP: 0, rA: 0,
-    pros: 'Room for any guest count, and separate rooms for each part of the day. Closest to Dulles and hotels. No rain risk.',
-    cons: 'Least nature. Reviews are split (The Knot 2.8/5): surprise fees, deposit disputes, slow communication. One review cites a 300-guest minimum for the main ballroom and a $1,500 fee for outside AV.',
-    ask: 'Guest minimum for each room.\nCan we bring an Indian caterer, and what’s the fee?\nHours included and end time.\nWill another event be in the building that day?\nThe full fee list in writing.',
-    notes: '',
-    sources: 'Their venue page https://www.thebellevueva.com/venue\nWeddingWire reviews https://www.weddingwire.com/reviews/the-bellevue-conference-event-center-chantilly/36d8971de5aa945c.html\nThe Knot https://www.theknot.com/marketplace/the-bellevue-conference-and-event-center-chantilly-va-966008\nCvent room list https://www.cvent.com/venues/fairfax/banquet-facility/the-bellevue-conference-event-center/venue-0a3d82a7-b86e-43e2-8247-35a2f861cb9a'
-  }
-];
-
-/* Second batch: the Loudoun County shortlist from our September planning guide. */
-function V(o) { return Object.assign({ status: 'Researching', tour: '', est: null, estNote: '', rP: 0, rA: 0, notes: '', contact: '', rain: '', ready: '', hours: '' }, o); }
-var SEED2 = [
-  V({ id: 'lansdowne-resort', order: 4, name: 'Lansdowne Resort', url: 'https://lansdowneresort.com/weddings/indian/',
-    contact: '703-729-8400\nRFP form: https://lansdowneresort.com/weddings/rfp/',
-    town: 'Leesburg, VA\n44050 Woodridge Pkwy', drive: 'About 15 min from Ashburn (rough estimate)',
-    setting: 'Full resort above the Potomac with golf, spa, pool and landscaped grounds. Guests can stay on site and spend the break there.',
-    capacity: 'Up to 500 seated, venue-wide.',
-    spaces: 'Ballrooms, terrace and an outdoor pavilion; enough rooms to give the sangeet, mandap, western ceremony and reception each their own space.',
-    ready: 'Hotel suites on site.',
-    hours: 'Events 6am to midnight.',
-    southAsian: 'Best on paper: a dedicated 2-day Indian wedding package (sangeet, ceremony, lunch, reception) and a team that coordinates baraat through vidaai. Catering partners cover North Indian, South Indian, Gujarati and fusion. Havan not mentioned.',
-    fee: 'Rental from $1,800, ceremony fee from $2,500, packages from $195/guest, food and beverage minimum from $8,500 (Here Comes the Guide). Varies by day, season and space.',
-    estNote: 'Need their 2-day package sheet. Packages from $195/guest suggest roughly $30k+ for the wedding day alone at 150; our September estimate was $60–75k for both days.',
-    catering: 'In-house, or an outside caterer from their pre-approved list for South Asian weddings.',
-    alcohol: 'In-house only.',
-    pros: 'Built for a 2-day Indian wedding. Guests stay, eat and spend the break on site. Close to Ashburn.',
-    cons: 'Resort pricing; likely the most expensive in Loudoun. Hotel feel more than estate.',
-    ask: 'Written 2-day proposal at 150 guests.\nWhich Indian caterers are on the approved list?\nHavan indoors?\nBaraat route and horse.\nRoom block rates.',
-    notes: 'Top pick (premium) in our September planning guide.',
-    sources: 'Lansdowne Indian weddings page https://lansdowneresort.com/weddings/indian/\nHere Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/lansdowne-resort' }),
-  V({ id: 'rose-hill-manor', order: 5, name: 'Rose Hill Manor', url: 'https://www.herecomestheguide.com/wedding-venues/virginia/rose-hill-manor',
-    town: 'Leesburg, VA\n42140 Raspberry Plain Ln', drive: 'About 20 min from Ashburn (rough estimate)',
-    setting: '23-acre Jeffersonian-style estate with mountain views, brick patio and a white pergola.',
-    capacity: '200 seated indoors, 250 outdoors.',
-    spaces: 'Grand Ballroom (24-ft ceilings), brick patio, pergola for ceremonies. Our September notes said two ballrooms; current listings only mention one, so confirm.',
-    hours: 'Package timing: 2 hrs setup, 5 hrs event, 2 hrs cleanup. Extra time needed for a full wedding day.',
-    southAsian: 'Good fit: the in-house caterer, Gala Cuisine, does Indian, Pakistani, Afghan and Iranian menus. Baraat and havan not mentioned.',
-    fee: 'Rental from $19,500 à la carte. Silver and Gold packages fold the rental into a per-guest rate (not published).',
-    estNote: 'Need a quote. Our September estimate was $45–55k for venue and food across both days.',
-    catering: 'In-house through Gala Cuisine (American, Indian, Pakistani, Afghan, Iranian).',
-    alcohol: 'In-house bar; bartenders included in packages.',
-    ready: 'Thompson Farm House on the property sleeps up to 14 (extra fee).',
-    pros: 'Indian menus from the in-house caterer. Estate and lawn for the outdoor moments. Family can stay on site. Same owner as Raspberry Plain, so tour both the same day.',
-    cons: '200 indoor capacity leaves little room above 150 with a dance floor. Only 5 event hours in the base package.',
-    ask: 'Per-guest Gold package price at 150.\nOne or two ballrooms?\nHow many hours can we book?\nHavan indoors, baraat with horse.\nFarm House price for both nights.',
-    notes: 'Value pick in our September planning guide.',
-    sources: 'Here Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/rose-hill-manor\nWeddingWire https://weddingwire.com/biz/rose-hill-manor-leesburg/a1967a7a5eb14c93.html' }),
-  V({ id: 'stone-tower-winery', order: 6, name: 'Stone Tower Winery', url: 'https://www.stonetowerwinery.com/',
-    contact: '703-777-2797',
-    town: 'Leesburg, VA\n19925 Hogback Mountain Rd', drive: 'About 25–30 min from Ashburn (rough estimate)',
-    setting: 'Hilltop vineyard estate with a pond and Bull Run Mountain views.',
-    capacity: '10 to 250 guests. Harvest Barn upstairs seats 175 for dinner.',
-    spaces: 'Vineyard View Ballroom, two-level Harvest Barn, pond ceremony site, Tank Room, farmhouse and cottage.',
-    ready: 'Bridal suite included; farmhouse for getting ready.',
-    southAsian: 'Has hosted Hindu ceremonies with a mandap and baraat (reviews and photos). Bring your own Indian caterer.',
-    fee: 'Venue from $9,000 off-peak, $15,000 peak (Apr–Nov). Couples typically spend about $17,000 at peak (WeddingWire). No ceremony fee.',
-    estNote: 'Venue fee only (~$15–17k at peak); catering and bar are separate.',
-    catering: 'No in-house catering. Preferred list, or any licensed and insured caterer, so an Indian caterer works.',
-    alcohol: 'Their own wines. Ask whether beer and liquor are allowed.',
-    pros: 'Highly rated (4.9 from 238 WeddingWire reviews). Real nature. Free choice of caterer. Indian weddings done here before.',
-    cons: 'Wine-focused bar may not suit a full open bar. Farther west than the Leesburg estates. Popular, so fall 2027 Saturdays go fast.',
-    ask: 'Is beer and liquor allowed?\nHavan indoors or by the pond?\nIndoor space for a ceremony and a separate reception?\nEnd time and hours included.',
-    notes: 'Tier 1 in our September planning guide.',
-    sources: 'WeddingWire, 4.9 from 238 reviews https://www.weddingwire.com/biz/stone-tower-winery-leesburg/de0dc1ab1c82059a.html' }),
-  V({ id: 'raspberry-plain-manor', order: 7, name: 'Raspberry Plain Manor', url: 'https://www.herecomestheguide.com/wedding-venues/virginia/raspberry-plain-manor',
-    contact: '703-369-3638',
-    town: 'Leesburg, VA\n16500 Agape Ln', drive: 'About 20 min from Ashburn (rough estimate)',
-    setting: 'Historic estate with a front lawn, gardens, and a stone patio with pergola.',
-    capacity: '300 seated indoors or outdoors.',
-    spaces: 'Conservatory Ballroom with floor-to-ceiling windows, stone patio and pergola, front lawn for ceremonies.',
-    hours: 'Package timing: 2 hrs setup, 5 hrs event, 2 hrs cleanup.',
-    southAsian: 'Same in-house caterer as Rose Hill (Gala Cuisine) with Indian and Pakistani menus.',
-    fee: 'Rental from $19,500 à la carte; packages fold it into a per-guest rate (not published).',
-    estNote: 'Need a quote. Same owner and pricing structure as Rose Hill Manor.',
-    catering: 'In-house through Gala Cuisine. Listing is unclear on outside caterers; confirm.',
-    alcohol: 'In-house bar.',
-    ready: 'On-site farmhouse for overnight stays (extra fee).',
-    pros: 'More room than Rose Hill (300). Glass-walled ballroom brings the outside in. Indian menus.',
-    cons: 'Only 5 event hours in the base package. Pricing not published.',
-    ask: 'Per-guest package price at 150.\nHow many hours can we book?\nHavan indoors.\nCompare directly against Rose Hill.',
-    notes: 'Tier 2 in our September planning guide. Sister property to Rose Hill Manor.',
-    sources: 'Here Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/raspberry-plain-manor' }),
-  V({ id: 'belmont-country-club', order: 8, name: 'Belmont Country Club', url: 'https://zola.com/wedding-vendors/wedding-venues/belmont-country-club--2',
-    town: 'Ashburn, VA\n19661 Belmont Manor Ln', drive: 'About 5 min from Ashburn',
-    setting: 'Historic manor house and clubhouse on a golf course.',
-    capacity: 'Grand Ballroom up to 250 seated.',
-    spaces: 'Grand Ballroom, Historic Manor House, golf course grounds.',
-    ready: 'Bridal suite and a groom’s suite.',
-    southAsian: 'Not mentioned. Club venues are often strict about outside food; ask about an Indian caterer.',
-    fee: 'Weddings from $8,000 off-peak, $10,000 peak. Packages $112–155 per guest (Zola).',
-    est: 26000,
-    estNote: 'Rough: 150 guests at the top $155 package plus about 12% for tax and service. Before decor and Indian food.',
-    catering: 'In-house; packages include food. Outside caterer policy not published.',
-    alcohol: 'Packages include a 4-hour bar: beer and wine, call brands, or premium.',
-    pros: 'Closest to home. Packages look affordable. Manor and grounds for the baraat and photos.',
-    cons: 'Golf-club feel. Indian food likely needs a workaround. Only 2 reviews.',
-    ask: 'Can we bring an Indian caterer, or does the chef cook Indian?\nHavan indoors.\nBaraat on the grounds.\nHours and end time.',
-    notes: 'Tier 2 in our September planning guide.',
-    sources: 'Zola listing https://zola.com/wedding-vendors/wedding-venues/belmont-country-club--2' }),
-  V({ id: 'national-conference-center', order: 9, name: 'The National Conference Center', url: 'https://www.conferencecenter.com/weddings',
-    contact: 'Sales 703-724-5111',
-    town: 'Leesburg (Lansdowne), VA\n18665 Conference Center Dr', drive: 'About 15 min from Ashburn (rough estimate)',
-    setting: 'Large conference campus with grounds, next door to Lansdowne. More function than charm.',
-    capacity: '25-guest minimum, up to 1,200 in the largest ballroom.',
-    spaces: 'West Belmont Place ballroom (16,500 sq ft) plus many smaller rooms.',
-    ready: 'Bridal suite; guest rooms on campus.',
-    southAsian: 'Says it specializes in cultural weddings but doesn’t name Indian ones. Outside vendors are listed as allowed; confirm for catering.',
-    fee: 'Site fee from $500 (reception) and $1,000 (ceremony). Bar from $14/guest (WeddingWire).',
-    estNote: 'Need a quote. Useful as a price benchmark against Lansdowne.',
-    catering: 'In-house chef. Outside vendors listed; outside caterer policy unclear.',
-    alcohol: 'In-house bar; outside alcohol listed as an option.',
-    pros: 'Low site fees, lots of space, rooms on site.',
-    cons: 'Conference-center feel. Few recent reviews.',
-    ask: 'Indian caterer allowed?\nHavan indoors.\nPackage price at 150 for both days.',
-    notes: 'Tier 2 in our September planning guide.',
-    sources: 'Their weddings page https://www.conferencecenter.com/weddings\nWeddingWire https://www.weddingwire.com/biz/west-belmont-place-at-the-national-conference-center-leesburg/b4d820d9d6ce5cc3.html' }),
-  V({ id: 'westfields-marriott', order: 10, name: 'Westfields Marriott', url: 'https://www.weddingwire.com/biz/westfields-marriott-washington-dulles-chantilly/f934b806d61cfda4.html',
-    contact: '703-818-0400',
-    town: 'Chantilly, VA\n14750 Conference Center Dr', drive: 'About 20 min from Ashburn (rough estimate)',
-    setting: 'Large hotel with a ballroom and outdoor terrace. Little nature.',
-    capacity: '250-guest minimum (WeddingWire), up to about 500–600.',
-    spaces: 'Grand Dominion Ballroom, Fairfax Room, Sunset Terrace and one more space.',
-    ready: 'Get-ready rooms and a bridal suite; hotel rooms on site.',
-    southAsian: 'Very experienced with Indian weddings; baraats in their photos, and an Indian caterer (IndAroma) is a preferred vendor.',
-    fee: 'All-inclusive packages from about $17,300–$22,000; couples usually spend $25–28k. Ceremony fee $2,000–2,500.',
-    estNote: 'Need a quote. The 250-guest minimum may mean paying for 100 people we don’t invite.',
-    catering: 'In-house; IndAroma listed as a preferred Indian caterer.',
-    alcohol: 'In-house bar packages.',
-    pros: 'Indian weddings are routine here. Hotel on site. Strong reviews (4.7 from 180).',
-    cons: '250-guest minimum is well above our 150. Hotel feel, not nature.',
-    ask: 'Is the 250 minimum firm, or is there a smaller room for 150?\nIndAroma package pricing.\nHavan indoors.',
-    notes: 'Fallback in our September planning guide if the estates fail on catering or fire rules.',
-    sources: 'WeddingWire, 4.7 from 180 reviews https://www.weddingwire.com/biz/westfields-marriott-washington-dulles-chantilly/f934b806d61cfda4.html' }),
-  V({ id: 'airlie', order: 11, name: 'Airlie', url: 'https://www.herecomestheguide.com/wedding-venues/virginia/airlie',
-    town: 'Warrenton, VA\n6809 Airlie Rd', drive: 'About 45 min from Ashburn (rough estimate)',
-    setting: '300-acre farm with gardens, lakes and an octagonal stone Pavilion; lodging in cottages on the grounds.',
-    capacity: '180 max (ceremony or reception).',
-    spaces: 'Gardens for ceremonies, the Pavilion for receptions, other indoor rooms.',
-    ready: 'Two dressing suites with the ceremony fee; overnight room for the couple included.',
-    hours: '5 hours of event time in the rental; ceremony adds an hour.',
-    southAsian: 'Unclear. In-house farm-to-table catering; ask whether the chef cooks Indian or allows a co-caterer.',
-    fee: 'Rental $750–6,000, ceremony $750–2,500, packages from $135/guest, food and beverage minimum $6,000–20,000, 22% service. 25% off rental for select dates booked by Mar 31, 2027.',
-    est: 30000,
-    estNote: 'Rough: 150 guests at $135/guest + rental + ceremony fee + 22% service and tax. Before Indian food changes.',
-    catering: 'In-house.',
-    alcohol: 'In-house; packages include a 4-hour open bar.',
-    pros: 'The most nature and a real weekend feel with guests on site. Current booking promotion.',
-    cons: '45 min from Ashburn. 180 max is tight. Indian food is the open question.',
-    ask: 'Indian menu or co-caterer?\nHavan and baraat.\nWhich 2027 dates the 25% offer covers.',
-    notes: 'Tier 3 in our September planning guide.',
-    sources: 'Here Comes the Guide https://www.herecomestheguide.com/wedding-venues/virginia/airlie' }),
-  V({ id: 'morais-vineyards', order: 12, name: 'Morais Vineyards', url: 'https://moraisvineyards.com/',
-    town: 'Bealeton, VA\n11409 Marsh Rd', drive: 'About 55 min from Ashburn (rough estimate)',
-    setting: 'Portuguese-style vineyard estate.',
-    capacity: 'Up to 250.',
-    spaces: 'Six event spaces, including the Palacio ballroom.',
-    ready: 'Bridal suite included.',
-    southAsian: 'Commonly used for Indian weddings in the region (our September notes); listings don’t mention it. Industrial kitchen for an outside caterer.',
-    fee: 'Venue from $5,600 off-peak, $7,500 peak. Reception site fee $7,000–11,000, ceremony $750. Couples typically spend $9,500–11,500 (WeddingWire).',
-    estNote: 'Venue only (~$11.5k at peak); catering and bar separate.',
-    catering: 'Outside caterer from their vendor list; on-site kitchen available.',
-    alcohol: 'Their wines; reviewers mention strict wine rules.',
-    pros: 'Low venue cost. Big, flexible spaces. Strong reviews (4.8 from 176).',
-    cons: 'Almost an hour from Ashburn. Strict vendor and wine rules.',
-    ask: 'Which Indian caterers are on their list?\nBeer and liquor allowed?\nHavan and baraat.',
-    notes: 'Tier 3 in our September planning guide.',
-    sources: 'WeddingWire, 4.8 from 176 reviews https://www.weddingwire.com/biz/morais-vineyards-winery-bealeton/6e8ea625b4496aec.html' }),
-  V({ id: 'salamander-middleburg', order: 13, name: 'Salamander Middleburg', url: 'https://www.salamanderresort.com/celebrate/weddings',
-    town: 'Middleburg, VA\n500 N Pendleton St', drive: 'About 35 min from Ashburn (rough estimate)',
-    setting: 'Luxury resort with an equestrian center, culinary garden and a grand lawn in hunt country.',
-    capacity: 'Middleburg Ballroom 340 seated; Grand Lawn 330; Equestrian Center 150.',
-    spaces: 'Ballroom (divisible in three), foyer, terrace tent, lawn, equestrian center, culinary garden.',
-    ready: '168 rooms and suites on site.',
-    southAsian: 'Not mentioned. All-inclusive; ask about Indian menus.',
-    fee: 'Weddings from $30,000 (Zola).',
-    estNote: 'Likely pushes the whole wedding past $185k for two days; only if the budget changes.',
-    catering: 'In-house, all-inclusive.',
-    alcohol: 'In-house.',
-    pros: 'Stunning grounds; guests stay on site.',
-    cons: 'Price. In-house only catering.',
-    ask: 'Indian menu or approved Indian caterer.\nPrice at 150 for both days.',
-    notes: 'Tier 3 in our September planning guide: beautiful, but likely over budget.',
-    sources: 'Zola listing https://zola.com/wedding-vendors/wedding-venues/salamander-resort-spa' })
-];
-
-function seedBatch2(existing) {
-  var have = {};
-  existing.forEach(function (v) { have[(v.name || '').trim().toLowerCase()] = true; });
-  var todo = SEED2.filter(function (s) { return !have[s.name.toLowerCase()]; });
-  return runTransaction(db, async function (tx) {
-    var meta = doc(db, 'meta', 'weddingVenues2');
-    if ((await tx.get(meta)).exists()) return false;
-    var snaps = [];
-    for (var i = 0; i < todo.length; i++) snaps.push(await tx.get(doc(db, COLL, todo[i].id)));
-    todo.forEach(function (s, i) {
-      if (snaps[i].exists()) return;
-      var d = Object.assign({}, s); delete d.id;
-      d.createdAt = serverTimestamp(); d.updatedAt = serverTimestamp(); d.updatedBy = null;
-      tx.set(doc(db, COLL, s.id), d);
-    });
-    tx.set(meta, { seeded: true, at: serverTimestamp() });
-    return true;
-  });
-}
-
 /* ---------- state ---------- */
 var venues = [];
 var me = '';
@@ -640,12 +362,6 @@ var fullText = loadPref('wv-full', false);
 var filterVal = 'all';
 var query = '';
 var unsub = null;
-var batch2Tried = false, seededReady = false, serverSeen = false;
-function maybeBatch2() {
-  if (batch2Tried || !seededReady || !serverSeen) return;
-  batch2Tried = true;
-  seedBatch2(venues).catch(function (e) { if (isDenied(e)) denied(); else console.error(e); });
-}
 var drawerId = null;
 var editor = null;
 var active = { r: 0, c: 0 };
@@ -1249,20 +965,6 @@ document.getElementById('filter').addEventListener('change', function (e) { filt
 function renderAll() { renderHero(); renderFilter(); renderSheet(); if (drawerId) fillDrawer(); }
 
 /* ---------- data ---------- */
-function seedOnce() {
-  return runTransaction(db, async function (tx) {
-    var meta = doc(db, 'meta', 'weddingVenues');
-    if ((await tx.get(meta)).exists()) return false;
-    SEED.forEach(function (s) {
-      var d = Object.assign({}, s); delete d.id;
-      d.createdAt = serverTimestamp(); d.updatedAt = serverTimestamp(); d.updatedBy = null;
-      tx.set(doc(db, COLL, s.id), d);
-    });
-    tx.set(meta, { seeded: true, at: serverTimestamp() });
-    return true;
-  });
-}
-
 buildDrawerBody();
 renderGroups();
 
@@ -1270,14 +972,11 @@ startGate({
   onSignedIn: function (user) {
     me = user.email || '';
     if (unsub) { unsub(); unsub = null; }
-    batch2Tried = false; seededReady = false; serverSeen = false;
-    seedOnce().then(function () { seededReady = true; maybeBatch2(); }, function (e) { if (isDenied(e)) denied(); else console.error(e); });
     unsub = onSnapshot(collection(db, COLL), function (snap) {
       var list = [];
       snap.forEach(function (d) { var v = d.data(); v.id = d.id; list.push(v); });
       venues = list;
       renderAll();
-      if (!snap.metadata || !snap.metadata.fromCache) { serverSeen = true; maybeBatch2(); }
       if (editor && !venues.some(function (v) { return v.id === editor.id; })) closeEditor(false);
     }, report);
   },
