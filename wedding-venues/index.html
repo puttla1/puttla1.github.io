@@ -104,12 +104,23 @@ main{padding:30px 16px 72px}
 .err{color:var(--rani);font-size:14px;min-height:0;margin:0}
 
 /* The sheet */
-.sheet{position:relative;overflow:auto;max-height:calc(100dvh - 96px);border:1px solid var(--line);border-radius:12px;background:var(--surface);overscroll-behavior:contain}
-table{border-collapse:separate;border-spacing:0;table-layout:fixed;width:max-content;min-width:100%}
+.sheet{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+/* The page does the vertical scrolling; the header strip sticks to the top of the window,
+   and the three strips (header, rows, scrollbar) scroll sideways together. */
+.sh-head{position:sticky;top:0;z-index:6;overflow-x:auto;overflow-y:hidden;background:var(--surface);border-radius:12px 12px 0 0;border-bottom:1px solid var(--line);scrollbar-width:none}
+.sh-body{overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.sh-head::-webkit-scrollbar,.sh-body::-webkit-scrollbar{display:none}
+.sh-bar{display:none;position:sticky;bottom:0;z-index:6;overflow-x:auto;overflow-y:hidden;background:var(--surface);border-top:1px solid var(--line);border-radius:0 0 12px 12px}
+.sheet.wide .sh-bar{display:block}
+.sh-spacer{height:1px}
+@media (pointer:coarse){.sheet.wide .sh-bar{display:none}}
+td{scroll-margin-top:84px}
+td:not(.namecol){scroll-margin-left:240px}
+table{border-collapse:separate;border-spacing:0;table-layout:fixed}
 th,td{border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);text-align:left;vertical-align:top}
-thead th{position:sticky;background:var(--surface);z-index:2}
-thead tr.g th{top:0;height:32px;padding:6px 12px;font-family:var(--f-display);font-weight:700;font-size:15px;border-bottom:0}
-thead tr.c th{top:32px;padding:0;border-bottom:1px solid var(--line);font-size:12.5px;font-weight:600;color:var(--muted)}
+thead th{background:var(--surface)}
+thead tr.g th{height:32px;padding:6px 12px;font-family:var(--f-display);font-weight:700;font-size:15px;border-bottom:0}
+thead tr.c th{padding:0;border-bottom:0;font-size:12.5px;font-weight:600;color:var(--muted)}
 thead tr.c th button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:6px;width:100%;padding:6px 12px 8px;cursor:pointer}
 thead tr.c th button:hover{color:var(--ink)}
 thead tr.c th button:focus-visible{outline:2px solid var(--marigold);outline-offset:-2px}
@@ -117,7 +128,7 @@ thead tr.c th button:focus-visible{outline:2px solid var(--marigold);outline-off
 th[aria-sort="ascending"] .arrow,th[aria-sort="descending"] .arrow{opacity:1;color:var(--ink)}
 .gstart{border-left:2px solid var(--line)}
 .namecol{position:sticky;left:0;z-index:1;background:var(--surface);width:230px;min-width:230px;max-width:230px;border-right:1px solid var(--line)}
-thead th.namecol{z-index:4;vertical-align:bottom}
+thead th.namecol{z-index:2;vertical-align:bottom}
 td{padding:10px 12px;font-size:14px;cursor:text}
 td:not(.namecol):hover{background:var(--cell-hover)}
 td:focus{outline:2px solid var(--marigold);outline-offset:-2px}
@@ -211,7 +222,7 @@ dialog .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
   .namecol{width:150px;min-width:150px;max-width:150px}
   .vname{font-size:16px}
   td{padding:9px 10px;font-size:13.5px}
-  .sheet{max-height:calc(100dvh - 60px)}
+  td:not(.namecol){scroll-margin-left:160px}
   .search{max-width:none}
 }
 @media (prefers-reduced-motion:reduce){.drawer,.dscrim{transition:none}}
@@ -844,11 +855,26 @@ function cellContent(v, c) {
   return box;
 }
 
+function nameW() { return window.matchMedia('(max-width: 720px)').matches ? 150 : 230; }
+function colgroupFor(cols) {
+  var cg = el('colgroup');
+  var c0 = el('col'); c0.style.width = nameW() + 'px'; cg.appendChild(c0);
+  cols.forEach(function (c) { var col = el('col'); col.style.width = c.w + 'px'; cg.appendChild(col); });
+  return cg;
+}
+var sheetParts = null;
+function syncScroll(src) {
+  if (!sheetParts) return;
+  var x = src.scrollLeft;
+  [sheetParts.head, sheetParts.body, sheetParts.bar].forEach(function (e) { if (e !== src && Math.abs(e.scrollLeft - x) > 0.5) e.scrollLeft = x; });
+}
+
 function renderSheet() {
   var sheet = document.getElementById('sheet');
-  var keepScroll = { x: sheet.scrollLeft, y: sheet.scrollTop };
+  var keepX = sheetParts ? sheetParts.body.scrollLeft : 0;
   var hadFocus = sheet.contains(document.activeElement) && document.activeElement.tagName === 'TD';
   sheet.textContent = '';
+  sheetParts = null;
   sheet.classList.toggle('full', !!fullText);
   var cols = visibleCols();
   var list = rows();
@@ -862,13 +888,13 @@ function renderSheet() {
     sheet.appendChild(e); return;
   }
 
-  var table = el('table');
-  table.setAttribute('aria-label', 'Wedding venues');
-  var cg = el('colgroup');
-  var c0 = el('col'); cg.appendChild(c0);
-  cols.forEach(function (c) { var col = el('col'); col.style.width = c.w + 'px'; cg.appendChild(col); });
-  table.appendChild(cg);
+  var totalW = nameW() + cols.reduce(function (s, c) { return s + c.w; }, 0);
 
+  /* Header lives in its own strip that sticks to the top of the window while the page scrolls. */
+  var headTable = el('table');
+  headTable.setAttribute('aria-hidden', 'false');
+  headTable.style.width = totalW + 'px';
+  headTable.appendChild(colgroupFor(cols));
   var thead = el('thead');
   var trg = el('tr', 'g'), trc = el('tr', 'c');
   var thName = el('th', 'namecol'); thName.rowSpan = 2; thName.scope = 'col';
@@ -893,8 +919,12 @@ function renderSheet() {
     b.addEventListener('click', function () { toggleSort(c.k); });
     th.appendChild(b); trc.appendChild(th);
   });
-  thead.appendChild(trg); thead.appendChild(trc); table.appendChild(thead);
+  thead.appendChild(trg); thead.appendChild(trc); headTable.appendChild(thead);
 
+  var table = el('table');
+  table.setAttribute('aria-label', 'Wedding venues');
+  table.style.width = totalW + 'px';
+  table.appendChild(colgroupFor(cols));
   var tbody = el('tbody');
   if (active.r >= list.length) active.r = Math.max(0, list.length - 1);
   if (active.c > cols.length) active.c = cols.length;
@@ -922,8 +952,16 @@ function renderSheet() {
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
-  sheet.appendChild(table);
-  sheet.scrollLeft = keepScroll.x; sheet.scrollTop = keepScroll.y;
+
+  var head = el('div', 'sh-head'); head.appendChild(headTable);
+  var body = el('div', 'sh-body'); body.appendChild(table);
+  var bar = el('div', 'sh-bar'); var spacer = el('div', 'sh-spacer'); spacer.style.width = totalW + 'px'; bar.appendChild(spacer);
+  bar.setAttribute('aria-hidden', 'true'); bar.tabIndex = -1;
+  sheet.appendChild(head); sheet.appendChild(body); sheet.appendChild(bar);
+  sheetParts = { head: head, body: body, bar: bar };
+  [head, body, bar].forEach(function (e) { e.addEventListener('scroll', function () { syncScroll(e); }, { passive: true }); });
+  body.scrollLeft = keepX; syncScroll(body);
+  sheet.classList.toggle('wide', body.scrollWidth > body.clientWidth + 1);
   if (hadFocus && !editor) focusActive();
 }
 
@@ -1049,7 +1087,14 @@ function closeEditor(commit) {
   ed.box.remove(); ed.scrim.remove();
   focusActive();
 }
-window.addEventListener('resize', function () { closeEditor(true); });
+var lastNameW = null;
+window.addEventListener('resize', function () {
+  closeEditor(true);
+  var w = nameW();
+  if (lastNameW !== null && w !== lastNameW && document.body.dataset.auth === 'in') renderSheet();
+  lastNameW = w;
+  if (sheetParts) document.getElementById('sheet').classList.toggle('wide', sheetParts.body.scrollWidth > sheetParts.body.clientWidth + 1);
+});
 
 /* ---------- drawer ---------- */
 var drawer = document.getElementById('drawer'), dscrim = document.getElementById('dscrim');
