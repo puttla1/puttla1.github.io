@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Weekends">
+<title>Weekends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/weekends/weekend.css">
+<link rel="icon" href="/icons/calendar.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/calendar-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/calendar-180.png">
+</head>
+<body data-auth="loading">
+<div data-show="loading"><div class="wrap panel top"><p>Loading…</p></div></div>
+<div data-show="out"><div class="wrap panel top">
+  <a class="back" href="/">Puneeth &amp; Alaina</a>
+  <h1>Weekends</h1>
+  <p>Just for Puneeth and Alaina. Sign in with the Google account you use for the grocery list.</p>
+  <button class="btn primary js-signin" type="button">Sign in with Google</button>
+</div></div>
+<div data-show="denied"><div class="wrap panel top">
+  <h1>Weekends</h1>
+  <p><span class="who"></span> doesn’t have access to this page.</p>
+  <button class="btn js-signout" type="button">Use a different account</button>
+</div></div>
+<main data-show="in">
+  <div class="wrap top">
+    <a class="back" href="/">Puneeth &amp; Alaina</a>
+    <h1>Weekends</h1>
+    <p class="summary">A plan for each weekend: timetable, checklist, directions. Tap one to follow along.</p>
+    <p class="err" id="err" role="alert"></p>
+    <div id="list"></div>
+  </div>
+  <footer class="wrap"><button class="btn small ghost js-signout" type="button">Sign out</button> <span class="who"></span></footer>
+</main>
+<script type="module">
+import { bootHub } from '/weekends/weekend.js';
+bootHub();
+</script>
+</body>
+</html>

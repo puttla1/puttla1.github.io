@@ -17,6 +17,7 @@ Each page lives in its own folder as `index.html`:
 | `birthday-weekend/index.html` | puneeth-alaina.com/birthday-weekend |
 | `print-studio/index.html` | puneeth-alaina.com/print-studio |
 | `wedding-venues/index.html` | puneeth-alaina.com/wedding-venues |
+| `weekends/index.html` | puneeth-alaina.com/weekends (one subfolder per weekend, e.g. `weekends/2026-10-17/`) |
 | `fitness/index.html` | puneeth-alaina.com/fitness (unlisted: not linked from the home page) |
 
 To add a page: create `new-page-name/index.html` (a complete HTML document) and add a link to it in the root `index.html`.
@@ -43,3 +44,7 @@ Collections: `fitnessLog` (one doc per logged item, keyed by `wd` = person_date)
 ## Wedding venues (`wedding-venues/`)
 
 Collection `weddingVenues`, one doc per venue. Text fields are free text; `est` is a number (rough all-in cost) with `estNote`; `rP`/`rA` are 0–5 star ratings; `tour` is a local `YYYY-MM-DDTHH:MM` string. All venue data lives only in Firestore; the page holds no venue content. (The original 13 venues were imported once in Oct 2026; the import code has since been removed.) Columns are defined in the `COLS` list at the top of the page script.
+
+## Weekends (`weekends/`)
+
+Signed-in only. `weekend.js` and `weekend.css` are shared; each weekend is a folder named by its Saturday date holding a small `index.html` shell. Collection `weekends`, one doc per weekend (id = folder name) with `days`, `items` (timetable), `todos`, `week` (cleaning plan), `places`, `notes`. No plan content is committed: a new weekend ships as an AES-GCM-encrypted `seed.json`, and the key only lives in a one-time setup link (`#k=…`). The first signed-in open with that link writes the plan to Firestore; after that `seed.json` can be deleted.
