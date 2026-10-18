@@ -73,8 +73,10 @@ export function progress(w) {
   return { done, total };
 }
 
-const WHO = { A: 'Alaina', P: 'Puneeth' };
+const WHO = { A: 'Alaina', P: 'Puneeth', S: 'Sri & Sudhamsh' };
 function whoBadge(w) { return WHO[w] ? h('span', { class: 'badge ' + w, text: WHO[w] }) : null; }
+// Only plain https links from the plan are turned into anchors.
+function extLinks(list) { return (list || []).filter(l => l && l.label && /^https:\/\//.test(l.href || '')); }
 function uid(p) { return p + Math.random().toString(36).slice(2, 9); }
 
 /* ---------- seed decryption ---------- */
@@ -110,9 +112,11 @@ export function bootWeekend(id) {
   async function loadWeather() {
     if (wxLoaded || !data.weather) return; wxLoaded = true;
     const w = data.weather;
+    // A plan can cover prep days too; weather.start/end narrow the forecast to the days that matter.
+    const ws = w.start || data.start, we = w.end || data.end || data.start;
     const u = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lon}` +
       `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code` +
-      `&temperature_unit=fahrenheit&timezone=America%2FChicago&start_date=${data.start}&end_date=${data.end || data.start}`;
+      `&temperature_unit=fahrenheit&timezone=America%2FChicago&start_date=${ws}&end_date=${we}`;
     try {
       const r = await fetch(u); if (!r.ok) return;
       const j = await r.json(); wx = j.daily; render();
@@ -146,6 +150,12 @@ export function bootWeekend(id) {
       return { done: true };
     }
     if (t > (data.end || data.start)) return { over: true };
+    // A day in the range with nothing planned (e.g. Wednesday of a race week): show the next planned day.
+    for (const d of days) {
+      if (d.date <= t) continue;
+      const n = itemsFor(d.id).find(i => !i.done);
+      if (n) return { item: n, label: `Coming up · ${d.name}, ${dayLabel(d.date)}` };
+    }
     return null;
   }
 
@@ -157,7 +167,7 @@ export function bootWeekend(id) {
     const scrollY = window.scrollY;
     const days = data.days || [];
     if (!selDay || !days.some(d => d.id === selDay)) {
-      const t = todayISO(); selDay = (days.find(d => d.date === t) || days[0] || {}).id;
+      const t = todayISO(); selDay = (days.find(d => d.date === t) || days.find(d => d.date > t) || days[0] || {}).id;
     }
     document.title = `${rangeLabel(data.start, data.end)} · Weekend`;
     const pr = progress(data);
@@ -188,12 +198,14 @@ export function bootWeekend(id) {
 
     /* section nav */
     frag.append(h('nav', { class: 'snav', 'aria-label': 'Sections' }, h('div', { class: 'wrap' },
-      h('a', { href: '#plan', text: 'Timetable' }), h('a', { href: '#checklist', text: 'Checklist' }),
+      h('a', { href: '#plan', text: 'Timetable' }),
+      (data.guide || []).length ? h('a', { href: '#guide', text: 'Know before you go' }) : null,
+      h('a', { href: '#checklist', text: 'Checklist' }),
       (data.week || []).length ? h('a', { href: '#week', text: 'This week' }) : null,
       h('a', { href: '#places', text: 'Places' }), h('a', { href: '#notes-sec', text: 'Notes' }))));
 
     const main = h('div', { class: 'wrap' });
-    main.append(renderPlan(days, next), renderChecklist(), renderWeek(), renderPlaces(), renderNotes(keepNotes ? notesEl.value : null));
+    main.append(renderPlan(days, next), renderGuide(), renderChecklist(), renderWeek(), renderPlaces(), renderNotes(keepNotes ? notesEl.value : null));
     frag.append(main, h('footer', { class: 'wrap' }, 'Changes save right away and show up for both of you.'));
 
     if (keepNotes) {
@@ -202,6 +214,12 @@ export function bootWeekend(id) {
       const fresh = document.getElementById('notes'); fresh.replaceWith(old); old.focus();
     } else app.replaceChildren(frag);
     window.scrollTo(0, scrollY);
+    // With scrolling day tabs, keep the selected day in view.
+    const selTab = app.querySelector('.tabs.many .tab[aria-selected="true"]');
+    if (selTab) {
+      const bar = selTab.parentElement, r = selTab.getBoundingClientRect(), br = bar.getBoundingClientRect();
+      if (r.right > br.right || r.left < br.left) bar.scrollLeft += r.left - br.left - 16;
+    }
   }
 
   function renderNext(n) {
@@ -222,6 +240,7 @@ export function bootWeekend(id) {
       it.note ? h('p', { class: 'note', text: it.note }) : null,
       h('div', { class: 'acts' },
         pl && pl.q ? h('a', { class: 'btn primary', href: dirUrl(pl.q), target: '_blank', rel: 'noopener' }, icon(I_NAV), 'Directions') : null,
+        ...extLinks(it.links).map(l => h('a', { class: 'btn', href: l.href, target: '_blank', rel: 'noopener', text: l.label })),
         pl && !pl.q && pl.id !== 'home' ? h('button', { class: 'btn', type: 'button', onclick: () => editPlace(pl.id) }, 'Add address') : null,
         h('button', { class: 'btn', type: 'button', onclick: () => toggleItem(it.id) }, icon(I_CHECK), 'Done')));
   }
@@ -229,7 +248,7 @@ export function bootWeekend(id) {
   function renderPlan(days, next) {
     const sec = h('section', { id: 'plan', 'aria-labelledby': 'plan-h' }, h('h2', { id: 'plan-h', text: 'Timetable' }),
       h('p', { class: 'hint', text: 'Tick each stop as you go. Tap “edit” to move a time or add an address.' }));
-    const tabs = h('div', { class: 'tabs', role: 'tablist' });
+    const tabs = h('div', { class: 'tabs' + (days.length > 3 ? ' many' : ''), role: 'tablist' });
     days.forEach(d => {
       const its = itemsFor(d.id), dn = its.filter(i => i.done).length;
       tabs.append(h('button', { class: 'tab', role: 'tab', type: 'button', 'aria-selected': String(d.id === selDay),
@@ -263,6 +282,7 @@ export function bootWeekend(id) {
             pl && pl.q ? h('a', { href: dirUrl(pl.q), target: '_blank', rel: 'noopener', text: 'Directions' }) : null,
             pl && !pl.q && pl.id !== 'home' ? h('button', { class: 'edit', type: 'button', onclick: () => editPlace(pl.id), text: 'add address' }) : null,
             it.drive ? h('span', { class: 'drive', text: it.drive }) : null,
+            ...extLinks(it.links).map(l => h('a', { href: l.href, target: '_blank', rel: 'noopener', text: l.label })),
             h('button', { class: 'edit', type: 'button', onclick: () => editItem(it.id), text: 'edit' })),
           it.note ? h('p', { class: 'note', text: it.note }) : null)));
     });
@@ -271,7 +291,34 @@ export function bootWeekend(id) {
   }
 
   const DAYTAG = { sat: 'Sat', sun: 'Sun', fri: 'Fri', mon: 'Mon', week: 'This week' };
-  function dayTag(d) { const f = (data.days || []).find(x => x.id === d); return f ? f.name.slice(0, 3) : (DAYTAG[d] || ''); }
+  function dayTag(d) {
+    const f = (data.days || []).find(x => x.id === d);
+    if (f) return f.date ? DOW[parseISO(f.date).getDay()] : f.name.slice(0, 3);
+    return DAYTAG[d] || '';
+  }
+
+  /* Read-only reference cards: what was researched, with the sources to check it against. */
+  function renderGuide() {
+    const guide = data.guide || [];
+    if (!guide.length) return document.createTextNode('');
+    const sec = h('section', { id: 'guide', 'aria-labelledby': 'gd-h' }, h('h2', { id: 'gd-h', text: 'Know before you go' }),
+      data.guideHint ? h('p', { class: 'hint', text: data.guideHint }) : null);
+    const grid = h('div', { class: 'guide' });
+    guide.forEach(g => {
+      const ul = h('ul', { class: 'gpts' });
+      (g.points || []).forEach(p => ul.append(h('li', null,
+        p.lead ? h('b', { text: p.lead + ' ' }) : null, p.text || '')));
+      const links = extLinks(g.links);
+      grid.append(h('div', { class: 'card gcard' + (g.tone === 'alert' ? ' alert' : '') },
+        h('h3', { text: g.title }),
+        g.intro ? h('p', { class: 'gintro', text: g.intro }) : null,
+        ul,
+        links.length ? h('p', { class: 'glinks' }, 'Sources: ',
+          ...links.flatMap((l, i) => [i ? ' · ' : null, h('a', { href: l.href, target: '_blank', rel: 'noopener', text: l.label })])) : null));
+    });
+    sec.append(grid);
+    return sec;
+  }
 
   function renderChecklist() {
     const todos = data.todos || [];
@@ -395,7 +442,7 @@ export function bootWeekend(id) {
     dlg.replaceChildren(form); dlg.showModal();
     const first = form.querySelector('input,select,textarea'); if (first) first.focus();
   }
-  const WHO_OPTS = [['both', 'Both'], ['P', 'Puneeth'], ['A', 'Alaina']];
+  const WHO_OPTS = [['both', 'Both'], ['P', 'Puneeth'], ['A', 'Alaina'], ['S', 'Sri & Sudhamsh']];
 
   function editItem(iid, dayId) {
     const it = iid ? (data.items || []).find(i => i.id === iid) : { day: dayId, time: '', title: '', place: '', who: 'both', note: '', fixed: false };

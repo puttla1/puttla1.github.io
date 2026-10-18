@@ -87,6 +87,15 @@ h2{font-family:var(--f-display);font-weight:600;font-size:28px;line-height:1.1;m
 .tab .s{display:block;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .tab[aria-selected="true"] .s{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+/* More than three days (a race week with prep days): tabs scroll sideways instead of squeezing. */
+.tabs.many{overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px 2px;scroll-snap-type:x proximity}
+.tabs.many::-webkit-scrollbar{display:none}
+.tabs.many .tab{flex:1 0 auto;min-width:100px;padding:10px;scroll-snap-align:start}
+.tabs.many .tab .d{font-size:18px}
+@media (min-width:700px){
+  .tabs.many{flex-wrap:wrap;overflow:visible;margin:0 0 14px;padding:0}
+  .tabs.many .tab{flex:1 1 calc(33.333% - 8px);min-width:0}
+}
 .daybar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin:0 0 6px}
 .dayacts{display:flex;gap:8px;flex-wrap:wrap}
 .daybar p{margin:0;color:var(--muted);font-size:14px}
@@ -120,8 +129,22 @@ h2{font-family:var(--f-display);font-weight:600;font-size:28px;line-height:1.1;m
 .badge.A{background:var(--a-soft);color:var(--a)}
 .badge.P{background:var(--p-soft);color:var(--p)}
 .badge.fixed{background:var(--ink);color:var(--bg)}
+.badge.S{background:var(--sage-soft);color:var(--sage)}
 .drive{font-style:italic}
 .empty{color:var(--muted);font-size:15px;padding:12px 0}
+
+/* Know before you go */
+.guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px;align-items:start}
+.card.gcard h3{display:block;font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink);margin:0 0 6px;line-height:1.2}
+.gcard.alert{border-left:6px solid var(--accent)}
+.gintro{margin:0 0 8px;font-size:15px}
+.gpts{margin:0;padding:0 0 0 18px;font-size:15px}
+.gpts li{margin:7px 0;padding-left:2px}
+.gpts li::marker{color:var(--accent)}
+.gpts b{font-weight:600}
+.glinks{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.glinks a{color:var(--accent);font-weight:600;text-decoration:none}
+.glinks a:hover{text-decoration:underline}
 
 /* Checklist */
 .groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
