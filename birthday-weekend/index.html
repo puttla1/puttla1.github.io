@@ -104,6 +104,29 @@ p{margin:0}
   .corridor-m{display:block;width:100%;max-width:360px;height:auto;margin:28px 0 0}
 }
 
+/* Airbnb */
+.stay{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.stay-head{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:flex-end;justify-content:space-between;padding:18px 18px 16px;border-bottom:1px solid var(--line)}
+.stay-head h3{font-size:24px;line-height:1.15}
+.stay-head .where{color:var(--muted);font-size:15px;margin-top:4px}
+.stay-link{font-size:14px;font-weight:600;white-space:nowrap}
+.stay-times{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.stay-times div{padding:14px 18px}
+.stay-times div+div{border-left:1px solid var(--line)}
+.stay-times .lbl{display:block;font-size:13px;font-weight:600;color:var(--sage)}
+.stay-times .lbl.strict{color:var(--ember)}
+.stay-times b{display:block;font-family:var(--f-display);font-size:28px;line-height:1.1;margin-top:4px}
+.stay-times .on{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+.stay-facts{list-style:none;margin:0;padding:4px 18px}
+.stay-facts li{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:11px 0}
+.stay-facts li+li{border-top:1px dashed var(--line)}
+.stay-facts b{font-weight:600}
+.stay-facts span{color:var(--muted);font-size:15px}
+@media (max-width:620px){
+  .stay-facts li{grid-template-columns:1fr;gap:2px}
+  .stay-times b{font-size:24px}
+}
+
 /* Days */
 .day{display:grid;grid-template-columns:150px 1fr;gap:0 28px;padding:26px 0;border-top:1px solid var(--line)}
 .day:last-child{border-bottom:1px solid var(--line)}
@@ -231,6 +254,31 @@ footer li{margin:3px 0}
   </div>
 </section>
 
+<section id="stay">
+  <h2>Friday night in Austin</h2>
+  <p class="intro">Booked: a four-bedroom house in East Austin, about 5 miles from downtown, East 6th and Rainey Street, and about 4 miles from the airport.</p>
+  <div class="stay">
+    <div class="stay-head">
+      <div>
+        <h3>Spacious Home Near Downtown</h3>
+        <p class="where"><a href="https://www.google.com/maps/search/?api=1&amp;query=6002+Palm+Circle%2C+Austin%2C+TX+78741">6002 Palm Circle, Austin, TX 78741</a></p>
+      </div>
+      <a class="stay-link" href="https://www.airbnb.com/rooms/1090025945233203833">See the listing ↗</a>
+    </div>
+    <div class="stay-times">
+      <div><span class="lbl">Check in</span><b>4:00 PM</b><span class="on">Friday, Dec 4</span></div>
+      <div><span class="lbl strict">Check out · strict</span><b>11:00 AM</b><span class="on">Saturday, Dec 5</span></div>
+    </div>
+    <ul class="stay-facts">
+      <li><b>Rooms</b><span>4 bedrooms with one full-size bed each, and 3 full baths. Sleeps up to 8, two per room.</span></li>
+      <li><b>Parking</b><span>The driveway fits two compact cars. Street parking otherwise.</span></li>
+      <li><b>Inside</b><span>Full kitchen, fast Wi-Fi and a big TV in the living room. No washer or dryer.</span></li>
+      <li><b>Rules</b><span>No parties, keep it quiet, no smoking. Cameras cover the driveway and backyard. Late checkout costs $50 for every 30 minutes.</span></li>
+      <li><b>Host</b><span>Leo. Message him through the Airbnb app.</span></li>
+    </ul>
+  </div>
+</section>
+
 <section id="plan">
   <h2>The plan</h2>
   <p class="intro">A loose shape for the weekend.</p>
@@ -254,7 +302,8 @@ footer li{margin:3px 0}
       <li class="air"><time>11:59 AM</time><div><p class="what">Pick up Hariank at AUS</p></div></li>
       <li class="air"><time>12:45 PM</time><div><p class="what">Pick up Newton at AUS</p></div></li>
       <li><time>1:30 PM</time><div><p class="what">Lunch at Mission Burger Co. in Mueller</p><p class="detail">All plant-based, so the vegetarians can order anything. Open 11 AM–11 PM daily.</p></div></li>
-      <li><time>Afternoon</time><div><p class="what">Check in at the Airbnb, then South Congress and Lady Bird Lake</p><p class="detail">Our outdoor activity for the weekend.</p></div></li>
+      <li><time>2:45 PM</time><div><p class="what">South Congress and Lady Bird Lake</p><p class="detail">Our outdoor activity for the weekend. Go before check-in, since the sun sets around 5:30.</p></div></li>
+      <li><time>4:30 PM</time><div><p class="what">Check in at the Airbnb</p><p class="detail">6002 Palm Circle, East Austin. Check-in opens at 4:00. Park, drop bags and get ready for the night.</p></div></li>
       <li><time>Evening</time><div><p class="what">Night out in Austin</p><p class="detail">Dinner on the East Side, then bars on East 6th or Rainey Street. Everyone sleeps at the Airbnb, so take rideshares and nobody has to drive. Limit Shreyas to 3 drinks so he will be alive the next day.</p></div></li>
     </ul>
   </article>
@@ -262,7 +311,8 @@ footer li{margin:3px 0}
   <article class="day">
     <div class="day-head"><h3>Saturday</h3><p class="date">Dec 5</p><span class="theme">Birthday day</span></div>
     <ul class="slots">
-      <li><time>10:30 AM</time><div><p class="what">Breakfast/bagels in Austin, then check out (or vice versa)</p><p class="detail">Two options in South Austin are Wholy Bagel and Casper Fermentables.</p></div></li>
+      <li><time>10:45 AM</time><div><p class="what">Pack up and check out of the Airbnb by 11:00</p><p class="detail">Checkout is strict. The host charges $50 for every 30 minutes late.</p></div></li>
+      <li><time>11:15 AM</time><div><p class="what">Bagels in South Austin</p><p class="detail">Two options are Wholy Bagel and Casper Fermentables.</p></div></li>
       <li><time>12:30 PM</time><div><p class="what">Drive back to New Braunfels</p><p class="detail">About 50 minutes.</p></div></li>
       <li><time>2 PM</time><div><p class="what">Grill at home</p><p class="detail">Grill menu below. The average high is in the mid-60s, so it's good weather to be outside.</p></div></li>
       <li><time>4 PM</time><div><p class="what">Relax at home</p><p class="detail">Board games and downtime before the night out.</p></div></li>
@@ -330,7 +380,7 @@ footer li{margin:3px 0}
     <div>
       <h3>Austin, Friday</h3>
       <ul class="list">
-        <li><b>Where to book the Airbnb</b><span>East Austin or near Rainey Street keeps every bar a short rideshare away. It needs to sleep seven.</span></li>
+        <li><b>Home base for the night</b><span>The Airbnb on Palm Circle in East Austin, about 5 miles from East 6th and Rainey. A short rideshare each way.</span></li>
         <li><b>Kemuri Tatsu-Ya</b><span>Texan-Japanese izakaya on E 2nd St with smoked meats and strong cocktails. Call ahead about vegetarian dishes.</span></li>
         <li><b>East 6th Street</b><span>A string of bars and patios. It's more relaxed than Dirty Sixth downtown.</span></li>
         <li><b>Rainey Street</b><span>Bungalow bars close together, so you can walk between them all night.</span></li>
@@ -355,13 +405,14 @@ footer li{margin:3px 0}
   <div class="know">
     <div><b>Weather</b><span>Early December averages about 64°F during the day and 42°F at night, with a low chance of rain. Bring a jacket for the nights out.</span></div>
     <div><b>Drives</b><span>New Braunfels to AUS is about 50 minutes, and to downtown San Antonio about 35.</span></div>
-    <div><b>Getting around</b><span>Friday everyone sleeps at the Airbnb, so rideshares only. Saturday, Puneeth and Alaina drive.</span></div>
+    <div><b>Getting around</b><span>Friday everyone sleeps at the Airbnb, so leave the cars in its driveway and take rideshares. Saturday, Puneeth and Alaina drive.</span></div>
     <div><b>Sunday is early</b><span>The first airport run leaves at about 5:00 AM, so keep Saturday reasonable.</span></div>
   </div>
   <div class="open">
     <b>Still to sort out</b>
     <ul>
-      <li>Book an Austin Airbnb for Friday, Dec 4 that sleeps seven</li>
+      <li>Change the Airbnb reservation from 1 guest to 7. The host charges $35 per day for each unregistered guest</li>
+      <li>Who sleeps where at the Airbnb: four full-size beds for seven people</li>
       <li>Book a dog walker for Sherman while you're in Austin late on Friday night</li>
       <li>Flight numbers for Yash and Mahi and for Shreyas, for tracking delays</li>
     </ul>
@@ -378,6 +429,7 @@ footer li{margin:3px 0}
     <li><a href="https://www.texasmonthly.com/restaurant/curry-boys-bbq-san-antonio/">Curry Boys BBQ, Texas Monthly</a></li>
     <li><a href="https://satxtoday.6amcity.com/city-guide/live/vegan-and-vegetarian-eats-in-san-antonio-tx">Vegan and vegetarian eats in San Antonio, SATX Today</a></li>
     <li><a href="https://www.visitsanantonio.com/holidays/holiday-lights/">San Antonio holiday lights, Visit San Antonio</a></li>
+    <li><a href="https://www.airbnb.com/rooms/1090025945233203833">Austin Airbnb listing and booking confirmation</a></li>
     <li><a href="https://weatheronthisday.com/78130/12/5">New Braunfels weather on Dec 5</a></li>
     <li>Dessert and restaurant hours from Google Maps listings, October 2026</li>
   </ul>
