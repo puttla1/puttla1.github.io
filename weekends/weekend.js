@@ -116,7 +116,7 @@ export function bootWeekend(id) {
     const ws = w.start || data.start, we = w.end || data.end || data.start;
     const u = `https://api.open-meteo.com/v1/forecast?latitude=${w.lat}&longitude=${w.lon}` +
       `&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code` +
-      `&temperature_unit=fahrenheit&timezone=America%2FChicago&start_date=${ws}&end_date=${we}`;
+      `&temperature_unit=fahrenheit&timezone=${encodeURIComponent(w.tz || 'America/Chicago')}&start_date=${ws}&end_date=${we}`;
     try {
       const r = await fetch(u); if (!r.ok) return;
       const j = await r.json(); wx = j.daily; render();
