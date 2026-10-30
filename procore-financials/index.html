@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Procore financial statements</title>
+<meta name="description" content="Procore Technologies’ income statement, balance sheet, cash flows, and ratios for FY2023–FY2025, line by line.">
+<link rel="icon" href="/icons/amp.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/amp-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/amp-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap">
+<style>
+/* Drawing-set markup: the selected line gets a revision cloud, connected lines get numbered delta tags.
+   One family (Archivo) at two widths: condensed for headings, normal for reading and figures. */
+:root{
+  --paper:#ECEFF3; --sheet:#FFFFFF; --ink:#14181E; --ink-2:#434D5C; --muted:#646F80;
+  --rule:#D5DBE3; --rule-2:#E8ECF1; --hover:#F3F5F8;
+  --mark:#E4561B; --mark-ink:#B23F0C; --wash:#FFEBDF; --wash-2:#FFF5EF;
+  --up:#2a78d6; --down:#e34948; --total:#566173; --bar-muted:#C3CBD6;
+  --f:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#0D1014; --sheet:#161A20; --ink:#E9ECF0; --ink-2:#BAC2CD; --muted:#8D97A5;
+    --rule:#2B323C; --rule-2:#222830; --hover:#1D222A;
+    --mark:#FF6B2C; --mark-ink:#FF9563; --wash:rgba(255,107,44,.17); --wash-2:rgba(255,107,44,.07);
+    --up:#3987e5; --down:#e66767; --total:#9BA5B3; --bar-muted:#3A4350;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.5;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.wrap{max-width:1560px;margin:0 auto;padding:0 24px}
+
+/* Top bar */
+.top{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:saturate(1.2) blur(8px);-webkit-backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:16px;min-height:56px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto;min-width:0}
+.brand a{color:var(--muted);text-decoration:none;font-size:14px}
+.brand a:hover{color:var(--ink)}
+.brand strong{font-stretch:75%;font-weight:700;font-size:20px;letter-spacing:.005em;white-space:nowrap}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:8px;background:var(--sheet);padding:2px}
+.seg button{border:0;background:transparent;padding:5px 11px;border-radius:6px;font-size:14px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet);font-weight:600}
+.seg .sm{display:none}
+.seg button:not([aria-pressed="true"]):hover{background:var(--hover);color:var(--ink)}
+.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+
+/* Hero */
+.hero{padding-top:44px;padding-bottom:12px}
+.hero h1{font-stretch:72%;font-weight:700;font-size:clamp(34px,5vw,62px);line-height:1.02;letter-spacing:-.005em;margin:0;max-width:24ch;text-wrap:balance}
+.hero .dek{color:var(--ink-2);font-size:clamp(16px,1.6vw,18px);max-width:64ch;margin:16px 0 0}
+.bridge{margin:28px 0 0;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px 18px 10px}
+.bridge-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.bridge-head h2{font-stretch:75%;font-size:20px;font-weight:700;margin:0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+#bridgeSvg{display:block;width:100%;height:auto;overflow:visible}
+#bridgeSvg .hit{cursor:pointer}
+#bridgeSvg .hit:hover .bar,#bridgeSvg .hit:focus-visible .bar{filter:brightness(1.08)}
+#bridgeSvg .hit:focus{outline:none}
+#bridgeSvg .hit:focus-visible .bar{stroke:var(--mark);stroke-width:2}
+.bridge-note{font-size:13px;color:var(--muted);margin:6px 2px 4px}
+
+/* Lab */
+.lab{padding-top:40px;padding-bottom:24px;scroll-margin-top:60px}
+.lab-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.lab-head h2{font-stretch:75%;font-size:30px;font-weight:700;margin:0;line-height:1.1}
+.lab-head p{margin:4px 0 0;color:var(--ink-2);max-width:60ch}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);margin-bottom:16px;flex-wrap:wrap;align-items:flex-end}
+.tabs>button{border:0;background:transparent;padding:10px 14px;font-size:16px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs>button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tabs>button:hover{color:var(--ink)}
+.tabs .spacer{flex:1}
+.tabs .ctl{padding-bottom:8px}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+
+/* Markup banner */
+.markbar{display:flex;align-items:center;gap:12px;background:var(--wash-2);border:1px solid color-mix(in srgb,var(--mark) 35%,transparent);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:14px;color:var(--ink-2)}
+.markbar[hidden]{display:none}
+.markbar b{color:var(--ink);font-weight:600}
+.markbar button{margin-left:auto;border:1px solid var(--rule);background:var(--sheet);border-radius:6px;padding:3px 10px;font-size:13px;cursor:pointer}
+.markbar button:hover{border-color:var(--ink-2)}
+
+/* Statement sub-tabs (one-at-a-time view) */
+.stabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stabs[hidden]{display:none}
+.stabs button{border:1px solid var(--rule);background:var(--sheet);border-radius:8px;padding:6px 12px;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink-2);display:inline-flex;align-items:center;gap:8px}
+.stabs button[aria-selected="true"]{border-color:var(--ink);color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.stabs .cnt{background:var(--mark);color:#fff;border-radius:10px;font-size:12px;padding:0 7px;line-height:18px;font-weight:700}
+.stabs .cnt:empty{display:none}
+
+.stmts{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr));--vw:76px}
+.stmts.uK{--vw:100px}
+.stmts.single{grid-template-columns:minmax(0,1fr)}
+.stmts.single .stmt:not(.on){display:none}
+.stmt{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px 0 10px;min-width:0}
+.stmt header{padding:0 14px 10px 32px;border-bottom:1px solid var(--rule)}
+.stmt h3{font-stretch:75%;font-size:21px;font-weight:700;margin:0;line-height:1.1}
+.stmt header p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+
+.rows{padding:4px 0}
+.row{position:relative;scroll-margin-top:96px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:0 12px;width:100%;border:0;background:transparent;text-align:left;padding:5px 14px 5px 32px;font-size:14.5px;line-height:1.35;cursor:pointer;border-radius:0}
+.stmts.single .row{grid-template-columns:minmax(0,1fr) repeat(3,var(--vw))}
+.row.colrow{cursor:default;font-size:12.5px;color:var(--muted);padding-top:8px;padding-bottom:6px}
+.row.colrow:hover{background:transparent}
+.row.colrow .v.on{color:var(--ink);font-weight:700}
+.stmts .row.colrow .v{color:var(--muted)}
+.stmts .row.colrow .v.on{color:var(--ink)}
+.row:hover{background:var(--hover)}
+.row .lbl{min-width:0}
+.row .v{text-align:right;white-space:nowrap;color:var(--ink)}
+.stmts.single .row .v{color:var(--muted)}
+.stmts.single .row .v.on{color:var(--ink)}
+.row.lv1 .lbl{padding-left:12px}
+.row.lv2 .lbl{padding-left:24px}
+.row.head{cursor:default;color:var(--muted);font-size:13.5px;padding-top:10px;font-weight:500}
+.row.head:hover{background:transparent}
+.row.sub{font-weight:650}
+.row.sub .v,.row.tot .v{font-weight:650}
+.row.sub::before,.row.tot::before{content:"";position:absolute;left:32px;right:14px;top:0;border-top:1px solid var(--rule)}
+.row.tot{font-weight:700}
+.row.tot::after{content:"";position:absolute;left:32px;right:14px;bottom:0;border-bottom:3px double var(--rule)}
+.row.tot{padding-bottom:7px;margin-bottom:4px}
+.row.linked{background:var(--wash)}
+.row.linked:hover{background:color-mix(in srgb,var(--wash) 80%,var(--mark) 10%)}
+.row.sel{background:var(--wash-2)}
+.tag{position:absolute;left:6px;top:50%;transform:translateY(-50%);width:22px;height:20px;display:none;pointer-events:none}
+.row.linked .tag,.row.inp .tag{display:block}
+.tag svg{position:absolute;inset:0;width:22px;height:20px}
+.tag svg path{fill:var(--sheet);stroke:var(--mark);stroke-width:1.6;stroke-linejoin:round}
+.tag b{position:absolute;left:0;right:0;top:8px;text-align:center;font-size:10.5px;font-weight:800;color:var(--mark-ink);line-height:1;font-stretch:80%}
+.cloud{position:absolute;pointer-events:none;overflow:visible;z-index:2}
+.cloud path{fill:none;stroke:var(--mark);stroke-width:1.7;stroke-linejoin:round}
+
+/* Ratios */
+.rgroups{display:grid;gap:16px}
+.rgroup{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px 0 8px}
+.rgroup>header{padding:0 14px 10px;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule)}
+.rgroup h3{font-stretch:75%;font-size:21px;font-weight:700;margin:0}
+.rgroup header p{margin:2px 0 0;font-size:13px;color:var(--muted);max-width:60ch}
+.rrow{position:relative;scroll-margin-top:96px;display:grid;grid-template-columns:minmax(0,1fr) repeat(3,minmax(70px,96px));align-items:baseline;gap:0 12px;width:100%;border:0;background:transparent;text-align:left;padding:6px 14px 6px 32px;font-size:14.5px;cursor:pointer}
+.rrow:hover{background:var(--hover)}
+.rrow.colh{cursor:default;font-size:12.5px;color:var(--muted);padding-top:8px;padding-bottom:4px}
+.rrow.colh:hover{background:transparent}
+.rrow .v{text-align:right;color:var(--muted);white-space:nowrap}
+.rrow .v.on{color:var(--ink);font-weight:600}
+.rrow.colh .v.on{color:var(--ink);font-weight:700}
+.rrow.sel{background:var(--wash-2)}
+.price{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2)}
+.price input{width:96px;font:inherit;font-size:15px;padding:4px 8px;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);color:var(--ink);text-align:right}
+.price small{color:var(--muted);font-size:12.5px}
+
+/* Detail panel */
+.panel{position:sticky;top:72px;max-height:calc(100vh - 88px);overflow:auto;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:18px 18px 22px;overscroll-behavior:contain}
+.panel .close{display:none}
+.p-kicker{font-size:13px;color:var(--muted);margin:0 0 2px}
+.p-title{font-stretch:75%;font-size:26px;line-height:1.08;font-weight:700;margin:0 0 10px}
+.p-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:30px;font-weight:650;line-height:1.1;letter-spacing:-.01em}
+.chg{font-size:13.5px;font-weight:600;color:var(--ink-2);background:var(--hover);border-radius:6px;padding:2px 7px;letter-spacing:0}
+.p-sub{font-size:13.5px;color:var(--muted);margin:6px 0 0}
+.panel h4{font-size:14px;font-weight:700;margin:20px 0 6px;color:var(--ink)}
+.panel p{margin:0 0 8px;font-size:15px;color:var(--ink-2);line-height:1.55}
+.mini{margin:14px 0 0}
+.mini svg{display:block;width:100%;height:auto;overflow:visible}
+.links{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.links button{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;width:100%;text-align:left;background:var(--wash-2);border:1px solid color-mix(in srgb,var(--mark) 25%,transparent);border-radius:8px;padding:8px 10px 8px 36px;cursor:pointer}
+.links button:hover{border-color:var(--mark)}
+.links button.static{cursor:default;background:var(--hover);border-color:var(--rule)}
+.links .tag{display:block;left:9px;top:10px;transform:none}
+.links .ls{font-size:12.5px;color:var(--muted);grid-column:1/-1}
+.links .ll{font-weight:600;font-size:14.5px}
+.links .lv{text-align:right;font-size:14.5px;white-space:nowrap}
+.links .ln{grid-column:1/-1;font-size:13.5px;color:var(--ink-2);line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--rule);background:var(--sheet);border-radius:16px;padding:4px 11px;font-size:13.5px;cursor:pointer}
+.chips button:hover{border-color:var(--ink-2)}
+.cta{display:inline-block;margin-top:14px;border:0;background:var(--ink);color:var(--sheet);border-radius:8px;padding:9px 14px;font-weight:600;font-size:14.5px;cursor:pointer}
+.cta:hover{opacity:.9}
+
+/* Formula */
+.formula{margin:14px 0 0;border:1px solid var(--rule);border-radius:8px;padding:12px}
+.formula .part{display:grid;gap:6px}
+.formula .op{font-size:13px;color:var(--muted);margin:2px 0 0 2px}
+.formula .div{border-top:1.5px solid var(--ink-2);margin:10px 0}
+.term{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:baseline;width:100%;text-align:left;border:1px solid color-mix(in srgb,var(--mark) 25%,transparent);background:var(--wash-2);border-radius:7px;padding:6px 9px 6px 34px;font-size:14px;cursor:pointer}
+.term:hover{border-color:var(--mark)}
+.term.supp{background:var(--hover);border-color:var(--rule);cursor:default}
+.term .tag{display:block}
+.term .tv{white-space:nowrap;font-weight:600}
+.term .sg{position:absolute;left:-2px;top:50%;transform:translate(-100%,-50%);font-size:14px;color:var(--muted)}
+.formula .res{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule);font-size:14px;color:var(--ink-2)}
+.formula .res b{font-size:18px;color:var(--ink)}
+.empty h3{font-stretch:75%;font-size:24px;margin:0 0 8px}
+
+/* Tooltip */
+.tip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--sheet);font-size:13px;line-height:1.35;padding:7px 9px;border-radius:6px;max-width:260px;opacity:0;transition:opacity .08s}
+.tip.on{opacity:1}
+.tip b{font-weight:700}
+
+footer.notes{border-top:1px solid var(--rule);margin-top:24px;padding-top:22px;padding-bottom:56px;color:var(--muted);font-size:13.5px}
+footer.notes p{max-width:90ch;margin:0 0 8px}
+footer.notes a{color:var(--ink-2)}
+
+@media (max-width:1180px){
+  .lab-grid{grid-template-columns:minmax(0,1fr) 340px}
+}
+@media (max-width:980px){
+  .lab-grid{grid-template-columns:minmax(0,1fr)}
+  .panel{position:fixed;left:0;right:0;bottom:0;top:auto;max-height:64vh;border-radius:14px 14px 0 0;border-bottom:0;z-index:40;box-shadow:0 -10px 30px rgba(0,0,0,.18);transform:translateY(105%);transition:transform .22s ease;padding-top:14px}
+  .panel.open{transform:none}
+  .panel .close{display:flex;position:sticky;top:-14px;margin:-14px -18px 8px;padding:10px 12px 6px;justify-content:flex-end;background:var(--sheet);z-index:3}
+  .panel .close button{border:1px solid var(--rule);background:var(--sheet);border-radius:8px;padding:4px 12px;font-size:14px;cursor:pointer}
+  .panel .grab{width:40px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 0 calc(50% - 20px)}
+}
+@media (max-width:640px){
+  .wrap{padding:0 14px}
+  .hero{padding-top:28px}
+  .bridge{padding:14px 10px 8px}
+  .row{font-size:14px;padding-right:10px}
+  .stmts{--vw:56px}
+  .stmts.uK{--vw:84px}
+  .stmts.single .row{gap:0 8px;font-size:13.5px}
+  .row,.rrow{scroll-margin-top:72px}
+  .seg .lg,.ctl>span:first-child,.brand{display:none}
+  .top .wrap{justify-content:space-between;min-height:52px}
+  .seg .sm{display:inline}
+  .top .wrap{gap:8px 10px}
+  .seg button{padding:5px 9px}
+  .rrow{grid-template-columns:minmax(0,1fr) repeat(3,minmax(52px,64px));gap:0 8px;font-size:14px;padding-right:10px}
+  .brand strong{font-size:18px}
+  .tabs>button{padding:8px 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  .panel{transition:none}
+  .tip{transition:none}
+}
+@media (forced-colors:active){
+  .row.linked,.row.sel{outline:2px solid CanvasText}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><a href="/">puneeth-alaina.com</a><strong>Procore, line by line</strong></div>
+    <div class="ctl"><span id="yrLabel">Fiscal year</span><div class="seg" id="yearSeg" role="group" aria-labelledby="yrLabel"></div></div>
+    <div class="ctl"><span id="unLabel">Units</span><div class="seg" id="unitSeg" role="group" aria-labelledby="unLabel">
+      <button type="button" data-u="M" aria-pressed="true"><span class="lg">$ millions</span><span class="sm">$M</span></button><button type="button" data-u="K" aria-pressed="false"><span class="lg">$ thousands</span><span class="sm">$K</span></button>
+    </div></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap" aria-labelledby="heroTitle">
+    <h1 id="heroTitle"></h1>
+    <p class="dek" id="heroDek"></p>
+    <figure class="bridge" aria-labelledby="bridgeTitle">
+      <div class="bridge-head">
+        <h2 id="bridgeTitle"></h2>
+        <div class="legend" aria-hidden="true"><span><i style="background:var(--up)"></i>Adds cash</span><span><i style="background:var(--down)"></i>Uses cash</span><span><i style="background:var(--total)"></i>Result</span></div>
+      </div>
+      <svg id="bridgeSvg" role="img" aria-labelledby="bridgeTitle"></svg>
+      <p class="bridge-note">Select a bar to mark that line on the statements below.</p>
+    </figure>
+  </section>
+
+  <section class="lab wrap" id="lab" aria-labelledby="labTitle">
+    <div class="lab-head">
+      <div>
+        <h2 id="labTitle">The statements and the ratios</h2>
+        <p>Select any line to see what it is, how it moved, and where it shows up on the other statements. Select a ratio to see the formula with Procore’s numbers in it.</p>
+      </div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="View">
+      <button type="button" role="tab" id="tab-statements" aria-controls="view-statements" aria-selected="true">Statements</button>
+      <button type="button" role="tab" id="tab-ratios" aria-controls="view-ratios" aria-selected="false">Ratios</button>
+      <span class="spacer"></span>
+      <div class="ctl" id="layoutCtl"><span id="lyLabel">Layout</span><div class="seg" id="layoutSeg" role="group" aria-labelledby="lyLabel">
+        <button type="button" data-v="side" aria-pressed="true">All three, one year</button><button type="button" data-v="single" aria-pressed="false">One statement, three years</button>
+      </div></div>
+    </div>
+    <div class="lab-grid">
+      <div class="main">
+        <div class="markbar" id="markbar" hidden><span id="markText"></span><button type="button" id="clearSel">Clear</button></div>
+        <div id="view-statements" role="tabpanel" aria-labelledby="tab-statements">
+          <div class="stabs" id="stabs" role="tablist" aria-label="Statement" hidden></div>
+          <div class="stmts" id="stmts"></div>
+        </div>
+        <div id="view-ratios" role="tabpanel" aria-labelledby="tab-ratios" hidden>
+          <div class="rgroups" id="rgroups"></div>
+        </div>
+      </div>
+      <aside class="panel" id="panel" aria-live="polite" aria-label="Details"></aside>
+    </div>
+  </section>
+
+  <footer class="notes wrap">
+    <p>Statements are from Procore’s Form 10-K for fiscal 2025 (income statement and cash flows for FY2023–FY2025, balance sheets at December 31, 2025 and 2024) and Form 10-K for fiscal 2024 (balance sheet at December 31, 2023). Free cash flow is operating cash flow less purchases of property and equipment and capitalized software, computed from the 10-K; the FY2025 earnings release showed $215.1M before the 10-K moved $1.4M of deferred acquisition payments into financing. Non-GAAP figures, stock-based compensation by line, customer counts, retention, and RPO come from Procore’s fourth-quarter earnings releases. FY2022 figures used for growth rates and averages come from the FY2024 10-K and the Q4 2023 earnings release.</p>
+    <p>Sources: <a href="https://www.sec.gov/Archives/edgar/data/1611052/000162828026011055/pcor-20251231.htm">FY2025 Form 10-K</a>, <a href="https://www.sec.gov/Archives/edgar/data/1611052/000162828025008121/pcor-20241231.htm">FY2024 Form 10-K</a>, <a href="https://www.sec.gov/Archives/edgar/data/1611052/000162828026007662/pcor-q425x8xkxexx991.htm">Q4 2025 earnings release</a>, <a href="https://capedge.com/filing/1611052/0001628280-25-005393/PCOR-8K/file/2">Q4 2024 earnings release</a>, <a href="https://capedge.com/filing/1611052/0001611052-24-000036/PCOR-8K/file/2">Q4 2023 earnings release</a>. Public information only; for learning, not investment advice.</p>
+  </footer>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+"use strict";
+/* ---------------- Data (USD thousands, as filed) ---------------- */
+const YRS = ["FY2023","FY2024","FY2025"];
+const YEND = ["Dec 31, 2023","Dec 31, 2024","Dec 31, 2025"];
+const STN = {is:"Income statement", bs:"Balance sheet", cf:"Cash flows"};
+
+// [id, label, type(h|l|s|t), level, [FY23,FY24,FY25], what, atProcore, fmt]
+const RAW = {
+is: [
+ ["is_rev","Revenue","l",0,[950010,1151708,1322509],"What Procore earned from customers in the year, mostly subscriptions to its construction management platform. Subscription revenue is recognized evenly over the contract term, not when the customer pays.","Procore prices most subscriptions on a customer’s annual construction volume rather than per seat, so revenue grows as customers run more of their work through the platform. Growth stepped down from 32% in FY2023 to 15% in FY2025 as the base got larger."],
+ ["is_cor","Cost of revenue","l",0,[174462,205612,270832],"The cost of delivering the product: hosting and third-party software, customer support and onboarding staff, and amortization of capitalized software and acquired technology.","Grew 32% in FY2025, about twice as fast as revenue, which took roughly 2.6 points off gross margin."],
+ ["is_gp","Gross profit","s",0,[775548,946096,1051677],"Revenue minus cost of revenue: what’s left to pay for selling, building the product, and running the company.","About 80 cents of every revenue dollar, typical for a mature software company."],
+ ["is_h_opex","Operating expenses","h",0],
+ ["is_sm","Sales and marketing","l",1,[494908,552019,580680],"Salespeople, marketing programs, and the amortization of capitalized sales commissions.","Procore’s largest expense. It fell from 52% of revenue in FY2023 to 44% in FY2025 while still growing in dollars, the biggest single source of operating leverage."],
+ ["is_rd","Research and development","l",1,[300571,312987,362373],"Engineering and product teams building the platform, net of development costs that are capitalized.","On top of the $362.4M expensed here in FY2025, Procore capitalized $65.7M of development work, which shows up on the balance sheet and in investing cash flows instead."],
+ ["is_ga","General and administrative","l",1,[195746,217513,232967],"Finance, legal, HR, and other corporate functions, plus the costs of being a public company.","Down from 20.6% of revenue in FY2023 to 17.6% in FY2025."],
+ ["is_opex","Total operating expenses","s",0,[991225,1082519,1176020],"Sales and marketing, R&D, and G&A combined. Every line includes stock-based compensation, a large non-cash cost for Procore.","Grew 8.6% in FY2025 against revenue growth of 14.8%. That gap is why the operating loss keeps shrinking."],
+ ["is_oploss","Loss from operations","s",0,[-215677,-136423,-124343],"Gross profit minus operating expenses: the result of the core business before interest, other income, and taxes.","Still negative under GAAP, but the loss shrank from $215.7M in FY2023 to $124.3M in FY2025. Adding back stock comp, acquired-intangible amortization, and a few other items, Procore reported $186.6M of non-GAAP operating income for FY2025."],
+ ["is_intinc","Interest income","l",0,[19779,23694,20941],"Interest earned on cash and the marketable securities portfolio."],
+ ["is_intexp","Interest expense","l",0,[-1957,-1899,-1153],"Procore has no borrowings. This is mostly the interest portion of finance lease payments."],
+ ["is_accretion","Accretion income, net","l",0,[9794,13583,8265],"Bonds bought below face value gain value as they approach maturity. That gain is booked as income over time, even though the cash only arrives when the bond matures."],
+ ["is_otherinc","Other income (expense), net","l",0,[-360,-3136,2309],"Foreign exchange gains and losses, changes in the value of strategic investments, and other non-operating items."],
+ ["is_pretax","Loss before provision for income taxes","s",0,[-188421,-104181,-93981],"Operating loss plus interest and other income: the result before income taxes."],
+ ["is_tax","Provision for income taxes","l",0,[1273,1775,6802],"Income tax expense for the year, shown as a positive number that is subtracted. It stays small because years of losses can offset taxable income. The deferred portion is non-cash."],
+ ["is_netloss","Net loss","t",0,[-189694,-105956,-100783],"The bottom line: revenue minus every cost, including non-cash costs like stock-based compensation and amortization.","The FY2025 net loss of $100.8M includes $250.3M of stock-based compensation. Cash tells a different story: $216.5M of free cash flow in the same year."],
+ ["is_eps","Net loss per share, basic and diluted","l",0,[-1.34,-0.72,-0.67],"Net loss divided by the weighted-average share count. Diluted equals basic: with a loss, counting options and unvested stock would make the loss per share look smaller, so they’re left out.",null,"eps"],
+ ["is_shares","Weighted-average shares, basic and diluted","l",0,[141961467,147444772,150247067],"The average number of shares outstanding during the year, in millions.","Grew 4% a year in FY2023 and FY2024 and 1.9% in FY2025, when buybacks and share withholding offset new issuance.","sh"],
+ ["is_h_oci","Other comprehensive income","h",0],
+ ["is_oci_fx","Foreign currency translation","l",1,[437,-1787,1422],"The change from translating foreign subsidiaries’ results and balances into dollars."],
+ ["is_oci_unreal","Unrealized gain on securities","l",1,[504,425,45],"Market-value changes on bonds held as available for sale, before they mature."],
+ ["is_oci_total","Total other comprehensive income (loss)","s",0,[941,-1362,1467],"Gains and losses that skip net loss and go straight to equity."],
+ ["is_comploss","Comprehensive loss","t",0,[-188753,-107318,-99316],"Net loss plus other comprehensive income: the total change in equity from results, before any share activity."]
+],
+bs: [
+ ["bs_h_ca","Current assets","h",0],
+ ["bs_cash","Cash and cash equivalents","l",1,[357790,437722,480684],"Bank deposits and money market funds available right away.","Grew to $480.7M in FY2025 even after $223.0M went to buybacks and tax withholding on vested shares."],
+ ["bs_mkt","Marketable securities","l",1,[320161,337673,287802],"Bonds and other debt securities maturing within a year. With cash, this is Procore’s liquidity."],
+ ["bs_ar","Accounts receivable, net","l",1,[206644,246472,287805],"Amounts billed to customers but not yet collected, net of an allowance for those expected not to pay.","Grew 17% in FY2025, a little faster than revenue, so days sales outstanding ticked up."],
+ ["bs_cca_cur","Contract cost asset, current","l",1,[28718,33922,55384],"Sales commissions paid up front and recorded as an asset, to be expensed over the next 12 months.","Current and non-current contract cost assets together rose from $81.4M to $134.4M in FY2025."],
+ ["bs_prepaid","Prepaid expenses and other current assets","l",1,[42421,44090,55157],"Payments made in advance, such as software and insurance, plus other short-term assets.","At the end of FY2025 this also holds $9.6M of restricted cash, most of it funds held for customers."],
+ ["bs_tca","Total current assets","s",0,[955734,1099879,1166832],"Everything expected to turn into cash, or be used up, within a year."],
+ ["bs_mkt_nc","Marketable securities, non-current","l",0,[0,46042,42529],"Bonds maturing in more than a year."],
+ ["bs_capsw","Capitalized software development costs, net","l",0,[83045,112321,142228],"Development work on new features recorded as an asset, then amortized into cost of revenue once the features ship.","Up 27% in FY2025 as capitalized development spend rose to $65.7M."],
+ ["bs_ppe","Property and equipment, net","l",0,[36258,43592,48624],"Computers, furniture, and office improvements, net of depreciation. Small, as you’d expect for a cloud company."],
+ ["bs_rou_fin","Right-of-use assets, finance leases","l",0,[34375,31727,19619],"The right to use property under leases that are accounted for like financing."],
+ ["bs_rou_op","Right-of-use assets, operating leases","l",0,[44141,28790,36024],"The right to use leased offices under operating leases. Each lease puts an asset and a matching liability on the balance sheet."],
+ ["bs_cca_nc","Contract cost asset, non-current","l",0,[44564,47505,79004],"Capitalized commissions that will be expensed after the next 12 months."],
+ ["bs_intang","Intangible assets, net","l",0,[137546,120946,105364],"Technology, customer relationships, and trade names bought in acquisitions, amortized over their useful lives."],
+ ["bs_goodwill","Goodwill","l",0,[539354,549651,574083],"The price paid for acquired companies above the value of their identifiable assets. It isn’t amortized; it’s tested for impairment each year.","Procore’s largest single asset. It grew by $24.4M in FY2025 with that year’s acquisitions."],
+ ["bs_other","Other assets","l",0,[18551,20918,24758],"Long-term deposits and other non-current items not shown separately."],
+ ["bs_ta","Total assets","t",0,[1893568,2101371,2239065],"Everything Procore owns or controls."],
+ ["bs_h_cl","Current liabilities","h",0],
+ ["bs_ap","Accounts payable","l",1,[13177,33146,25168],"Vendor bills received but not yet paid."],
+ ["bs_accrued","Accrued expenses","l",1,[100075,88740,130280],"Costs incurred but not yet billed or paid, such as payroll, bonuses, commissions, and taxes.","Rose 47% in FY2025."],
+ ["bs_dr_cur","Deferred revenue, current","l",1,[501903,584719,687062],"Amounts billed to customers for service Procore hasn’t delivered yet, to be earned as revenue within 12 months.","Procore’s largest liability: $687.1M at the end of FY2025, roughly six months of revenue. It’s the friendly kind of liability. Customers have been billed, and settling it means delivering software, not paying out cash."],
+ ["bs_ocl","Other current liabilities","l",1,[27275,21427,42047],"Other obligations due within a year, including deferred payments owed for acquisitions."],
+ ["bs_tcl","Total current liabilities","s",0,[642430,728032,884557],"Everything due within a year. About three quarters of it is deferred revenue."],
+ ["bs_dr_nc","Deferred revenue, non-current","l",0,[7692,5815,6041],"Billings for service to be delivered more than a year out, from multi-year contracts paid in advance."],
+ ["bs_finlease","Finance lease liabilities, non-current","l",0,[43581,41352,26557],"Finance lease obligations due after the next 12 months."],
+ ["bs_oplease","Operating lease liabilities, non-current","l",0,[37923,32697,45855],"Remaining office rent obligations due after the next 12 months."],
+ ["bs_otherliab","Other liabilities, non-current","l",0,[6332,5122,13793],"Long-term obligations not shown separately."],
+ ["bs_tl","Total liabilities","t",0,[737958,813018,976803],"Everything Procore owes. There’s no debt; most of it is deferred revenue.","Deferred revenue makes up about 71% of total liabilities."],
+ ["bs_h_eq","Stockholders’ equity","h",0],
+ ["bs_pref","Preferred stock","l",1,[0,0,0],"Authorized, but none issued."],
+ ["bs_common","Common stock","l",1,[15,15,15],"Par value of the shares issued, $0.0001 each, so the dollar amount is token: $15 thousand.","About 151.7 million shares were outstanding at the end of FY2025, up from 144.8 million two years earlier."],
+ ["bs_apic","Additional paid-in capital","l",1,[2295807,2535868,2609093],"Money paid in for shares above par value, plus the value of stock-based compensation, less buybacks and tax withholding on vested shares.","Up $73.2M in FY2025: about $258M of stock compensation and $38M of option and ESPP purchases, offset by $223M of buybacks and share withholding."],
+ ["bs_aoci","Accumulated other comprehensive loss","l",1,[-1375,-2737,-1270],"The running total of other comprehensive income: currency translation and unrealized bond gains and losses."],
+ ["bs_deficit","Accumulated deficit","l",1,[-1138837,-1244793,-1345576],"Every net loss since Procore was founded, added together. It grows by exactly the year’s net loss.","$1.35B at the end of FY2025, up by the $100.8M FY2025 net loss, to the dollar."],
+ ["bs_te","Total stockholders’ equity","s",0,[1155610,1288353,1262262],"What’s left for shareholders after liabilities: assets minus liabilities.","Fell $26.1M in FY2025, the first decline in these three years, as buybacks and share withholding outweighed stock comp."],
+ ["bs_tle","Total liabilities and stockholders’ equity","t",0,[1893568,2101371,2239065],"Has to equal total assets, and it does in every year."]
+],
+cf: [
+ ["cf_h_op","Operating activities","h",0],
+ ["cf_netloss","Net loss","l",1,[-189694,-105956,-100783],"The starting point. Everything below it in this section converts accrual accounting back to cash."],
+ ["cf_h_adj","Non-cash items added back","h",1],
+ ["cf_sbc","Stock-based compensation","l",2,[174835,186880,238425],"Employees are paid partly in stock, which is an expense but not a cash payment, so it’s added back.","The largest single reason net loss and cash flow diverge: $238.4M in FY2025."],
+ ["cf_da","Depreciation and amortization","l",2,[71633,89753,110576],"Spreading the cost of past purchases over time: equipment, capitalized software, and acquired intangibles. No cash moves now, so it’s added back.","Up from $71.6M in FY2023 to $110.6M in FY2025, as more capitalized software goes live and acquisitions add intangibles."],
+ ["cf_accret","Accretion of discounts on securities","l",2,[-9790,-12830,-7882],"Accretion income counted in net loss but not received in cash this year, so it’s subtracted."],
+ ["cf_abandon","Abandonment of long-lived assets","l",2,[1488,1428,3540],"Write-offs of assets no longer in use; a non-cash loss."],
+ ["cf_oplease_exp","Non-cash operating lease expense","l",2,[13092,11102,5839],"The part of rent expense that reduces the right-of-use asset rather than using cash."],
+ ["cf_fx","Unrealized foreign currency (gain) loss","l",2,[-524,2304,-1862],"Paper gains and losses from currency moves, reversed because no cash changed hands."],
+ ["cf_deftax","Deferred income taxes","l",2,[-769,-881,-6820],"The part of the tax provision that won’t be paid in cash this year."],
+ ["cf_creditloss","Provision for credit losses","l",2,[8052,591,-514],"Expected bad debts are expensed before any cash is lost, so the provision is added back."],
+ ["cf_fv_strat","Change in fair value of strategic investments","l",2,[287,-454,-124],"Gains or losses on strategic stakes counted in net loss without a sale."],
+ ["cf_h_wc","Changes in operating assets and liabilities","h",1],
+ ["cf_ch_ar","Accounts receivable","l",2,[-57492,-39501,-39817],"When receivables grow, revenue was booked that hasn’t been collected yet, so the increase is subtracted."],
+ ["cf_ch_dcc","Deferred contract cost assets","l",2,[-9306,-8993,-51965],"Commissions paid in cash beyond what was expensed in the year.","A $52.0M outflow in FY2025, against about $9M in each of the two prior years."],
+ ["cf_ch_prepaid","Prepaid expenses and other assets","l",2,[-6368,-3318,-5698],"Cash paid ahead for future costs."],
+ ["cf_ch_ap","Accounts payable","l",2,[-938,19729,-8173],"Paying vendors later adds cash for now; paying them sooner uses it."],
+ ["cf_ch_accrued","Accrued expenses and other liabilities","l",2,[4759,-15501,64380],"Expenses booked but not yet paid add cash until the bill comes due."],
+ ["cf_ch_dr","Deferred revenue","l",2,[106590,79091,100099],"Customers paying for service before it’s delivered. When deferred revenue grows, cash has come in ahead of revenue.","$100.1M in FY2025, one of the three big add-backs along with stock comp and D&A, and the clearest sign of annual up-front billing."],
+ ["cf_ch_oplease","Operating lease liabilities","l",2,[-13840,-7272,1049],"Rent payments that reduce the operating lease liability."],
+ ["cf_ocf","Net cash provided by operating activities","s",0,[92015,196172,300270],"Cash generated by running the business.","More than tripled, from $92.0M in FY2023 to $300.3M in FY2025."],
+ ["cf_h_inv","Investing activities","h",0],
+ ["cf_ppe_purch","Purchases of property and equipment","l",1,[-10325,-19143,-18100],"Capital spending on equipment and office build-outs. Procore subtracts it from operating cash flow to get free cash flow."],
+ ["cf_capsw","Capitalized software development costs","l",1,[-34685,-49529,-65663],"Development spending recorded as an asset instead of R&D expense. Procore subtracts it from operating cash flow to get free cash flow.","Nearly doubled from FY2023 to FY2025."],
+ ["cf_strat_inv","Purchases of strategic investments","l",1,[-764,-2367,-2151],"Minority stakes in other companies."],
+ ["cf_mkt_purch","Purchases of marketable securities","l",1,[-402424,-491475,-351465],"Cash moved into bonds. With maturities and sales, this is cash management, not spending."],
+ ["cf_mkt_mat","Maturities of marketable securities","l",1,[372240,440537,409230],"Bonds that matured and turned back into cash."],
+ ["cf_mkt_sale","Sales of marketable securities","l",1,[5452,0,2698],"Bonds sold before maturity."],
+ ["cf_fin_orig","Originations of materials financing","l",1,[-23972,0,0],"Loans made under a construction materials financing program. None after FY2023."],
+ ["cf_fin_repay","Customer repayments of materials financing","l",1,[26242,1605,0],"Repayments under that program; the last arrived in FY2024."],
+ ["cf_acq_bus","Acquisition of businesses, net of cash acquired","l",1,[0,-25945,-41515],"Cash paid to buy companies, less the cash they held."],
+ ["cf_acq_asset","Asset acquisitions, net of cash acquired","l",1,[-7825,-3792,-3533],"Purchases of technology or other assets that don’t count as buying a business."],
+ ["cf_icf","Net cash used in investing activities","s",0,[-76061,-150109,-70499],"Total cash spent on investments, capital, and acquisitions, net of bonds maturing."],
+ ["cf_h_fin","Financing activities","h",0],
+ ["cf_opt","Proceeds from stock option exercises","l",1,[17618,15737,11809],"Cash employees pay to exercise stock options."],
+ ["cf_espp","Proceeds from employee stock purchase plan","l",1,[25400,24069,26332],"Cash employees put in to buy discounted shares."],
+ ["cf_repurch","Repurchases of common stock","l",1,[0,0,-128838],"Buybacks: cash spent buying Procore shares in the market.","None in FY2023 or FY2024; $128.8M in FY2025."],
+ ["cf_taxwh","Tax withholding for net share settlement","l",1,[0,0,-94120],"When stock awards vest, Procore can keep some of the shares and pay the employee’s taxes in cash. Economically, it works like buying those shares back.","$94.1M in FY2025, with nothing in the two prior years."],
+ ["cf_def_bus","Deferred business combination payments","l",1,[0,-1470,0],"Delayed payments owed from earlier acquisitions."],
+ ["cf_def_asset","Deferred asset acquisition payments","l",1,[0,-81,-1400],"Delayed payments owed for earlier asset purchases."],
+ ["cf_finlease_pay","Principal payments under finance leases","l",1,[-1853,-2019,-1636],"The principal part of finance lease payments, net of lease incentives received."],
+ ["cf_funds_held","Net increase in funds held for customers","l",1,[0,0,8951],"Customer money Procore holds while payments are in process. New in FY2025."],
+ ["cf_fincf","Net cash (used in) provided by financing activities","s",0,[41165,36236,-178902],"Cash from and returned to shareholders and lease financing.","Swung to a $178.9M outflow in FY2025 on buybacks and share withholding."],
+ ["cf_netchange","Net increase in cash, cash equivalents and restricted cash","s",0,[57119,82299,50869],"Operating, investing, and financing cash flows added together."],
+ ["cf_fxeffect","Effect of exchange rate changes on cash","l",0,[855,-2367,1655],"The change from translating foreign-currency cash balances into dollars."],
+ ["cf_begin","Cash and restricted cash, beginning of period","l",0,[299816,357790,437722],"Last year’s ending balance."],
+ ["cf_end","Cash and restricted cash, end of period","t",0,[357790,437722,490246],"This year’s ending balance. It ties to the balance sheet: cash and cash equivalents plus restricted cash held in prepaid and other current assets.","In FY2025, $480.7M of cash and equivalents plus $9.6M of restricted cash."]
+]};
+
+// Figures from earnings releases (not on the face of the statements)
+const SUPP = {
+ sbc_pl:{l:"Stock-based compensation expense",v:[179334,194833,250331],src:"Earnings release"},
+ amort:{l:"Amortization of acquired intangibles",v:[37578,40794,44150],src:"Earnings release"},
+ ptax:{l:"Employer payroll tax on employee stock transactions",v:[8433,9460,9892],src:"Earnings release"},
+ acq:{l:"Acquisition-related expenses",v:[8888,2288,6577],src:"Earnings release"},
+ ng_gp:{l:"Non-GAAP gross profit",v:[809975,987623,1105790],src:"Earnings release"},
+ ng_op:{l:"Non-GAAP income from operations",v:[18556,110952,186607],src:"Earnings release"},
+ cust:{l:"Organic customers",v:[16367,17088,17850],src:"Earnings release",f:"count"},
+ c100:{l:"Customers over $100K ARR",v:[2008,2333,2710],src:"Earnings release",f:"count"},
+ grr:{l:"Gross revenue retention",v:[0.95,0.94,0.95],src:"Earnings release",f:"pct0"},
+ rpo:{l:"Remaining performance obligations",v:[1000499,1286467,1590863],src:"Earnings release"},
+ crpo:{l:"Current RPO",v:[698284,829666,1009293],src:"Earnings release"},
+ sh_out:{l:"Shares outstanding at year end",v:[144806464,149853135,151708564],src:"10-K balance sheet",f:"sh"},
+ price:{l:"Share price",v:[null,null,63],src:"Entered above",f:"price"}
+};
+// FY2022 values used for growth rates and averages
+const P22 = {is_rev:720203,is_opex:862241,is_shares:136525728,bs_ar:148683,bs_ta:1740410,bs_te:1116780,bs_tca:799219,bs_tcl:531638,bs_cash:296712,bs_dr_cur:396535};
+
+/* Connections between lines: [a, b, note] (shown from either side) */
+const EDGES = [
+ ["is_rev","bs_dr_cur","Customers are billed up front, usually for a year. The billing lands in deferred revenue and moves into revenue as the service is delivered."],
+ ["is_rev","bs_dr_nc","Multi-year billings that will be earned as revenue more than a year out."],
+ ["is_rev","bs_ar","Billed amounts not yet collected sit in accounts receivable."],
+ ["is_rev","cf_ch_dr","When billings run ahead of revenue, deferred revenue grows and the difference shows up as operating cash."],
+ ["is_rev","cf_ch_ar","Revenue billed but not yet collected is subtracted, since it isn’t cash yet."],
+ ["is_cor","cf_sbc","Cost of revenue includes stock-based compensation, which is added back in operating cash flow."],
+ ["is_cor","cf_da","Amortization of capitalized software and acquired technology runs through cost of revenue and is added back as a non-cash charge."],
+ ["is_cor","bs_capsw","Capitalized software is amortized into cost of revenue once the features go live."],
+ ["is_sm","bs_cca_cur","Sales commissions are capitalized and then amortized into sales and marketing over the benefit period."],
+ ["is_sm","bs_cca_nc","The longer-dated portion of capitalized commissions, still to be amortized into sales and marketing."],
+ ["is_sm","cf_ch_dcc","Commissions paid in cash beyond what’s amortized into sales and marketing show up as an outflow."],
+ ["is_rd","bs_capsw","Part of development spending is capitalized instead of expensed in R&D."],
+ ["is_rd","cf_capsw","The capitalized part of development spending is an investing outflow, not an R&D expense."],
+ ["is_opex","cf_sbc","Stock-based compensation sits in every expense line and is added back in operating cash flow."],
+ ["is_opex","cf_da","Depreciation and amortization is spread across cost of revenue and operating expenses."],
+ ["is_opex","cf_creditloss","The provision for credit losses is recorded within operating expenses and added back because no cash has been lost yet."],
+ ["is_intinc","bs_cash","Interest is earned on cash balances."],
+ ["is_intinc","bs_mkt","Interest is earned on the bond portfolio."],
+ ["is_intinc","bs_mkt_nc","Interest is earned on longer-dated bonds too."],
+ ["is_accretion","cf_accret","Accretion is income but not cash this year, so the cash flow statement subtracts it."],
+ ["is_accretion","bs_mkt","Accretion raises the carrying value of discounted bonds toward face value."],
+ ["is_intexp","bs_finlease","Interest expense is mostly the interest portion of finance lease payments."],
+ ["is_tax","cf_deftax","The deferred part of the tax provision is non-cash."],
+ ["is_otherinc","cf_fx","Unrealized currency gains and losses run through other income and are reversed in cash flow."],
+ ["is_otherinc","cf_fv_strat","Changes in the value of strategic investments run through other income and are reversed in cash flow."],
+ ["is_netloss","cf_netloss","The cash flow statement starts from net loss."],
+ ["is_netloss","bs_deficit","Each year’s net loss is added to the accumulated deficit."],
+ ["is_netloss","is_comploss","Comprehensive loss is net loss plus other comprehensive income."],
+ ["is_oci_fx","bs_aoci","Currency translation builds up in accumulated other comprehensive loss, not the accumulated deficit."],
+ ["is_oci_unreal","bs_aoci","Unrealized bond gains and losses build up in accumulated other comprehensive loss."],
+ ["is_oci_unreal","bs_mkt","Bonds are carried at market value; the unrealized change runs through other comprehensive income."],
+ ["is_oci_total","bs_aoci","Total other comprehensive income is exactly the year’s change in accumulated other comprehensive loss."],
+ ["is_comploss","bs_te","Comprehensive loss reduces equity; share issuance, stock comp, and buybacks account for the rest of the change."],
+ ["is_shares","bs_common","Shares issued and outstanding at year end; the income statement uses the average over the year."],
+ ["is_shares","cf_repurch","Buybacks reduce the share count."],
+ ["is_shares","cf_taxwh","Withholding shares at vesting means fewer new shares reach the market."],
+ ["is_eps","is_netloss","Loss per share is net loss divided by weighted-average shares."],
+ ["bs_cash","cf_end","The cash flow statement ends at this balance, plus restricted cash in FY2025."],
+ ["bs_cash","cf_netchange","The year’s net change in cash (with restricted cash) explains the move in this balance."],
+ ["bs_cash","cf_fxeffect","Exchange rate moves change the dollar value of foreign cash balances."],
+ ["bs_mkt","cf_mkt_purch","Buying bonds moves cash into marketable securities."],
+ ["bs_mkt","cf_mkt_mat","Maturing bonds turn back into cash."],
+ ["bs_mkt","cf_mkt_sale","Bonds sold before maturity turn back into cash."],
+ ["bs_mkt","cf_accret","Accretion raises the carrying value of discounted bonds without cash moving."],
+ ["bs_mkt_nc","cf_mkt_purch","Purchases include bonds maturing beyond a year."],
+ ["bs_ar","cf_ch_ar","The change in receivables, adjusted for non-cash items, is the cash flow line."],
+ ["bs_ar","cf_creditloss","The allowance for credit losses is netted against receivables."],
+ ["bs_cca_cur","cf_ch_dcc","Changes in capitalized commissions flow through this operating line."],
+ ["bs_cca_nc","cf_ch_dcc","Changes in capitalized commissions flow through this operating line."],
+ ["bs_prepaid","cf_ch_prepaid","Changes in prepaid and other assets flow through this operating line."],
+ ["bs_prepaid","cf_funds_held","Restricted cash for funds held for customers sits in prepaid expenses and other current assets."],
+ ["bs_prepaid","cf_end","Restricted cash in this line is part of the cash flow statement’s ending balance."],
+ ["bs_capsw","cf_capsw","Development spending capitalized during the year adds to this asset."],
+ ["bs_capsw","cf_da","Amortization of capitalized software reduces this asset and is added back as non-cash."],
+ ["bs_ppe","cf_ppe_purch","Equipment purchases add to property and equipment."],
+ ["bs_ppe","cf_da","Depreciation reduces property and equipment."],
+ ["bs_ppe","cf_abandon","Abandoned assets are written off."],
+ ["bs_rou_fin","bs_finlease","Each finance lease creates both an asset and a liability."],
+ ["bs_finlease","cf_finlease_pay","Principal payments reduce finance lease liabilities."],
+ ["bs_rou_op","bs_oplease","Each operating lease creates both an asset and a liability."],
+ ["bs_rou_op","cf_oplease_exp","Non-cash lease expense is the right-of-use asset being used up."],
+ ["bs_oplease","cf_ch_oplease","Rent payments reduce the operating lease liability."],
+ ["bs_intang","cf_da","Acquired intangibles are amortized through D&A."],
+ ["bs_intang","cf_acq_bus","Buying companies adds acquired technology and customer relationships."],
+ ["bs_intang","cf_acq_asset","Asset purchases can add intangible assets."],
+ ["bs_goodwill","cf_acq_bus","Goodwill is the part of an acquisition price above identifiable net assets."],
+ ["bs_ap","cf_ch_ap","Changes in payables flow through this operating line."],
+ ["bs_accrued","cf_ch_accrued","Changes in accrued expenses flow through this operating line."],
+ ["bs_ocl","cf_ch_accrued","Changes in other liabilities are combined with accrued expenses on the cash flow statement."],
+ ["bs_ocl","cf_def_asset","Deferred acquisition payments are held in other liabilities until paid."],
+ ["bs_otherliab","cf_ch_accrued","Changes in other liabilities are combined with accrued expenses on the cash flow statement."],
+ ["bs_dr_cur","cf_ch_dr","The year’s growth in deferred revenue is cash collected ahead of revenue."],
+ ["bs_dr_nc","cf_ch_dr","The cash flow line combines current and non-current deferred revenue."],
+ ["bs_apic","cf_sbc","Stock-based compensation is credited to paid-in capital."],
+ ["bs_apic","cf_opt","Option exercise proceeds add to paid-in capital."],
+ ["bs_apic","cf_espp","Employee stock purchase proceeds add to paid-in capital."],
+ ["bs_apic","cf_repurch","Buybacks reduce paid-in capital."],
+ ["bs_apic","cf_taxwh","Taxes paid on withheld shares reduce paid-in capital."],
+ ["bs_deficit","cf_netloss","The same net loss starts the cash flow statement."],
+ ["bs_te","cf_fincf","Most financing flows are equity: option and ESPP proceeds in, buybacks and withholding out."],
+ ["bs_tle","bs_ta","The two sides of the balance sheet are equal."],
+ ["cf_begin","cf_end","Beginning cash plus the year’s change and exchange rate effect equals ending cash."],
+ ["cf_netchange","cf_ocf","Operating cash flow is the largest piece of the year’s change in cash."]
+];
+
+/* ---------------- Build indexes ---------------- */
+const L = {};          // id -> line
+const ORDER = {is:[],bs:[],cf:[]};
+for (const st of ["is","bs","cf"]) {
+  let side = "a";
+  RAW[st].forEach(r => {
+    const [id,l,t,lv,v,d,p,f] = r;
+    const o = {id,l,t,lv,v:v||null,d:d||"",p:p||"",f:f||"usd",st};
+    if (st==="bs") { o.side = side; if (id==="bs_ta") side = "le"; }
+    L[id]=o; ORDER[st].push(o);
+  });
+}
+const ADJ = {};
+EDGES.forEach(([a,b,n]) => { (ADJ[a]=ADJ[a]||[]).push({id:b,n}); (ADJ[b]=ADJ[b]||[]).push({id:a,n}); });
+
+/* ---------------- Ratios ---------------- */
+const T = (ref,o={}) => Object.assign({ref,sign:1},o);
+const RG = [
+ {g:"Growth", note:"Year over year. FY2023 uses FY2022 figures where Procore disclosed them.", items:[
+  {id:"g_rev",n:"Revenue growth",ty:"growth",num:[T("is_rev")],fmt:"pct",
+   w:"How much more revenue Procore booked than the year before.",r:"Growth has stepped down each year, from 32% in FY2023 to 15% in FY2025, as the revenue base got larger."},
+  {id:"g_opex",n:"Operating expense growth",ty:"growth",num:[T("is_opex")],fmt:"pct",
+   w:"Compare it to revenue growth. When expenses grow slower than revenue, margins expand.",r:"Expenses grew slower than revenue in all three years: 15% vs 32%, 9% vs 21%, and 9% vs 15%."},
+  {id:"g_rpo",n:"RPO growth",ty:"growth",num:[T("rpo")],fmt:"pct",
+   w:"Remaining performance obligations are contracted revenue not yet recognized. Growth here tends to lead revenue growth.",r:"RPO grew 29% and 24% in FY2024 and FY2025, faster than revenue both years."},
+  {id:"g_crpo",n:"Current RPO growth",ty:"growth",num:[T("crpo")],fmt:"pct",
+   w:"The part of RPO to be recognized in the next 12 months: a near-term view of revenue already under contract.",r:"Accelerated from 19% in FY2024 to 22% in FY2025, ahead of revenue growth."},
+  {id:"g_c100",n:"Growth in customers over $100K ARR",ty:"growth",num:[T("c100")],fmt:"pct",
+   w:"Growth in the larger customers that drive most revenue.",r:"Up 16% in each of FY2024 and FY2025, much faster than total organic customers (about 4%)."},
+  {id:"g_shares",n:"Weighted-average share growth",ty:"growth",num:[T("is_shares")],fmt:"pct",
+   w:"Dilution: how fast the share count grows from stock compensation, net of buybacks.",r:"About 4% a year in FY2023 and FY2024, cut to 1.9% in FY2025 once buybacks and share withholding began."}
+ ]},
+ {g:"Profitability", note:"Margins are a share of revenue. Non-GAAP figures are Procore’s own adjusted measures.", items:[
+  {id:"m_gross",n:"Gross margin",ty:"div",num:[T("is_gp")],den:[T("is_rev")],fmt:"pct",
+   w:"How much of each revenue dollar remains after the cost of delivering the product.",r:"Dipped to 79.5% in FY2025 from 82.2%, as cost of revenue grew 32%."},
+  {id:"m_ng_gross",n:"Non-GAAP gross margin",ty:"div",num:[T("ng_gp")],den:[T("is_rev")],fmt:"pct",
+   w:"Gross margin excluding stock comp, acquired-intangible amortization, and related items in cost of revenue.",r:"83.6% in FY2025, down from 85.8%."},
+  {id:"m_sm",n:"Sales and marketing, % of revenue",ty:"div",num:[T("is_sm")],den:[T("is_rev")],fmt:"pct",
+   w:"How much of revenue goes to winning and growing customers.",r:"Down eight points in two years, from 52.1% to 43.9%. The biggest single driver of margin expansion."},
+  {id:"m_rd",n:"R&D, % of revenue",ty:"div",num:[T("is_rd")],den:[T("is_rev")],fmt:"pct",
+   w:"Investment in the product, as a share of revenue.",r:"Steady around 27% in FY2024 and FY2025, down from 31.6% in FY2023."},
+  {id:"m_ga",n:"G&A, % of revenue",ty:"div",num:[T("is_ga")],den:[T("is_rev")],fmt:"pct",
+   w:"Overhead as a share of revenue.",r:"Down each year, to 17.6% in FY2025."},
+  {id:"m_op",n:"Operating margin",ty:"div",num:[T("is_oploss")],den:[T("is_rev")],fmt:"pct",
+   w:"Profit or loss from the core business per dollar of revenue, under GAAP.",r:"Improved from −22.7% to −9.4% in two years."},
+  {id:"m_ng_op",n:"Non-GAAP operating margin",ty:"div",num:[T("is_oploss"),T("sbc_pl"),T("amort"),T("ptax"),T("acq")],den:[T("is_rev")],fmt:"pct",
+   w:"Procore’s headline profitability measure: GAAP operating loss plus stock comp, amortization of acquired intangibles, payroll tax on stock, and acquisition costs.",r:"From 2.0% in FY2023 to 14.1% in FY2025."},
+  {id:"m_ebitda",n:"EBITDA margin",ty:"div",num:[T("is_oploss"),T("cf_da")],den:[T("is_rev")],fmt:"pct",
+   w:"Operating result before depreciation and amortization, a rough proxy for operating cash before working capital. Stock comp is still an expense here.",r:"Nearly break-even in FY2025 at −1.0%, from −15.2% in FY2023."},
+  {id:"m_net",n:"Net margin",ty:"div",num:[T("is_netloss")],den:[T("is_rev")],fmt:"pct",
+   w:"The bottom line per dollar of revenue.",r:"From −20.0% to −7.6%."},
+  {id:"m_sbc",n:"Stock-based compensation, % of revenue",ty:"div",num:[T("sbc_pl")],den:[T("is_rev")],fmt:"pct",
+   w:"How much of revenue is paid to employees in stock. It costs shareholders through dilution, not cash.",r:"Back to 18.9% of revenue in FY2025, after dipping to 16.9% in FY2024."},
+  {id:"r_roe",n:"Return on equity",ty:"div",num:[T("is_netloss")],den:[T("bs_te",{avg:1})],fmt:"pct",
+   w:"Net result relative to the average equity shareholders have in the business.",r:"Still negative, but the loss relative to equity halved, from −16.7% to −7.9%."},
+  {id:"r_roa",n:"Return on assets",ty:"div",num:[T("is_netloss")],den:[T("bs_ta",{avg:1})],fmt:"pct",
+   w:"Net result relative to average total assets.",r:"From −10.4% to −4.6%."}
+ ]},
+ {g:"Liquidity", note:"Can Procore cover what it owes in the next year?", items:[
+  {id:"l_current",n:"Current ratio",ty:"div",num:[T("bs_tca")],den:[T("bs_tcl")],fmt:"x",
+   w:"Current assets for every dollar of current liabilities.",r:"1.32x at the end of FY2025. That reads lower than it is: three quarters of current liabilities is deferred revenue, which is settled by delivering software, not cash."},
+  {id:"l_quick",n:"Quick ratio",ty:"div",num:[T("bs_cash"),T("bs_mkt"),T("bs_ar")],den:[T("bs_tcl")],fmt:"x",
+   w:"Like the current ratio, but counting only cash, short-term securities, and receivables.",r:"1.19x in FY2025, down from 1.40x as cash went to buybacks."},
+  {id:"l_cash",n:"Cash ratio",ty:"div",num:[T("bs_cash"),T("bs_mkt")],den:[T("bs_tcl")],fmt:"x",
+   w:"Cash and short-term securities alone against current liabilities.",r:"0.87x in FY2025."},
+  {id:"l_cashinv",n:"Cash and investments",ty:"sum",num:[T("bs_cash"),T("bs_mkt"),T("bs_mkt_nc")],fmt:"usd",
+   w:"Total liquidity. Procore has no debt, so this is also its net cash.",r:"$811.0M at the end of FY2025, roughly flat after $223M went back to shareholders."},
+  {id:"l_wc",n:"Working capital",ty:"sum",num:[T("bs_tca"),T("bs_tcl",{sign:-1})],fmt:"usd",
+   w:"Current assets minus current liabilities.",r:"$282.3M in FY2025, down from $371.8M."}
+ ]},
+ {g:"Efficiency", note:"Averages use the beginning and end of the year.", items:[
+  {id:"e_dso",n:"Days sales outstanding",ty:"div",num:[T("bs_ar",{avg:1})],den:[T("is_rev")],mult:365,fmt:"days",
+   w:"How many days of revenue are tied up in receivables. Annual up-front billing makes this lumpy around renewal season.",r:"Drifted up from 68 to 74 days."},
+  {id:"e_drm",n:"Deferred revenue, months of revenue",ty:"div",num:[T("bs_dr_cur")],den:[T("is_rev")],mult:12,fmt:"months",
+   w:"How many months of revenue customers have already been billed for.",r:"About six months, steady across all three years. That’s what annual billing in advance looks like: on average, half the year is still to be delivered."},
+  {id:"e_at",n:"Asset turnover",ty:"div",num:[T("is_rev")],den:[T("bs_ta",{avg:1})],fmt:"x",
+   w:"Revenue generated per dollar of average assets.",r:"Rising, from 0.52x to 0.61x. Goodwill and cash keep it low."},
+  {id:"e_smeff",n:"New revenue per $1 of sales and marketing",ty:"div",num:[T("is_rev"),T("is_rev",{prior:1,sign:-1})],den:[T("is_sm")],fmt:"usd2",
+   w:"Revenue added this year for each dollar spent on sales and marketing. A rough sales efficiency measure.",r:"Fell from $0.46 to $0.29 as growth slowed faster than S&M spend."},
+  {id:"e_revcust",n:"Revenue per organic customer",ty:"div",num:[T("is_rev")],den:[T("cust")],fmt:"usdk",
+   w:"Average revenue per customer. Organic customers exclude acquired businesses, so this runs a little high.",r:"Up from $58K to $74K, as customers put more construction volume on the platform."}
+ ]},
+ {g:"Leverage", note:"How the balance sheet is funded.", items:[
+  {id:"v_le",n:"Liabilities to equity",ty:"div",num:[T("bs_tl")],den:[T("bs_te")],fmt:"x",
+   w:"Dollars owed per dollar of equity.",r:"0.77x in FY2025. Most of that is deferred revenue, not borrowing."},
+  {id:"v_drl",n:"Deferred revenue, share of liabilities",ty:"div",num:[T("bs_dr_cur"),T("bs_dr_nc")],den:[T("bs_tl")],fmt:"pct",
+   w:"How much of what Procore owes is service already billed.",r:"About 71%. There is no debt on the balance sheet."},
+  {id:"v_ea",n:"Equity to assets",ty:"div",num:[T("bs_te")],den:[T("bs_ta")],fmt:"pct",
+   w:"The share of assets funded by shareholders.",r:"56.4% in FY2025, down from 61.3% as buybacks reduced equity."},
+  {id:"v_gw",n:"Goodwill and intangibles, share of assets",ty:"div",num:[T("bs_goodwill"),T("bs_intang")],den:[T("bs_ta")],fmt:"pct",
+   w:"How much of the balance sheet is acquired value rather than cash or operating assets.",r:"Falling, from 35.8% to 30.4%, as amortization runs and other assets grow."}
+ ]},
+ {g:"Cash flow", note:"Free cash flow is operating cash flow less equipment purchases and capitalized software, Procore’s own definition.", items:[
+  {id:"c_fcf",n:"Free cash flow",ty:"sum",num:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")],fmt:"usd",
+   w:"Cash the business generates after reinvesting in equipment and software.",r:"$47.0M, $127.5M, then $216.5M."},
+  {id:"c_fcfm",n:"Free cash flow margin",ty:"div",num:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")],den:[T("is_rev")],fmt:"pct",
+   w:"Free cash flow per dollar of revenue.",r:"From 4.9% to 16.4% in two years."},
+  {id:"c_ocfm",n:"Operating cash flow margin",ty:"div",num:[T("cf_ocf")],den:[T("is_rev")],fmt:"pct",
+   w:"Operating cash per dollar of revenue.",r:"22.7% in FY2025."},
+  {id:"c_conv",n:"Free cash flow to non-GAAP operating income",ty:"div",num:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")],den:[T("ng_op")],fmt:"x",
+   w:"How much of adjusted operating income turns into free cash. Above 1x means cash runs ahead of adjusted profit, usually because of up-front billing and interest income.",r:"1.16x in FY2025."},
+  {id:"c_capint",n:"Capital intensity",ty:"div",num:[T("cf_ppe_purch",{sign:-1}),T("cf_capsw",{sign:-1})],den:[T("is_rev")],fmt:"pct",
+   w:"Equipment and capitalized software as a share of revenue.",r:"Rising, from 4.7% to 6.3%, mostly capitalized software."},
+  {id:"c_fcfsbc",n:"Free cash flow less stock comp",ty:"sum",num:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw"),T("cf_sbc",{sign:-1})],fmt:"usd",
+   w:"Free cash flow if stock compensation had been paid in cash. A stricter view of earnings power.",r:"Still negative, but the gap closed from −$127.8M to −$21.9M."},
+  {id:"c_r40",n:"Rule of 40",ty:"r40",fmt:"score",
+   w:"Revenue growth plus free cash flow margin, in percentage points. 40 or more is the usual software benchmark.",r:"36.9, 32.3, then 31.2. Margin gains have not fully offset slowing growth."},
+  {id:"c_return",n:"Cash returned to shareholders, % of FCF",ty:"div",num:[T("cf_repurch",{sign:-1}),T("cf_taxwh",{sign:-1})],den:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")],fmt:"pct",
+   w:"Buybacks plus tax paid on withheld shares, against free cash flow.",r:"103% in FY2025: Procore returned slightly more than all of its free cash flow."}
+ ]},
+ {g:"Business metrics", note:"Disclosed in earnings releases rather than on the statements.", items:[
+  {id:"k_cust",n:"Organic customers",ty:"val",num:[T("cust")],fmt:"count",w:"Customers excluding those from acquired businesses.",r:"About 4% growth a year."},
+  {id:"k_c100",n:"Customers over $100K ARR",ty:"val",num:[T("c100")],fmt:"count",w:"Customers paying more than $100K a year.",r:"2,710 at the end of FY2025."},
+  {id:"k_grr",n:"Gross revenue retention",ty:"val",num:[T("grr")],fmt:"pct0",w:"Share of last year’s recurring revenue kept, before upsell. Measures churn and downgrades only.",r:"Steady at 94% to 95%."},
+  {id:"k_rpo",n:"Remaining performance obligations",ty:"val",num:[T("rpo")],fmt:"usd",w:"Revenue under contract, not yet recognized.",r:"$1.59B at the end of FY2025."},
+  {id:"k_crpocov",n:"Current RPO, % of revenue",ty:"div",num:[T("crpo")],den:[T("is_rev")],fmt:"pct",w:"Next-12-month contracted revenue against this year’s revenue: how much of next year is already locked in.",r:"76% in FY2025, the highest of the three years."}
+ ]},
+ {g:"Valuation", note:"FY2025 financials at the share price entered here.", val:true, items:[
+  {id:"val_mcap",n:"Market capitalization",ty:"prod",num:[T("price"),T("sh_out")],fmt:"usd",w:"Share price times shares outstanding at the end of FY2025. Today’s share count is somewhat different.",r:""},
+  {id:"val_ev",n:"Enterprise value",ty:"ev",fmt:"usd",w:"Market capitalization minus cash and investments. Procore has no debt to add.",r:""},
+  {id:"val_evrev",n:"EV to revenue",ty:"evx",den:[T("is_rev")],fmt:"x",w:"Enterprise value per dollar of FY2025 revenue.",r:""},
+  {id:"val_evfcf",n:"EV to free cash flow",ty:"evx",den:[T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")],fmt:"x",w:"Enterprise value per dollar of FY2025 free cash flow.",r:""},
+  {id:"val_evngop",n:"EV to non-GAAP operating income",ty:"evx",den:[T("ng_op")],fmt:"x",w:"Enterprise value per dollar of FY2025 non-GAAP operating income.",r:""},
+  {id:"val_fcfy",n:"Free cash flow yield",ty:"fcfy",fmt:"pct",w:"FY2025 free cash flow divided by market capitalization.",r:""}
+ ]}
+];
+const R = {}; RG.forEach(g => g.items.forEach(it => { it.group=g.g; R[it.id]=it; }));
+
+/* ---------------- Value access & computation ---------------- */
+const state = {yi:2, units:"M", tab:"statements", view:"side", st:"is", sel:null, price:63};
+SUPP.price.v = [null,null,state.price];
+
+function rawv(ref, yi){
+  if (yi < 0) return P22[ref] ?? null;
+  if (L[ref]) return L[ref].v ? L[ref].v[yi] : null;
+  if (SUPP[ref]) return SUPP[ref].v[yi];
+  return null;
+}
+function tval(t, yi){
+  const cur = rawv(t.ref, t.prior ? yi-1 : yi);
+  if (cur==null) return null;
+  if (t.avg){ const pr = rawv(t.ref, yi-1); if (pr==null) return null; return t.sign*(cur+pr)/2; }
+  return t.sign*cur;
+}
+function sumT(arr, yi){ let s=0; for (const t of arr){ const v=tval(t,yi); if (v==null) return null; s+=v; } return s; }
+const FCF = [T("cf_ocf"),T("cf_ppe_purch"),T("cf_capsw")];
+const CASHINV = [T("bs_cash"),T("bs_mkt"),T("bs_mkt_nc")];
+function rv(r, yi){
+  switch(r.ty){
+    case "growth": { const c=rawv(r.num[0].ref,yi), p=rawv(r.num[0].ref,yi-1); return (c==null||p==null||p===0)?null:c/p-1; }
+    case "div": { const n=sumT(r.num,yi), d=sumT(r.den,yi); return (n==null||!d)?null:n/d*(r.mult||1); }
+    case "sum": return sumT(r.num,yi);
+    case "val": return rawv(r.num[0].ref,yi);
+    case "r40": { const g=rv(R.g_rev,yi), m=rv(R.c_fcfm,yi); return (g==null||m==null)?null:(g+m)*100; }
+    case "prod": { if (yi!==2) return null; const p=rawv("price",2); return p? p*rawv("sh_out",2)/1000 : null; }
+    case "ev": { const m=rv(R.val_mcap,yi); return m==null?null:m-sumT(CASHINV,2); }
+    case "evx": { const ev=rv(R.val_ev,yi); const d=sumT(r.den,2); return (ev==null||!d)?null:ev/d; }
+    case "fcfy": { const m=rv(R.val_mcap,yi); return (m==null)?null:sumT(FCF,2)/m; }
+  }
+  return null;
+}
+function inputsOf(r){
+  if (r.ty==="r40") return [T("is_rev"),T("is_rev",{prior:1}),...FCF];
+  if (r.ty==="ev") return [T("price"),T("sh_out"),...CASHINV];
+  if (r.ty==="evx") return [T("price"),T("sh_out"),...CASHINV,...r.den];
+  if (r.ty==="fcfy") return [...FCF,T("price"),T("sh_out")];
+  if (r.ty==="growth") return [r.num[0], T(r.num[0].ref,{prior:1})];
+  return [...(r.num||[]),...(r.den||[])];
+}
+const USED = {}; // line id -> ratio ids
+RG.forEach(g=>g.items.forEach(r=>{ const seen=new Set(); inputsOf(r).forEach(t=>{ if(L[t.ref] && !seen.has(t.ref)){ seen.add(t.ref); (USED[t.ref]=USED[t.ref]||[]).push(r.id);} }); }));
+
+/* ---------------- Formatting ---------------- */
+const nf1 = new Intl.NumberFormat("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});
+const nf0 = new Intl.NumberFormat("en-US",{maximumFractionDigits:0});
+const nf2 = new Intl.NumberFormat("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const MINUS = "−";
+function paren(s, neg){ return neg ? "("+s+")" : s; }
+function fStmt(v, f){
+  if (v==null) return "";
+  if (f==="eps") return paren(nf2.format(Math.abs(v)), v<0);
+  if (f==="sh") return state.units==="M" ? nf1.format(v/1e6) : nf0.format(v);
+  if (v===0) return "—";
+  if (state.units==="M") { const a=Math.abs(v)/1000; return paren(nf1.format(a), v<0); }
+  return paren(nf0.format(Math.abs(v)), v<0);
+}
+function fMoney(v){ // thousands -> "$1,322.5M" / "−$100.8M"
+  if (v==null) return "n/a";
+  const a=Math.abs(v)/1000; const sgn=v<0?MINUS:"";
+  if (a>=5000) return sgn+"$"+nf2.format(a/1000)+"B";
+  return sgn+"$"+(a<0.05&&a>0?nf2.format(a):nf1.format(a))+"M";
+}
+function fBig(v, f){
+  if (v==null) return "n/a";
+  if (f==="eps") return (v<0?MINUS:"")+"$"+nf2.format(Math.abs(v));
+  if (f==="sh") return nf1.format(v/1e6)+"M shares";
+  if (f==="count") return nf0.format(v);
+  if (f==="pct0") return Math.round(v*100)+"%";
+  if (f==="price") return "$"+nf2.format(v);
+  return fMoney(v);
+}
+function fR(v, f){
+  if (v==null || !isFinite(v)) return "n/a";
+  const sgn = v<0?MINUS:"";
+  switch(f){
+    case "pct": return sgn+nf1.format(Math.abs(v*100))+"%";
+    case "pct0": return Math.round(v*100)+"%";
+    case "x": return sgn+(Math.abs(v)>=10?nf1:nf2).format(Math.abs(v))+"x";
+    case "days": return nf1.format(v)+" days";
+    case "months": return nf1.format(v)+" months";
+    case "usd": return fMoney(v);
+    case "usd2": return sgn+"$"+nf2.format(Math.abs(v));
+    case "usdk": return "$"+nf1.format(v)+"K";
+    case "count": return nf0.format(v);
+    case "score": return nf1.format(v);
+  }
+  return String(v);
+}
+function fRshort(v,f){ // compact table cell
+  if (v==null || !isFinite(v)) return "—";
+  if (f==="usd"){ const a=Math.abs(v)/1000, s=v<0?MINUS:""; return a>=5000? s+"$"+nf2.format(a/1000)+"B" : s+"$"+nf1.format(a)+"M"; }
+  if (f==="days") return nf1.format(v);
+  if (f==="months") return nf1.format(v);
+  return fR(v,f);
+}
+function fTermVal(t, yi){
+  const v=tval(t,yi); if (v==null) return "n/a";
+  const f = L[t.ref] ? L[t.ref].f : (SUPP[t.ref].f||"usd");
+  return fBig(v,f);
+}
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+/* ---------------- Selection & markup ---------------- */
+// returns {selRow, tags: Map(lineId -> n), list:[...]}
+function markup(){
+  const s = state.sel; const tags = new Map(); let selRow=null, selRatio=null, text="";
+  if (!s) return {tags,selRow,selRatio,text};
+  if (s.kind==="line"){
+    selRow = s.id;
+    (ADJ[s.id]||[]).forEach((e,i)=>tags.set(e.id,i+1));
+    const n=(ADJ[s.id]||[]).length;
+    text = `<b>${esc(L[s.id].l)}</b> is clouded${n?`; its ${n} connected line${n>1?"s are":" is"} tagged`:""}.`;
+  } else if (s.kind==="ratio"){
+    selRatio = s.id; let n=0; const seen=new Set();
+    inputsOf(R[s.id]).forEach(t=>{ const k=t.ref; if(seen.has(k)) return; seen.add(k); n++; if(L[k]) tags.set(k,n); });
+    text = `Tagged lines are the inputs to <b>${esc(R[s.id].n)}</b>.`;
+  } else if (s.kind==="group"){
+    const g = GROUPS[s.id]; g.refs.forEach((r,i)=>tags.set(r,i+1));
+    text = `Tagged lines make up <b>${esc(g.l)}</b>.`;
+  }
+  return {tags,selRow,selRatio,text};
+}
+function select(sel, opts={}){
+  state.sel = sel;
+  if (sel && sel.kind==="line" && state.view==="single") state.st = L[sel.id].st;
+  if (opts.tab) setTab(opts.tab, true);
+  renderStatements(); renderRatios(); renderPanel(); renderBridge(); writeHash();
+  if (sel && window.innerWidth<=980) openSheet(true);
+  const mobile = window.innerWidth<=980;
+  if (sel && (sel.kind==="line" || (mobile && sel.kind==="ratio" && state.tab==="ratios")) && (opts.scroll!==false || mobile)) requestAnimationFrame(()=>{
+    const el=document.querySelector(sel.kind==="line" ? `.row[data-id="${sel.id}"]` : `.rrow[data-r="${sel.id}"]`);
+    if (el){ const r=el.getBoundingClientRect(); const bottomLimit = window.innerWidth<=980 ? window.innerHeight*0.34 : window.innerHeight;
+      if (r.top<70 || r.bottom>bottomLimit) el.scrollIntoView({block: window.innerWidth<=980?"start":"center", behavior: reduce()?"auto":"smooth"}); }
+  });
+}
+const reduce = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- Rendering: statements ---------------- */
+const stmtsEl = document.getElementById("stmts");
+function effectiveView(){ return window.innerWidth < 1320 ? "single" : state.view; }
+function tagSvg(n){ return `<span class="tag" aria-hidden="true"><svg viewBox="0 0 22 20"><path d="M11 1.2 L21 18.8 H1 Z"/></svg><b>${n||""}</b></span>`; }
+function renderStatements(){
+  const view = effectiveView();
+  const m = markup();
+  stmtsEl.className = "stmts" + (view==="single"?" single":"") + (state.units==="K"?" uK":"");
+  document.getElementById("layoutCtl").style.display = (window.innerWidth<1320 || state.tab!=="statements") ? "none" : "";
+  // statement tabs
+  const stabs = document.getElementById("stabs");
+  stabs.hidden = view!=="single";
+  if (view==="single"){
+    stabs.innerHTML = ["is","bs","cf"].map(st=>{
+      let c=0; ORDER[st].forEach(o=>{ if(m.tags.has(o.id)) c++; });
+      return `<button type="button" role="tab" data-st="${st}" aria-selected="${state.st===st}">${STN[st]}<span class="cnt">${c||""}</span></button>`;
+    }).join("");
+  }
+  let html="";
+  for (const st of ["is","bs","cf"]){
+    const sub = view==="single" ? (st==="bs"?"As of December 31":"Years ended December 31") : (st==="bs" ? `As of ${YEND[state.yi]}` : `Year ended ${YEND[state.yi]}`);
+    const unit = state.units==="M" ? "In millions of dollars" : "In thousands of dollars";
+    const colrow = `<div class="row colrow" aria-hidden="true"><span class="lbl">${unit}</span>${view==="single" ? YRS.map((y,i)=>`<span class="v ${i===state.yi?"on":""}">${y}</span>`).join("") : `<span class="v on">${YRS[state.yi]}</span>`}</div>`;
+    html += `<section class="stmt ${state.st===st?"on":""}" data-st="${st}" aria-label="${STN[st]}"><header><div><h3>${STN[st]}</h3><p>${sub}</p></div></header><div class="rows">${colrow}`;
+    for (const o of ORDER[st]){
+      if (o.t==="h"){ html += `<div class="row head lv${o.lv}"><span class="lbl">${esc(o.l)}</span></div>`; continue; }
+      const cls = ["row","lv"+o.lv, o.t==="s"?"sub":"", o.t==="t"?"tot":"", m.tags.has(o.id)?"linked":"", m.selRow===o.id?"sel":""].join(" ");
+      const vals = view==="single" ? o.v.map((v,i)=>`<span class="v ${i===state.yi?"on":""}">${fStmt(v,o.f)}</span>`).join("") : `<span class="v">${fStmt(o.v[state.yi],o.f)}</span>`;
+      const tagN = m.tags.get(o.id);
+      html += `<button type="button" class="${cls}" data-id="${o.id}" aria-pressed="${m.selRow===o.id}">${tagSvg(tagN)}<span class="lbl">${esc(o.l)}</span>${vals}</button>`;
+    }
+    html += `</div></section>`;
+  }
+  stmtsEl.innerHTML = html;
+  const mb = document.getElementById("markbar");
+  mb.hidden = !m.text; document.getElementById("markText").innerHTML = m.text;
+  requestAnimationFrame(drawClouds);
+}
+
+/* Revision cloud around the selected row */
+function cloudPath(w,h){
+  const seg=11, nx=Math.max(2,Math.round(w/seg)), ny=Math.max(1,Math.round(h/seg)), sx=w/nx, sy=h/ny;
+  const rx=(sx*0.62).toFixed(2), ry=(sy*0.62).toFixed(2);
+  let d="M0 0";
+  for (let i=1;i<=nx;i++) d+=` A${rx} ${rx} 0 0 1 ${(i*sx).toFixed(2)} 0`;
+  for (let i=1;i<=ny;i++) d+=` A${ry} ${ry} 0 0 1 ${w.toFixed(2)} ${(i*sy).toFixed(2)}`;
+  for (let i=nx-1;i>=0;i--) d+=` A${rx} ${rx} 0 0 1 ${(i*sx).toFixed(2)} ${h.toFixed(2)}`;
+  for (let i=ny-1;i>=0;i--) d+=` A${ry} ${ry} 0 0 1 0 ${(i*sy).toFixed(2)}`;
+  return d+"Z";
+}
+function drawClouds(){
+  document.querySelectorAll(".cloud").forEach(c=>c.remove());
+  document.querySelectorAll(".row.sel, .rrow.sel").forEach(el=>{
+    if (!el.offsetParent) return;
+    const inset=4, pad=5, w=el.clientWidth-inset*2-22, h=el.clientHeight-2;
+    const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
+    svg.setAttribute("class","cloud"); svg.setAttribute("aria-hidden","true");
+    svg.setAttribute("width",w+pad*2); svg.setAttribute("height",h+pad*2);
+    svg.style.left=(inset+22-pad)+"px"; svg.style.top=(1-pad)+"px";
+    svg.innerHTML=`<path transform="translate(${pad} ${pad})" d="${cloudPath(w,h)}"/>`;
+    el.appendChild(svg);
+  });
+}
+
+/* ---------------- Rendering: ratios ---------------- */
+function renderRatios(){
+  const m = markup();
+  let html="";
+  for (const g of RG){
+    html += `<section class="rgroup"><header><div><h3>${g.g}</h3><p>${g.note}</p></div>${g.val?`<label class="price">Share price <input type="number" id="priceIn" min="0" step="0.01" inputmode="decimal" value="${state.price}"><small>Close on Oct 23, 2026</small></label>`:""}</header>`;
+    html += `<div class="rrow colh" aria-hidden="true"><span></span>${YRS.map((y,i)=>`<span class="v ${i===state.yi?"on":""}">${y}</span>`).join("")}</div>`;
+    for (const r of g.items){
+      const sel = m.selRatio===r.id;
+      html += `<button type="button" class="rrow ${sel?"sel":""}" data-r="${r.id}" aria-pressed="${sel}"><span class="lbl">${esc(r.n)}</span>${YRS.map((y,i)=>`<span class="v ${i===state.yi?"on":""}">${fRshort(rv(r,i),r.fmt)}</span>`).join("")}</button>`;
+    }
+    html += `</section>`;
+  }
+  const el = document.getElementById("rgroups");
+  const pi = document.getElementById("priceIn");
+  if (pi && document.activeElement===pi) { updateRatioCells(); return; }
+  el.innerHTML = html;
+  requestAnimationFrame(drawClouds);
+}
+function updateRatioCells(){
+  document.querySelectorAll(".rrow[data-r]").forEach(row=>{
+    const r=R[row.dataset.r];
+    row.querySelectorAll(".v").forEach((sp,i)=>{ sp.textContent = fRshort(rv(r,i),r.fmt); });
+  });
+}
+
+/* ---------------- Mini bar chart (3 years) ---------------- */
+function miniChart(vals, fmtFn, title){
+  const present = vals.filter(v=>v!=null);
+  if (!present.length) return "";
+  const max=Math.max(0,...present), min=Math.min(0,...present);
+  const W=320, H=150, top=22, bot= min<0 ? 44 : 26, left=4, right=4;
+  const span=(max-min)||1, ph=H-top-bot;
+  const y = v => top + (max - v)/span*ph;
+  const band=(W-left-right)/3, bw=Math.min(64,band*0.5);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)} by year">`;
+  vals.forEach((v,i)=>{
+    const cx=left+band*i+band/2, x=cx-bw/2;
+    if (v!=null){
+      const y0=y(0), y1=y(v), hgt=Math.max(1,Math.abs(y1-y0)), yy=Math.min(y0,y1);
+      const on=i===state.yi;
+      s+=`<g data-tip="${esc(`<b>${YRS[i]}</b><br>${fmtFn(v,true)}`)}"><rect x="${x}" y="${yy}" width="${bw}" height="${hgt}" rx="3" fill="${on?"var(--ink)":"var(--bar-muted)"}"/>`;
+      s+=`<rect x="${cx-band/2}" y="${top-18}" width="${band}" height="${ph+36}" fill="transparent"/></g>`;
+      const ly = v>=0 ? yy-6 : yy+hgt+14;
+      s+=`<text x="${cx}" y="${ly}" text-anchor="middle" font-size="12.5" font-weight="${on?700:500}" fill="${on?"var(--ink)":"var(--muted)"}">${esc(fmtFn(v))}</text>`;
+    } else {
+      s+=`<text x="${cx}" y="${y(0)-6}" text-anchor="middle" font-size="12" fill="var(--muted)">n/a</text>`;
+    }
+    s+=`<text x="${cx}" y="${H-6}" text-anchor="middle" font-size="12.5" fill="${i===state.yi?"var(--ink)":"var(--muted)"}" font-weight="${i===state.yi?700:400}">${YRS[i]}</text>`;
+  });
+  s+=`<line x1="${left}" x2="${W-right}" y1="${y(0)}" y2="${y(0)}" stroke="var(--ink-2)" stroke-width="1"/>`;
+  return s+"</svg>";
+}
+
+/* ---------------- Rendering: panel ---------------- */
+const panel = document.getElementById("panel");
+function closeBar(){ return `<div class="close"><button type="button" id="closeSheet">Close</button></div>`; }
+function pctOf(o, v){
+  const yi=state.yi;
+  if (o.f!=="usd" || v==null) return "";
+  if (o.st==="bs"){ const base = o.side==="a" ? L.bs_ta.v[yi] : L.bs_tle.v[yi]; if (["bs_ta","bs_tle","bs_pref","bs_common","bs_apic","bs_aoci","bs_deficit"].includes(o.id)) return ""; return `${nf1.format(Math.abs(v)/base*100)}% of ${o.side==="a"?"total assets":"total liabilities and equity"}.`; }
+  if (o.id==="is_rev") return "";
+  return `${nf1.format(Math.abs(v)/L.is_rev.v[yi]*100)}% of revenue.`;
+}
+function chgText(o){
+  const yi=state.yi; if (yi===0 && P22[o.id]==null) return "";
+  const c=o.v[yi], p= yi===0 ? P22[o.id] : o.v[yi-1];
+  if (c==null||p==null) return "";
+  const prevY = yi===0 ? "FY2022" : YRS[yi-1];
+  if (o.f==="eps"){ const d=c-p; return `${d>=0?"+":MINUS}$${nf2.format(Math.abs(d))} vs ${prevY}`; }
+  if (o.f==="sh"){ return `${c>=p?"+":MINUS}${nf1.format(Math.abs(c/p-1)*100)}% vs ${prevY}`; }
+  if (p>0 && c>=0){ const g=c/p-1; return `${g>=0?"+":MINUS}${nf1.format(Math.abs(g)*100)}% vs ${prevY}`; }
+  const d=c-p; if (d===0) return `No change vs ${prevY}`;
+  return `${d>0?"+":MINUS}${fMoney(Math.abs(d)).replace(MINUS,"")} vs ${prevY}`;
+}
+function linkItem(id, n, note){
+  const o=L[id]; const v=o.v[state.yi];
+  return `<li><button type="button" data-sel="line:${id}">${tagSvg(n)}<span class="ls">${STN[o.st]}</span><span class="ll">${esc(o.l)}</span><span class="lv">${fBig(v,o.f)}</span>${note?`<span class="ln">${esc(note)}</span>`:""}</button></li>`;
+}
+function renderPanel(){
+  const s=state.sel, yi=state.yi;
+  if (!s){
+    panel.innerHTML = closeBar()+`<div class="empty"><h3>Pick a line or a ratio</h3><p>Select anything on the statements or in the ratio tables. The details show up here, and the connected lines get marked up on the statements.</p><h4>Good places to start</h4><div class="chips">
+      <button type="button" data-sel="line:bs_dr_cur">Deferred revenue</button><button type="button" data-sel="line:cf_sbc">Stock-based compensation</button><button type="button" data-sel="line:bs_deficit">Accumulated deficit</button><button type="button" data-sel="line:is_rev">Revenue</button><button type="button" data-sel="ratio:c_fcfm">Free cash flow margin</button><button type="button" data-sel="ratio:m_ng_op">Non-GAAP operating margin</button><button type="button" data-sel="ratio:c_r40">Rule of 40</button></div></div>`;
+    return;
+  }
+  if (s.kind==="line"){
+    const o=L[s.id], v=o.v[yi];
+    const fmtFn = (x,exact)=> exact && o.f==="usd" ? `${fBig(x,o.f)}<br>$${nf0.format(Math.round(x))} thousand` : fBig(x,o.f);
+    let h = closeBar()+`<p class="p-kicker">${STN[o.st]}, ${o.st==="bs"?"as of "+YEND[yi]:YRS[yi]}</p><h3 class="p-title">${esc(o.l)}</h3>`;
+    const chg=chgText(o);
+    h += `<div class="p-big">${fBig(v,o.f)}${chg?`<span class="chg">${chg}</span>`:""}</div>`;
+    const sub = [o.f==="usd"? `As filed: ${v<0?MINUS:""}$${nf0.format(Math.abs(v))} thousand.`:"", pctOf(o,v)].filter(Boolean).join(" ");
+    if (sub) h += `<p class="p-sub">${sub}</p>`;
+    h += `<figure class="mini">${miniChart(o.v, fmtFn, o.l)}</figure>`;
+    h += `<h4>What it is</h4><p>${esc(o.d)}</p>`;
+    if (o.p) h += `<h4>At Procore</h4><p>${esc(o.p)}</p>`;
+    const adj=ADJ[o.id]||[];
+    if (adj.length){ h += `<h4>Where it connects</h4><ol class="links">${adj.map((e,i)=>linkItem(e.id,i+1,e.n)).join("")}</ol>`; }
+    const used=USED[o.id]||[];
+    if (used.length){ h += `<h4>Ratios that use it</h4><div class="chips">${used.map(id=>`<button type="button" data-sel="ratio:${id}">${esc(R[id].n)}</button>`).join("")}</div>`; }
+    panel.innerHTML=h; return;
+  }
+  if (s.kind==="ratio"){
+    const r=R[s.id]; const valYi = r.ty==="prod"||r.ty==="ev"||r.ty==="evx"||r.ty==="fcfy" ? 2 : yi;
+    const v=rv(r,valYi);
+    let h = closeBar()+`<p class="p-kicker">${r.group}, ${YRS[valYi]}</p><h3 class="p-title">${esc(r.n)}</h3><div class="p-big">${fR(v,r.fmt)}</div>`;
+    if (valYi!==yi) h+=`<p class="p-sub">Valuation uses FY2025 figures and the share price you enter.</p>`;
+    h += formulaHtml(r, valYi, v);
+    const series=[0,1,2].map(i=>rv(r,i));
+    if (!r.group.startsWith("Valuation")) h += `<figure class="mini">${miniChart(series,(x)=>fRshort(x,r.fmt),r.n)}</figure>`;
+    h += `<h4>What it tells you</h4><p>${esc(r.w)}</p>`;
+    if (r.r) h += `<h4>At Procore</h4><p>${esc(r.r)}</p>`;
+    if (state.tab==="ratios" && inputsOf(r).some(t=>L[t.ref])) h += `<button type="button" class="cta" id="showInputs">Show inputs on the statements</button>`;
+    panel.innerHTML=h; return;
+  }
+  if (s.kind==="group"){
+    const g=GROUPS[s.id]; const tot=[0,1,2].map(i=>g.refs.reduce((a,r)=>a+L[r].v[i],0));
+    let h = closeBar()+`<p class="p-kicker">Cash flows, ${YRS[yi]}</p><h3 class="p-title">${esc(g.l)}</h3><div class="p-big">${fMoney(tot[yi])}</div>`;
+    h += `<figure class="mini">${miniChart(tot,(x)=>fMoney(x),g.l)}</figure><h4>What it is</h4><p>${esc(g.d)}</p><h4>Lines in this group</h4><ol class="links">${g.refs.map((r,i)=>linkItem(r,i+1,"")).join("")}</ol>`;
+    panel.innerHTML=h;
+  }
+}
+function formulaHtml(r, yi, v){
+  const n=[]; let idx=0; const seen=new Map();
+  const tagFor = ref => { if(!seen.has(ref)){ idx++; seen.set(ref,idx);} return seen.get(ref); };
+  const term = (t, label) => {
+    const k=tagFor(t.ref); const isLine=!!L[t.ref];
+    const base = label || (isLine? L[t.ref].l : SUPP[t.ref].l);
+    const mod = t.avg ? ` (average, ${yi===0?"FY2022":YRS[yi-1]}–${YRS[yi]})` : t.prior ? ` (${yi===0?"FY2022":YRS[yi-1]})` : "";
+    const src = !isLine ? `<span class="ls" style="display:block;font-size:12px;color:var(--muted)">${SUPP[t.ref].src}</span>`:"";
+    return `<button type="button" class="term ${isLine?"":"supp"}" ${isLine?`data-sel="line:${t.ref}"`:"tabindex=\"-1\""}>${tagSvg(k)}<span class="tl">${esc(base)}${mod}${src}</span><span class="tv">${fTermVal(t,yi)}</span></button>`;
+  };
+  const part = (arr, lab=true) => `${lab&&arr.length>1?`<p class="op">Add these</p>`:""}<div class="part">${arr.map(t=>term(t)).join("")}</div>`;
+  let body="", res=`<div class="res"><span>Result</span><b>${fR(v,r.fmt)}</b></div>`;
+  switch(r.ty){
+    case "growth": body = part([r.num[0]]) + `<div class="div"></div>` + part([T(r.num[0].ref,{prior:1})]) + `<p class="op">then subtract 1</p>`; break;
+    case "div": body = part(r.num) + `<div class="div"></div>` + part(r.den) + (r.mult?`<p class="op">times ${r.mult}</p>`:`${r.fmt==="pct"?`<p class="op">as a percentage</p>`:""}`); break;
+    case "sum": body = part(r.num); break;
+    case "val": body = part(r.num); break;
+    case "r40": body = `<p class="op">Revenue growth: this year over last, minus 1</p>`+part([T("is_rev")])+`<div class="div"></div>`+part([T("is_rev",{prior:1})])+`<p class="op">plus free cash flow margin</p>`+part(FCF)+`<div class="div"></div>`+part([T("is_rev")]); res=`<div class="res"><span>${fR(rv(R.g_rev,yi),"pct")} + ${fR(rv(R.c_fcfm,yi),"pct")}</span><b>${fR(v,r.fmt)}</b></div>`; break;
+    case "prod": body = part([T("price")],false)+`<p class="op">times</p>`+part([T("sh_out")],false); break;
+    case "ev": body = `<p class="op">Market capitalization</p>`+part([T("price"),T("sh_out")],false)+`<p class="op">less cash and investments</p>`+part(CASHINV,false); res=`<div class="res"><span>${fR(rv(R.val_mcap,2),"usd")} ${MINUS} ${fR(sumT(CASHINV,2),"usd")}</span><b>${fR(v,r.fmt)}</b></div>`; break;
+    case "evx": body = `<p class="op">Enterprise value: price times shares, less cash and investments</p>`+part([T("price"),T("sh_out"),...CASHINV],false)+`<div class="div"></div>`+part(r.den); res=`<div class="res"><span>${fR(rv(R.val_ev,2),"usd")} ÷ ${fR(sumT(r.den,2),"usd")}</span><b>${fR(v,r.fmt)}</b></div>`; break;
+    case "fcfy": body = part(FCF)+`<div class="div"></div>`+`<p class="op">Market capitalization: price times shares</p>`+part([T("price"),T("sh_out")],false); res=`<div class="res"><span>${fR(sumT(FCF,2),"usd")} ÷ ${fR(rv(R.val_mcap,2),"usd")}</span><b>${fR(v,r.fmt)}</b></div>`; break;
+  }
+  return `<div class="formula">${body}${res}</div>`;
+}
+
+/* ---------------- Hero: net loss to free cash flow bridge ---------------- */
+const GROUPS = {
+  noncash:{l:"Other non-cash items",refs:["cf_accret","cf_abandon","cf_oplease_exp","cf_fx","cf_deftax","cf_creditloss","cf_fv_strat"],d:"Smaller non-cash adjustments: bond accretion, asset write-offs, lease expense, currency, deferred taxes, credit losses, and investment value changes."},
+  wc:{l:"Other working capital",refs:["cf_ch_ar","cf_ch_dcc","cf_ch_prepaid","cf_ch_ap","cf_ch_accrued","cf_ch_oplease"],d:"Changes in operating assets and liabilities other than deferred revenue: receivables, capitalized commissions, prepaids, payables, accruals, and lease liabilities."}
+};
+function bridgeSteps(yi){
+  const g = k => GROUPS[k].refs.reduce((a,r)=>a+L[r].v[yi],0);
+  const fcf = sumT(FCF,yi);
+  return [
+    {l:"Net loss",v:L.cf_netloss.v[yi],sel:"line:cf_netloss",k:"step0"},
+    {l:"Stock-based comp",sl:"Stock comp",v:L.cf_sbc.v[yi],sel:"line:cf_sbc"},
+    {l:"Depreciation & amortization",sl:"D&A",v:L.cf_da.v[yi],sel:"line:cf_da"},
+    {l:"Other non-cash",v:g("noncash"),sel:"group:noncash"},
+    {l:"Deferred revenue",v:L.cf_ch_dr.v[yi],sel:"line:cf_ch_dr"},
+    {l:"Other working capital",sl:"Other working cap.",v:g("wc"),sel:"group:wc"},
+    {l:"Operating cash flow",v:L.cf_ocf.v[yi],sel:"line:cf_ocf",total:1},
+    {l:"Equipment",v:L.cf_ppe_purch.v[yi],sel:"line:cf_ppe_purch"},
+    {l:"Capitalized software",v:L.cf_capsw.v[yi],sel:"line:cf_capsw"},
+    {l:"Free cash flow",v:fcf,sel:"ratio:c_fcf",total:1}
+  ];
+}
+function wrap2(s, max){ if (s.length<=max) return [s]; const w=s.split(" "); let best=[s]; let bd=1e9; for(let i=1;i<w.length;i++){ const a=w.slice(0,i).join(" "), b=w.slice(i).join(" "); const d=Math.max(a.length,b.length); if(d<bd){bd=d;best=[a,b];} } return best; }
+function selKey(){ const s=state.sel; return s? s.kind+":"+s.id : ""; }
+function renderBridge(){
+  const yi=state.yi, steps=bridgeSteps(yi), svg=document.getElementById("bridgeSvg");
+  const box=svg.parentElement.clientWidth-36; const horiz = box<640;
+  let run=0; const pts=steps.map((s,i)=>{ let a,b; if(s.total||i===0){ a=0; b=s.v; run=s.v; } else { a=run; b=run+s.v; run=b; } return {...s,a,b}; });
+  const lo=Math.min(0,...pts.map(p=>Math.min(p.a,p.b))), hi=Math.max(0,...pts.map(p=>Math.max(p.a,p.b)));
+  const col = p => p.total ? "var(--total)" : (p.v>=0 ? "var(--up)" : "var(--down)");
+  const sk=selKey();
+  let s="";
+  if (!horiz){
+    const W=Math.max(640,box), H=340, top=26, bot=46, l=8, r=8;
+    const band=(W-l-r)/pts.length, bw=Math.min(72,band*0.58), ph=H-top-bot-20;
+    const y=v=> top+(hi-v)/(hi-lo)*ph;
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    s+=`<line x1="${l}" x2="${W-r}" y1="${y(0)}" y2="${y(0)}" stroke="var(--ink-2)" stroke-width="1"/>`;
+    pts.forEach((p,i)=>{
+      const cx=l+band*i+band/2, x=cx-bw/2, y1=y(Math.max(p.a,p.b)), y2=y(Math.min(p.a,p.b)), hh=Math.max(1.5,y2-y1);
+      if (i<pts.length-1){ s+=`<line x1="${x+bw}" x2="${x+band}" y1="${y(p.b)}" y2="${y(p.b)}" stroke="var(--muted)" stroke-width="1" stroke-dasharray="2 3"/>`; }
+      const on = sk===p.sel;
+      const lab = fMoney(p.v);
+      const ly = p.v>=0 ? y1-7 : y2+16;
+      const tip = `<b>${esc(p.l)}</b><br>${lab}${p.total?"":(p.v>=0?" added":" used")}`;
+      s+=`<g class="hit" tabindex="0" role="button" aria-label="${esc(p.l)}: ${lab}" data-sel="${p.sel}" data-tip="${esc(tip)}">`;
+      s+=`<rect x="${cx-band/2}" y="${top-14}" width="${band}" height="${H-top+14}" fill="transparent"/>`;
+      s+=`<rect class="bar" x="${x}" y="${y1}" width="${bw}" height="${hh}" rx="3" fill="${col(p)}" ${on?`stroke="var(--mark)" stroke-width="3"`:""}/>`;
+      s+=`<text x="${cx}" y="${ly}" text-anchor="middle" font-size="13" font-weight="${p.total?700:600}" fill="var(--ink)">${lab}</text>`;
+      wrap2(p.l, 12).forEach((ln,j)=>{ s+=`<text x="${cx}" y="${H-bot+16+j*15}" text-anchor="middle" font-size="12.5" font-weight="${p.total?700:400}" fill="${p.total?"var(--ink)":"var(--ink-2)"}">${esc(ln)}</text>`; });
+      s+=`</g>`;
+    });
+  } else {
+    const W=Math.max(300,box), rowH=34, top=8, lw=136, rpad=62, H=top+rowH*pts.length+6;
+    const x=v=> lw + (v-lo)/(hi-lo)*(W-lw-rpad);
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+    s+=`<line x1="${x(0)}" x2="${x(0)}" y1="${top-4}" y2="${H-2}" stroke="var(--ink-2)" stroke-width="1"/>`;
+    pts.forEach((p,i)=>{
+      const yc=top+rowH*i+rowH/2, bh=18, x1=x(Math.min(p.a,p.b)), x2=x(Math.max(p.a,p.b)), on=sk===p.sel, lab=fMoney(p.v);
+      if (i<pts.length-1) s+=`<line x1="${x(p.b)}" x2="${x(p.b)}" y1="${yc+bh/2}" y2="${yc+rowH-bh/2}" stroke="var(--muted)" stroke-dasharray="2 3"/>`;
+      s+=`<g class="hit" tabindex="0" role="button" aria-label="${esc(p.l)}: ${lab}" data-sel="${p.sel}"><rect x="0" y="${yc-rowH/2}" width="${W}" height="${rowH}" fill="transparent"/>`;
+      s+=`<text x="0" y="${yc+4.5}" font-size="13" font-weight="${p.total?700:400}" fill="${p.total?"var(--ink)":"var(--ink-2)"}">${esc(p.sl||p.l)}</text>`;
+      s+=`<rect class="bar" x="${x1}" y="${yc-bh/2}" width="${Math.max(1.5,x2-x1)}" height="${bh}" rx="3" fill="${col(p)}" ${on?`stroke="var(--mark)" stroke-width="3"`:""}/>`;
+      s+=`<text x="${W}" y="${yc+4.5}" text-anchor="end" font-size="13" font-weight="${p.total?700:600}" fill="var(--ink)">${lab}</text></g>`;
+    });
+  }
+  svg.innerHTML=s;
+}
+function renderHero(){
+  const yi=state.yi, nl=L.is_netloss.v[yi], fcf=sumT(FCF,yi);
+  document.getElementById("heroTitle").textContent = `In ${YRS[yi]}, Procore lost ${fMoney(-nl)} and generated ${fMoney(fcf)} of free cash flow.`;
+  document.getElementById("heroDek").textContent = `Both are true. Stock-based compensation (${fMoney(L.cf_sbc.v[yi])}) and depreciation and amortization (${fMoney(L.cf_da.v[yi])}) are real costs that don’t use cash, and customers pay for subscriptions up front, which brought in ${fMoney(L.cf_ch_dr.v[yi])} ahead of revenue. Here is how one number becomes the other.`;
+  document.getElementById("bridgeTitle").textContent = `From net loss to free cash flow, ${YRS[yi]}`;
+  renderBridge();
+}
+
+/* ---------------- Tabs, controls, events ---------------- */
+function setTab(tab, silent){
+  state.tab=tab;
+  document.getElementById("tab-statements").setAttribute("aria-selected", tab==="statements");
+  document.getElementById("tab-ratios").setAttribute("aria-selected", tab==="ratios");
+  document.getElementById("view-statements").hidden = tab!=="statements";
+  document.getElementById("view-ratios").hidden = tab!=="ratios";
+  document.getElementById("layoutCtl").style.display = (window.innerWidth<1320 || tab!=="statements") ? "none" : "";
+  if (!silent){ renderPanel(); writeHash(); requestAnimationFrame(drawClouds); }
+}
+function renderYearSeg(){
+  document.getElementById("yearSeg").innerHTML = YRS.map((y,i)=>`<button type="button" data-y="${i}" aria-pressed="${i===state.yi}">${y}</button>`).join("");
+}
+function renderAll(){ renderYearSeg(); renderHero(); renderStatements(); renderRatios(); renderPanel(); }
+function openSheet(on){ panel.classList.toggle("open", !!on); }
+
+document.addEventListener("click", e=>{
+  const yb=e.target.closest("[data-y]"); if (yb){ state.yi=+yb.dataset.y; renderAll(); writeHash(); return; }
+  const ub=e.target.closest("[data-u]"); if (ub){ state.units=ub.dataset.u; document.querySelectorAll("[data-u]").forEach(b=>b.setAttribute("aria-pressed",b===ub)); renderStatements(); return; }
+  const vb=e.target.closest("[data-v]"); if (vb){ state.view=vb.dataset.v; document.querySelectorAll("[data-v]").forEach(b=>b.setAttribute("aria-pressed",b===vb)); renderStatements(); return; }
+  const tb=e.target.closest(".stabs [data-st]"); if (tb){ state.st=tb.dataset.st; renderStatements(); return; }
+  if (e.target.closest("#tab-statements")){ setTab("statements"); return; }
+  if (e.target.closest("#tab-ratios")){ setTab("ratios"); return; }
+  if (e.target.closest("#clearSel")){ select(null); return; }
+  if (e.target.closest("#closeSheet")){ openSheet(false); return; }
+  if (e.target.closest("#showInputs")){ setTab("statements"); select(state.sel,{scroll:false}); openSheet(false); scrollToLab(); return; }
+  const row=e.target.closest(".row[data-id]"); if (row){ const id=row.dataset.id; select(state.sel&&state.sel.kind==="line"&&state.sel.id===id?null:{kind:"line",id},{scroll:false}); return; }
+  const rr=e.target.closest(".rrow[data-r]"); if (rr){ select({kind:"ratio",id:rr.dataset.r}); return; }
+  const ds=e.target.closest("[data-sel]");
+  if (ds){
+    const [kind,id]=ds.dataset.sel.split(":");
+    const fromHero = !!ds.closest("#bridgeSvg");
+    if (kind==="line" && state.tab!=="statements") setTab("statements", true);
+    select({kind,id},{scroll: !fromHero});
+    if (fromHero) scrollToLab();
+  }
+});
+document.addEventListener("keydown", e=>{
+  if ((e.key==="Enter"||e.key===" ") && e.target.matches("#bridgeSvg .hit")){ e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click",{bubbles:true})); }
+  if (e.key==="Escape" && panel.classList.contains("open")) openSheet(false);
+});
+document.addEventListener("input", e=>{
+  if (e.target.id==="priceIn"){ const p=parseFloat(e.target.value); state.price = isFinite(p)&&p>0 ? p : null; SUPP.price.v=[null,null,state.price]; updateRatioCells(); if (state.sel&&state.sel.kind==="ratio") renderPanel(); }
+});
+function scrollToLab(){ document.getElementById("lab").scrollIntoView({behavior: reduce()?"auto":"smooth", block:"start"}); }
+
+/* Tooltip */
+const tip=document.getElementById("tip");
+document.addEventListener("pointermove", e=>{
+  const g=e.target.closest && e.target.closest("[data-tip]");
+  if (!g || e.pointerType==="touch"){ tip.classList.remove("on"); return; }
+  tip.innerHTML=g.getAttribute("data-tip");
+  const r=tip.getBoundingClientRect();
+  let x=e.clientX+14, y=e.clientY+14;
+  if (x+r.width>window.innerWidth-8) x=e.clientX-r.width-14;
+  if (y+r.height>window.innerHeight-8) y=e.clientY-r.height-14;
+  tip.style.left=x+"px"; tip.style.top=y+"px"; tip.classList.add("on");
+});
+const hideTip=()=>tip.classList.remove("on");
+document.addEventListener("pointerleave", hideTip);
+window.addEventListener("scroll", hideTip, {passive:true});
+document.addEventListener("pointerdown", hideTip);
+
+/* Hash state: #y=2025&sel=line:bs_dr_cur&tab=ratios */
+function writeHash(){
+  const p=new URLSearchParams(); p.set("y",YRS[state.yi].slice(2));
+  if (state.sel) p.set("sel",state.sel.kind+":"+state.sel.id);
+  if (state.tab!=="statements") p.set("tab",state.tab);
+  history.replaceState(null,"","#"+p.toString());
+}
+function readHash(){
+  const p=new URLSearchParams(location.hash.slice(1));
+  const y=YRS.findIndex(x=>x.slice(2)===p.get("y")); if (y>=0) state.yi=y;
+  state.tab = p.get("tab")==="ratios" ? "ratios" : "statements";
+  state.sel = null;
+  const s=p.get("sel"); if (s){ const [kind,id]=s.split(":"); if ((kind==="line"&&L[id])||(kind==="ratio"&&R[id])||(kind==="group"&&GROUPS[id])) { state.sel={kind,id}; if(kind==="line") state.st=L[id].st; } }
+}
+
+let rz; window.addEventListener("resize", ()=>{ clearTimeout(rz); rz=setTimeout(()=>{ renderBridge(); renderStatements(); if (window.innerWidth>980) openSheet(false); },120); });
+
+readHash(); setTab(state.tab, true); renderAll();
+window.addEventListener("hashchange", ()=>{ readHash(); setTab(state.tab, true); renderAll(); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{ drawClouds(); renderBridge(); });
+</script>
+</body>
+</html>

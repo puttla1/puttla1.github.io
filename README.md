@@ -19,6 +19,7 @@ Each page lives in its own folder as `index.html`:
 | `wedding-venues/index.html` | puneeth-alaina.com/wedding-venues |
 | `weekends/index.html` | puneeth-alaina.com/weekends (one subfolder per weekend, e.g. `weekends/2026-10-17/`) |
 | `fitness/index.html` | puneeth-alaina.com/fitness (unlisted: not linked from the home page) |
+| `procore-financials/index.html` | puneeth-alaina.com/procore-financials |
 
 To add a page: create `new-page-name/index.html` (a complete HTML document) and add a link to it in the root `index.html`.
 
@@ -48,3 +49,7 @@ Collection `weddingVenues`, one doc per venue. Text fields are free text; `est` 
 ## Weekends (`weekends/`)
 
 Signed-in only. `weekend.js` and `weekend.css` are shared; each weekend is a folder named by its Saturday date holding a small `index.html` shell. Collection `weekends`, one doc per weekend (id = folder name) with `days`, `items` (timetable), `todos`, `week` (cleaning plan), `places`, `notes`. Optional: `guide` (read-only "Know before you go" cards: `title`, `intro`, `points` of `{lead, text}`, source `links`), `guideHint`, `links` on an item (https only), `weather.start`/`weather.end` to narrow the forecast, `weather.tz` for a trip outside Central time (default `America/Chicago`), and `who: "S"` for Sri & Sudhamsh. A plan can start before the weekend (prep days); with more than three days the day tabs scroll on phones. No plan content is committed: a new weekend ships as an AES-GCM-encrypted `seed.json`, and the key only lives in a one-time setup link (`#k=…`). The first signed-in open with that link writes the plan to Firestore; after that `seed.json` can be deleted.
+
+## Procore financials (`procore-financials/`)
+
+Static page, no Firebase. All figures live at the top of the page script in USD thousands, as filed: `RAW` holds the three statements (one array of FY2023–FY2025 values per line, plus the "What it is" and "At Procore" text), `SUPP` holds earnings-release figures (non-GAAP, customers, RPO, shares outstanding), and `P22` holds the FY2022 values used for growth rates and averages. `EDGES` lists the cross-statement connections and `RG` defines the ratios. To add a year, append a value to every array and to `YRS`/`YEND`. The share price default for the valuation group is `state.price`.
