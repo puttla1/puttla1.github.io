@@ -518,8 +518,17 @@ export function bootWeekend(id) {
       unsub = onSnapshot(ref, { includeMetadataChanges: true }, snap => {
         const hash = new URLSearchParams(location.hash.slice(1));
         const key = hash.get('k'), replace = hash.get('replace') === '1';
-        if (snap.exists() && !(key && replace && !seeding)) { data = snap.data(); showErr(''); render(); loadWeather(); return; }
-        if (snap.metadata.fromCache) return; // wait for the server's answer
+        const replacing = !!(key && replace);
+        if (snap.exists() && !(replacing && !seeding)) {
+          data = snap.data(); showErr('');
+          try { render(); } catch (e) { showErr(e); app.replaceChildren(h('div', { class: 'wrap top' }, h('p', { class: 'summary', text: 'This weekend couldn’t be shown: ' + (e.message || e) }))); }
+          loadWeather(); return;
+        }
+        // Wait for the server's answer before deciding a weekend is missing. A replace link doesn't need to wait.
+        if (snap.metadata.fromCache && !replacing) {
+          if (!data) app.replaceChildren(h('div', { class: 'wrap top' }, h('p', { class: 'summary', text: 'Loading this weekend…' })));
+          return;
+        }
         if (key && !seeding) {
           seeding = true;
           app.replaceChildren(h('div', { class: 'wrap top' }, h('p', { class: 'summary', text: 'Setting up this weekend…' })));
