@@ -1,531 +1,59 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><link rel="icon" href="/icons/plane.svg" type="image/svg+xml">
-<link rel="icon" href="/icons/plane-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="/icons/plane-180.png">
-</head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
 <title>Monterrey New Year</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Libre+Franklin:wght@400;500;600&display=swap">
 <style>
-/* Layout: a single reading column (~880px) — hero with Cerro de la Silla ridge, at-a-glance strip,
-   booking checklist, hotel plan, four day timelines, food + hike, budget, need-to-knows. */
-:root{
-  --bg:#F1F3F2;          /* limestone, faint green-grey */
-  --surface:#FFFFFF;
-  --ink:#18212B;          /* steel-blue ink */
-  --muted:#5A6672;
-  --line:#D5DBDA;
-  --accent:#B3125A;       /* Legorreta rosa */
-  --accent-soft:#F6DCE7;
-  --agave:#2C6A57;        /* sierra green */
-  --agave-soft:#DCEDE6;
-  --ochre:#B7791F;        /* steel-mill ochre */
-  --ochre-soft:#F5E8D0;
-  --sky:#3C5D86;
-  --sky-soft:#DEE7F2;
-  --warn:#9A4A0B;
-  --warn-soft:#FBEBD9;
-  --ridge:#C9D2D3;
-  --ridge2:#AEB9BC;
-  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
-  --f-body:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#11161B;--surface:#19212A;--ink:#E7ECEE;--muted:#9AA7B2;--line:#2C3743;
-  --accent:#F0679F;--accent-soft:#3A1B2A;--agave:#6CC2A3;--agave-soft:#16312A;
-  --ochre:#E2A64F;--ochre-soft:#33270F;--sky:#8EB2E0;--sky-soft:#1B2A3D;
-  --warn:#F2A35F;--warn-soft:#35230F;--ridge:#24303A;--ridge2:#2F3D49;color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#11161B;--surface:#19212A;--ink:#E7ECEE;--muted:#9AA7B2;--line:#2C3743;
-  --accent:#F0679F;--accent-soft:#3A1B2A;--agave:#6CC2A3;--agave-soft:#16312A;
-  --ochre:#E2A64F;--ochre-soft:#33270F;--sky:#8EB2E0;--sky-soft:#1B2A3D;
-  --warn:#F2A35F;--warn-soft:#35230F;--ridge:#24303A;--ridge2:#2F3D49;color-scheme:dark}
-
+/* Sign-in shell for a locked page. The trip page itself is in page.enc.json and replaces this once unlocked. */
+:root{--bg:#F4F3EF;--surface:#FFFFFF;--ink:#1D2129;--muted:#626872;--line:#DCDAD3;--accent:#B3125A;
+  --f-display:"Fraunces",Georgia,serif;--f-body:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#14161A;--surface:#1C1F25;--ink:#ECEAE4;--muted:#A2A7AF;--line:#2E323A;--accent:#F0679F;color-scheme:dark}}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
-.wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
-a{color:var(--accent);text-underline-offset:2px}
-a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.02;margin:0}
-h2{font-size:clamp(30px,5vw,42px);font-weight:800;letter-spacing:.01em;text-transform:uppercase}
-h3{font-size:24px;font-weight:600;letter-spacing:.01em}
-p{margin:0}
-.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
-.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-section{margin-top:56px;display:flex;flex-direction:column;gap:18px}
-.lede{color:var(--muted);max-width:62ch}
-
-/* hero */
-.hero{position:relative;padding-top:40px;display:flex;flex-direction:column;gap:14px}
-.hero h1{font-size:clamp(56px,13vw,112px);font-weight:800;text-transform:uppercase;letter-spacing:-.005em}
-.hero h1 span{color:var(--accent)}
-.hero .sub{font-size:18px;max-width:58ch}
-.ridge{width:100%;height:auto;display:block;margin-top:8px}
-.flight{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.flight > div{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.flight b{font-family:var(--f-display);font-size:26px;font-weight:600}
-.flight small{color:var(--muted)}
-
-/* glance */
-.glance{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
-.glance > div{padding:14px 12px 14px 0;display:flex;flex-direction:column;gap:4px;min-width:0}
-.glance > div + div{padding-left:14px;border-left:1px solid var(--line)}
-.glance .v{font-family:var(--f-display);font-size:34px;font-weight:800;line-height:1}
-.glance .v.accent{color:var(--accent)}
-.glance small{color:var(--muted);font-size:13px}
-
-/* checklist */
-.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
-.checks li{border-bottom:1px solid var(--line)}
-.checks label{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:start;padding:12px 0;cursor:pointer}
-.checks input{width:18px;height:18px;margin-top:3px;accent-color:var(--agave)}
-.checks .t{font-weight:600}
-.checks .n{color:var(--muted);font-size:14px;display:block}
-.checks .when{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap;padding-top:3px}
-.checks li.done .t{text-decoration:line-through;color:var(--muted)}
-.progress{font-size:13px;color:var(--muted)}
-
-/* hotels */
-.hotels{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.hotel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.hotel .nights{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
-.hotel dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
-.hotel dt{color:var(--muted)}
-.hotel dd{margin:0;font-weight:500}
-.stack{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
-.bar{display:flex;height:44px;border-radius:6px;overflow:hidden;font-size:13px;font-weight:600}
-.bar > div{display:flex;align-items:center;justify-content:center;padding:0 6px;text-align:center;line-height:1.1;min-width:0}
-.seg-a{background:var(--agave);color:var(--surface)}
-.seg-b{background:repeating-linear-gradient(135deg,var(--agave-soft) 0 8px,var(--surface) 8px 14px);color:var(--agave);border:1px dashed var(--agave)}
-.seg-c{background:var(--ink);color:var(--bg)}
-.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:6px}
-.rules{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px}
-
-/* days */
-.daynav{display:flex;flex-wrap:wrap;gap:8px}
-.daynav a{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:999px}
-.daynav a:hover{border-color:var(--accent);color:var(--accent)}
-.day{display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}
-.dayhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:8px}
-.dayhead h3{font-size:30px;font-weight:800;text-transform:uppercase}
-.dayhead .theme{color:var(--muted);font-size:14px}
-.dayhead .daycost{font-family:var(--f-mono);font-size:14px}
-.note{font-size:14px;padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--ink);border-left:3px solid var(--warn)}
-.note b{color:var(--warn)}
-.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.tl li{display:grid;grid-template-columns:76px 1fr auto;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:start}
-.tl .time{font-family:var(--f-mono);font-size:13px;color:var(--muted);padding-top:2px}
-.tl .what{min-width:0;display:flex;flex-direction:column;gap:3px}
-.tl .what b{font-weight:600}
-.tl .what span{color:var(--muted);font-size:14px}
-.tl .meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
-.tl .cost{font-family:var(--f-mono);font-size:13px;white-space:nowrap}
-.chip{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap}
-.c-museum{background:var(--sky-soft);color:var(--sky)}
-.c-food{background:var(--accent-soft);color:var(--accent)}
-.c-hike{background:var(--agave-soft);color:var(--agave)}
-.c-move{background:var(--ochre-soft);color:var(--ochre)}
-.c-casual{background:var(--line);color:var(--ink)}
-
-/* food */
-.food{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-.food > div{display:flex;flex-direction:column;gap:10px;min-width:0}
-.rlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
-.rlist li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
-.rlist .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.rlist b{font-weight:600}
-.rlist .badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
-.rlist span{color:var(--muted);font-size:14px}
-
-/* hike */
-.hike{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;background:var(--agave-soft);border-radius:12px;padding:22px}
-.hike > div{min-width:0;display:flex;flex-direction:column;gap:10px}
-.hike h3{color:var(--agave)}
-.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:14px;margin:0}
-.kv dt{color:var(--muted)}
-.kv dd{margin:0;font-weight:500}
-
-/* budget */
-.toggle{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);align-self:flex-start;flex-wrap:wrap}
-.toggle button{font:inherit;font-size:14px;font-weight:600;border:0;background:transparent;color:var(--muted);padding:9px 14px;cursor:pointer}
-.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.btable-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
-table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
-th,td{text-align:left;padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-td small{display:block;color:var(--muted);font-size:13px}
-tfoot td{font-weight:700;border-bottom:0;font-size:17px}
-tfoot td.num{color:var(--accent)}
-.split{display:flex;height:16px;border-radius:4px;overflow:hidden;background:var(--line)}
-.split div{height:100%}
-.bl{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
-.bl i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.totals > div{display:flex;flex-direction:column;gap:2px;border-left:3px solid var(--accent);padding-left:12px}
-.totals .v{font-family:var(--f-display);font-size:36px;font-weight:800;line-height:1}
-.totals small{color:var(--muted);font-size:13px}
-
-/* know */
-.know{display:grid;grid-template-columns:repeat(2,1fr);gap:0 28px}
-.know > div{padding:14px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
-.know b{font-weight:600}
-.know p{color:var(--muted);font-size:14px}
-.qs{counter-reset:q;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-.qs li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
-.sources{font-size:13px;color:var(--muted);columns:2;column-gap:28px;padding-left:18px;margin:0}
-.sources li{break-inside:avoid;margin-bottom:4px}
-footer{margin-top:40px;font-size:13px;color:var(--muted)}
-
-@media (max-width:720px){
-  .glance{grid-template-columns:1fr 1fr}
-  .glance > div:nth-child(3){padding-left:0;border-left:0}
-  .glance > div:nth-child(n+3){border-top:1px solid var(--line)}
-  .hotels,.food,.hike,.know{grid-template-columns:1fr}
-  .totals{grid-template-columns:1fr}
-  .sources{columns:1}
-  .tl li{grid-template-columns:62px 1fr}
-  .tl .meta{grid-column:2;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px}
-}
-@media (prefers-reduced-motion:no-preference){
-  .toggle button,.daynav a{transition:background .15s,color .15s,border-color .15s}
-}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
+.wrap{max-width:640px;margin:0 auto;padding:clamp(28px,7vw,72px) 20px 64px}
+.back{color:var(--muted);font-size:14px;text-decoration:none}
+.back:hover{color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(40px,9vw,60px);line-height:1.02;margin:16px 0 0;letter-spacing:-.01em}
+.when{color:var(--muted);margin:10px 0 0;font-variant-numeric:tabular-nums}
+p.say{color:var(--muted);margin:24px 0 16px;max-width:44ch}
+[data-show]{display:none}
+body[data-auth="loading"] [data-show="loading"],body[data-auth="out"] [data-show="out"],
+body[data-auth="in"] [data-show="in"],body[data-auth="denied"] [data-show="denied"]{display:block}
+.btn{font:inherit;font-weight:600;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 16px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+@media (prefers-color-scheme: dark){.btn.primary{color:#14161A}}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 </style>
-
-<div class="wrap">
-
-<header class="hero">
-  <span class="eyebrow">Thu Dec 31, 2026 → Sun Jan 3, 2027 · 2 travelers · 3 nights</span>
-  <h1>Año Nuevo<br>en <span>Monterrey</span></h1>
-  <p class="sub">A long weekend of museums, two Michelin-star dinners, tacos, and one easy mountain walk. Night one at the Crowne Plaza downtown, nights two and three at the InterContinental in San Pedro.</p>
-  <svg class="ridge" viewBox="0 0 900 120" role="img" aria-label="Outline of Cerro de la Silla and the Sierra Madre">
-    <path d="M0 120 L0 92 L70 80 L130 86 L190 64 L250 72 L300 50 L345 58 L380 38 L420 70 L455 62 L500 82 L560 70 L620 88 L700 76 L780 90 L900 84 L900 120 Z" fill="var(--ridge)"/>
-    <path d="M0 120 L0 104 L120 98 L240 104 L330 96 L420 100 L470 64 L505 30 L530 56 L555 72 L585 50 L612 22 L640 58 L690 94 L780 100 L900 98 L900 120 Z" fill="var(--ridge2)"/>
-    <text x="600" y="14" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="middle">Cerro de la Silla</text>
-  </svg>
-  <div class="flight" aria-label="Flights">
-    <div><small>Outbound · Viva · nonstop</small><b>SAT 8:00 PM → MTY 9:10 PM</b><small>Thu, Dec 31 · 1 hr 10 min</small></div>
-    <div><small>Return · Viva · nonstop</small><b>MTY 5:40 PM → SAT 6:50 PM</b><small>Sun, Jan 3 · 1 hr 10 min</small></div>
+<link rel="icon" href="/icons/plane.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/plane-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/plane-180.png">
+</head>
+<body data-auth="loading">
+<main class="wrap">
+  <a class="back" href="/">Puneeth &amp; Alaina</a>
+  <h1>Monterrey New Year</h1>
+  <p class="when">Dec 31 – Jan 3</p>
+  <div data-show="loading"><p class="say">Loading…</p></div>
+  <div data-show="out">
+    <p class="say">Just for Puneeth and Alaina. Sign in with the Google account you use for the grocery list.</p>
+    <button class="btn primary js-signin" type="button">Sign in with Google</button>
   </div>
-</header>
-
-<section aria-label="At a glance">
-  <div class="glance">
-    <div><span class="eyebrow">All-in, for two</span><span class="v accent mono" id="g-total">$2,325</span><small id="g-pp">≈ $1,163 per person</small></div>
-    <div><span class="eyebrow">Night one</span><span class="v mono">Booked</span><small>Crowne Plaza Monterrey, Dec 31</small></div>
-    <div><span class="eyebrow">Flights</span><span class="v mono">$871</span><small>Viva nonstop, round trip for two</small></div>
-    <div><span class="eyebrow">January weather</span><span class="v mono">50–72°F</span><small>Cold fronts can dip near freezing</small></div>
+  <div data-show="denied">
+    <p class="say"><span class="who"></span> doesn’t have access to this page.</p>
+    <button class="btn js-signout" type="button">Use a different account</button>
   </div>
-</section>
-
-<section id="book">
-  <div>
-    <span class="eyebrow">Do these now</span>
-    <h2>Booking checklist</h2>
-  </div>
-  <p class="lede">New Year's Eve fills up, so book the rest soon. Your ticks are saved in this browser.</p>
-  <span class="progress" id="progress">0 of 8 done</span>
-  <ul class="checks" id="checks">
-    <li><label><input type="checkbox" id="c1"><span><span class="t">Book the Viva flights, with bags in the fare</span><span class="n">Viva's cheapest fare includes only a personal item. Adding a carry-on during booking is cheaper than at the airport.</span></span><span class="when">This week</span></label></li>
-    <li><label><input type="checkbox" id="c2" checked><span><span class="t">Book Crowne Plaza Monterrey for Dec 31</span><span class="n">Booked: 1 king, Early Saver member rate, Puneeth and Alaina on the reservation.</span></span><span class="when">Done</span></label></li>
-    <li><label><input type="checkbox" id="c3"><span><span class="t">Book InterContinental Presidente Monterrey, Jan 1–3</span><span class="n">Budgeted at about $600 for two nights, taxes in.</span></span><span class="when">Soon</span></label></li>
-    <li><label><input type="checkbox" id="c4"><span><span class="t">Add your IHG One Rewards number to both reservations</span><span class="n">Both hotels are IHG. Ask for late checkout on Sunday.</span></span><span class="when">Before trip</span></label></li>
-    <li><label><input type="checkbox" id="c5"><span><span class="t">Reserve KOLI for Sat Jan 2, around 8:30 PM</span><span class="n">Michelin one star. Tasting menus start around MXN 1,700 per person.</span></span><span class="when">Now</span></label></li>
-    <li><label><input type="checkbox" id="c6"><span><span class="t">Reserve Pangea for Fri Jan 1 and confirm it's open on the holiday</span><span class="n">If Pangea is closed, book Fonda San Francisco (Michelin recommended, also in San Pedro).</span></span><span class="when">Now</span></label></li>
-    <li><label><input type="checkbox" id="c7"><span><span class="t">Buy Chipinque tickets online the day before</span><span class="n">The park has no ticket booth. About MXN 88 per adult.</span></span><span class="when">Dec 31</span></label></li>
-    <li><label><input type="checkbox" id="c8"><span><span class="t">Passports, Uber and DiDi apps, some pesos</span><span class="n">Taquerías are cash-friendly. Pull pesos from a bank ATM at MTY.</span></span><span class="when">Before trip</span></label></li>
-  </ul>
-</section>
-
-<section id="hotels">
-  <div>
-    <span class="eyebrow">Where you sleep</span>
-    <h2>Hotel plan</h2>
-  </div>
-  <p class="lede">Both stays are IHG. Night one is downtown by the Macroplaza, closer to the airport for the late NYE arrival. On New Year's Day you move to San Pedro Garza García, roughly 15–20 minutes away by Uber.</p>
-  <div class="hotels">
-    <article class="hotel">
-      <span class="nights">Night 1 · Thu Dec 31 · booked</span>
-      <h3>Crowne Plaza Monterrey</h3>
-      <dl>
-        <dt>Room</dt><dd>1 king standard, 2 adults</dd>
-        <dt>Rate</dt><dd>Early Saver member exclusive</dd>
-        <dt>Times</dt><dd>Check-in 3 PM · checkout 1 PM</dd>
-        <dt>Address</dt><dd>Av. Constitución Oriente 300, Centro</dd>
-        <dt>Front desk</dt><dd>+52 81 8319 6000</dd>
-      </dl>
-    </article>
-    <article class="hotel">
-      <span class="nights">Nights 2–3 · Fri Jan 1 → Sun Jan 3</span>
-      <h3>InterContinental Presidente Monterrey</h3>
-      <dl>
-        <dt>Est. cost</dt><dd>~$600 for 2 nights, taxes in</dd>
-        <dt>On site</dt><dd>Spa, gym, Epicentro gin bar; no pool</dd>
-        <dt>Times</dt><dd>Check-in 3 PM · checkout 12 PM</dd>
-      </dl>
-      <p style="font-size:14px;color:var(--muted)">Recent listed rates ran about $250–$335/night. Check the current price when you book.</p>
-    </article>
-  </div>
-</section>
-
-<section id="days">
-  <div>
-    <span class="eyebrow">Day by day</span>
-    <h2>Itinerary</h2>
-  </div>
-  <nav class="daynav" aria-label="Jump to day">
-    <a href="#d0">Thu · Arrive</a><a href="#d1">Fri · Mountain</a><a href="#d2">Sat · Museums</a><a href="#d3">Sun · Fly home</a>
-  </nav>
-
-  <article class="day" id="d0">
-    <div class="dayhead"><h3>Thu Dec 31</h3><span class="theme">Land and ring in the year</span><span class="daycost">~$90</span></div>
-    <ul class="tl">
-      <li><span class="time">8:00 PM</span><span class="what"><b>Depart SAT on Viva</b><span>Nonstop, 1 hr 10 min.</span></span><span class="meta"><span class="chip c-move">Travel</span></span></li>
-      <li><span class="time">9:10 PM</span><span class="what"><b>Land at MTY, clear immigration</b><span>Use the authorized taxi counter in the terminal. NYE surge pricing makes the fixed fare the safer bet.</span></span><span class="meta"><span class="chip c-move">Ride</span><span class="cost">~$50</span></span></li>
-      <li><span class="time">10:30 PM</span><span class="what"><b>Check in at the Crowne Plaza</b><span>Downtown, about 30 minutes from MTY. Tell the hotel you're arriving late so the room is held.</span></span><span class="meta"><span class="chip c-casual">Hotel</span></span></li>
-      <li><span class="time">11:30 PM</span><span class="what"><b>Midnight toast</b><span>Keep it close: the hotel bar, or Barrio Antiguo near the Macroplaza. You'll get a better night out on Saturday.</span></span><span class="meta"><span class="chip c-food">Drinks</span><span class="cost">~$40</span></span></li>
-    </ul>
-  </article>
-
-  <article class="day" id="d1">
-    <div class="dayhead"><h3>Fri Jan 1</h3><span class="theme">Holiday: sierra hike and a star dinner</span><span class="daycost">~$290</span></div>
-    <p class="note"><b>New Year's Day.</b> The three state history museums close Dec 31 and Jan 1, and many restaurants keep holiday hours. Chipinque stayed open 5:30 AM–9 PM on Jan 1 this year, so today goes to the mountain.</p>
-    <ul class="tl">
-      <li><span class="time">9:00 AM</span><span class="what"><b>Breakfast downtown</b><span>At the hotel or nearby. Many places keep holiday hours on Jan 1.</span></span><span class="meta"><span class="chip c-food">Food</span><span class="cost">~$25</span></span></li>
-      <li><span class="time">10:30 AM</span><span class="what"><b>Check out, drop bags at the InterContinental</b><span>About 15–20 minutes to San Pedro by Uber. The bell desk holds bags until 3 PM check-in.</span></span><span class="meta"><span class="chip c-move">Ride</span><span class="cost">~$10</span></span></li>
-      <li><span class="time">11:00 AM</span><span class="what"><b>Parque Ecológico Chipinque</b><span>15–20 min by Uber from San Pedro. Walk a short trail to the overlooks (details below). Bring water and snacks.</span></span><span class="meta"><span class="chip c-hike">Hike</span><span class="cost">~$27</span></span></li>
-      <li><span class="time">2:30 PM</span><span class="what"><b>Late lunch in San Pedro</b><span>Cara de Vaca on José Vasconcelos for cabrito or organic chicken off the fire. Check holiday hours.</span></span><span class="meta"><span class="chip c-food">Casual</span><span class="cost">~$45</span></span></li>
-      <li><span class="time">3:30 PM</span><span class="what"><b>Check in at the InterContinental, rest or spa</b><span>Rest up before dinner.</span></span><span class="meta"><span class="chip c-casual">Hotel</span></span></li>
-      <li><span class="time">8:00 PM</span><span class="what"><b>Dinner at Pangea</b><span>Michelin one star, chef Guillermo González Beristáin. À la carte plates from about MXN 400. Backup: Fonda San Francisco.</span></span><span class="meta"><span class="chip c-food">Fine dining</span><span class="cost">~$155</span></span></li>
-    </ul>
-  </article>
-
-  <article class="day" id="d2">
-    <div class="dayhead"><h3>Sat Jan 2</h3><span class="theme">Downtown museums, canal, steel furnace</span><span class="daycost">~$430</span></div>
-    <ul class="tl">
-      <li><span class="time">8:30 AM</span><span class="what"><b>Tacos at Doña Mary La Gritona</b><span>Michelin Bib Gourmand on Madero in Centro. Open 7 AM–2 PM. Order the barbacoa and the salsa molcajeteada, and know your order before you reach the window.</span></span><span class="meta"><span class="chip c-food">Casual</span><span class="cost">~$26</span></span></li>
-      <li><span class="time">10:00 AM</span><span class="what"><b>MARCO (contemporary art)</b><span>Legorreta building on the Macroplaza. Tue–Sun 10–6. MXN 90 on Saturdays.</span></span><span class="meta"><span class="chip c-museum">Museum</span><span class="cost">~$10</span></span></li>
-      <li><span class="time">11:15 AM</span><span class="what"><b>Walk the Macroplaza to the Museo del Palacio</b><span>The neoclassical state palace. Always free.</span></span><span class="meta"><span class="chip c-museum">Museum</span><span class="cost">$0</span></span></li>
-      <li><span class="time">11:45 AM</span><span class="what"><b>Museo de Historia Mexicana + Museo del Noreste</b><span>One ticket covers both, about MXN 60. The Noreste galleries include Texas history, which lands well coming from San Antonio.</span></span><span class="meta"><span class="chip c-museum">Museum</span><span class="cost">~$7</span></span></li>
-      <li><span class="time">1:30 PM</span><span class="what"><b>Boat down the Paseo Santa Lucía</b><span>Board below the Museo de Historia Mexicana. About an hour on the canal to Parque Fundidora. MXN 120 per adult.</span></span><span class="meta"><span class="chip c-casual">Casual</span><span class="cost">~$13</span></span></li>
-      <li><span class="time">2:30 PM</span><span class="what"><b>Lunch at El Lingote</b><span>The café-restaurant at Horno3, with craft beer and park views.</span></span><span class="meta"><span class="chip c-food">Food</span><span class="cost">~$50</span></span></li>
-      <li><span class="time">3:30 PM</span><span class="what"><b>Horno3, Museo del Acero</b><span>A restored blast furnace with the furnace show and an open-air lift to the top. MXN 165. Open until 7 PM.</span></span><span class="meta"><span class="chip c-museum">Museum</span><span class="cost">~$18</span></span></li>
-      <li><span class="time">6:00 PM</span><span class="what"><b>Back to the hotel</b><span>Rest and change for dinner.</span></span><span class="meta"><span class="chip c-move">Ride</span><span class="cost">~$14</span></span></li>
-      <li><span class="time">8:30 PM</span><span class="what"><b>Tasting menu at KOLI Cocina de Origen</b><span>Michelin one star. Northeastern Mexican cooking: cabrito, lechón, mole neolonés. Open Tue–Sat, 1–11 PM.</span></span><span class="meta"><span class="chip c-food">Fine dining</span><span class="cost">~$265</span></span></li>
-    </ul>
-  </article>
-
-  <article class="day" id="d3">
-    <div class="dayhead"><h3>Sun Jan 3</h3><span class="theme">Slow morning in San Pedro, fly home</span><span class="daycost">~$110</span></div>
-    <ul class="tl">
-      <li><span class="time">9:30 AM</span><span class="what"><b>Breakfast near the hotel</b><span>Or at El Bambis Café, a Michelin Bib Gourmand in San Pedro.</span></span><span class="meta"><span class="chip c-food">Food</span><span class="cost">~$45</span></span></li>
-      <li><span class="time">10:30 AM</span><span class="what"><b>Museo La Milarca</b><span>A private art and design collection in San Pedro, close to the hotel. Weekends 10–8 during last year's holiday schedule. Confirm hours and price.</span></span><span class="meta"><span class="chip c-museum">Museum</span><span class="cost">~$15</span></span></li>
-      <li><span class="time">12:30 PM</span><span class="what"><b>Check out (or late checkout)</b><span>Leave bags with the bell desk if you head back out for lunch.</span></span><span class="meta"><span class="chip c-casual">Hotel</span></span></li>
-      <li><span class="time">2:30 PM</span><span class="what"><b>Ride to MTY</b><span>About 40 min. Aim to arrive 2+ hours before an international departure.</span></span><span class="meta"><span class="chip c-move">Ride</span><span class="cost">~$33</span></span></li>
-      <li><span class="time">5:40 PM</span><span class="what"><b>Depart MTY on Viva</b><span>Land at SAT at 6:50 PM.</span></span><span class="meta"><span class="chip c-move">Travel</span><span class="cost">~$20</span></span></li>
-    </ul>
-    <p class="note"><b>Sunday museum swap.</b> The three state museums and MARCO are free on Sundays. If you'd rather see them today, flip Saturday and Sunday mornings. Saturday's plan has more slack for it.</p>
-  </article>
-</section>
-
-<section id="food">
-  <div>
-    <span class="eyebrow">Where to eat</span>
-    <h2>Restaurants</h2>
-  </div>
-  <p class="lede">Monterrey has two Michelin-starred restaurants, and both kept their star in the 2026 guide. The casual list leans on Michelin's Bib Gourmand and recommended picks.</p>
-  <div class="food">
-    <div>
-      <h3>Nice dinners</h3>
-      <ul class="rlist">
-        <li><div class="top"><b>KOLI Cocina de Origen</b><span class="badge">1 star</span></div><span>Río Amazonas 225, Del Valle. Tasting menus from about MXN 1,700; pairings push past MXN 4,000. Tue–Sat.</span></li>
-        <li><div class="top"><b>Pangea</b><span class="badge">1 star</span></div><span>Av. del Roble 660, San Pedro. French- and Asian-influenced; plates from about MXN 400. Mon–Sat 1–11, Sun 1–6.</span></li>
-        <li><div class="top"><b>Fonda San Francisco</b><span class="badge">Recommended</span></div><span>San Pedro. Chef-driven Mexican with a home-cooking feel. Good Pangea backup.</span></li>
-        <li><div class="top"><b>Vernáculo</b><span class="badge">Recommended</span></div><span>San Pedro. Another strong option if you add a night.</span></li>
-      </ul>
-    </div>
-    <div>
-      <h3>Casual and local</h3>
-      <ul class="rlist">
-        <li><div class="top"><b>Tacos Doña Mary La Gritona</b><span class="badge">Bib Gourmand</span></div><span>Madero, Centro. Breakfast and lunch tacos, flour or corn. Daily 7 AM–2 PM.</span></li>
-        <li><div class="top"><b>El Bambis Café</b><span class="badge">Bib Gourmand</span></div><span>San Pedro. Easy breakfast close to the InterContinental.</span></li>
-        <li><div class="top"><b>Tacos El Compadre · Tacos Piedra 1</b><span class="badge">Recommended</span></div><span>Monterrey. Taquerías for a snack between museums.</span></li>
-        <li><div class="top"><b>Cara de Vaca</b><span class="badge">Local pick</span></div><span>José Vasconcelos 1226, San Pedro. Wood-fire cabrito, natural wine, cold beer.</span></li>
-        <li><div class="top"><b>Casa El Hidalgo · Jabalina</b><span class="badge">Recommended</span></div><span>Monterrey. Both in the 2026 Michelin selection.</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section id="hike">
-  <div>
-    <span class="eyebrow">The short hike</span>
-    <h2>Chipinque</h2>
-  </div>
-  <div class="hike">
-    <div>
-      <h3>Easy walk above San Pedro</h3>
-      <p>A protected forest in the Sierra Madre, right above the InterContinental's neighborhood. It has more than 60 km of marked trails. Pick a short loop from the main area, then stop at the La Peñita overlook and the bridge at km 4.</p>
-      <p>Skip the summit routes (La M, Copete de las Águilas). They need a separate permit, start early in the morning, and can take most of a day.</p>
-    </div>
-    <div>
-      <dl class="kv">
-        <dt>Entry</dt><dd>~MXN 88 per adult, online only</dd>
-        <dt>Hours</dt><dd>5:30 AM–9 PM; last car entry 7 PM</dd>
-        <dt>Getting there</dt><dd>Uber from the hotel, 15–20 min</dd>
-        <dt>Short trail</dt><dd>Brecha del Chile y Las Floridas, 4.2 km</dd>
-        <dt>Time</dt><dd>Plan 2–3 hours in the park</dd>
-        <dt>Pack</dt><dd>Layers. In Jan 2025 a cold front iced the trails.</dd>
-      </dl>
-    </div>
-  </div>
-</section>
-
-<section id="budget">
-  <div>
-    <span class="eyebrow">For two people</span>
-    <h2>Budget</h2>
-  </div>
-  <p class="lede">Prices are converted at MXN 18 per US dollar (the rate was about 17.9 in early October). Restaurant figures include drinks and a 15% tip.</p>
-  <div class="split" id="split" aria-hidden="true"></div>
-  <div class="bl" id="bl"></div>
-  <div class="btable-wrap">
-    <table>
-      <thead><tr><th>Item</th><th class="num">Cost</th></tr></thead>
-      <tbody id="btbody"></tbody>
-      <tfoot><tr><td>Total out of pocket</td><td class="num" id="btotal"></td></tr></tfoot>
-    </table>
-  </div>
-  <div class="totals">
-    <div><small>Total for two</small><span class="v mono" id="t-total"></span></div>
-    <div><small>Per person</small><span class="v mono" id="t-pp"></span></div>
-    <div><small>Not included</small><span class="v mono">Crowne Plaza</span><small>Add the Dec 31 rate from your confirmation</small></div>
-  </div>
-</section>
-
-<section id="know">
-  <div>
-    <span class="eyebrow">Before you go</span>
-    <h2>Need to know</h2>
-  </div>
-  <div class="know">
-    <div><b>Closures</b><p>Historia Mexicana, Noreste and Palacio closed Dec 24, 25, 31 and Jan 1 last season, and they close Mondays. MARCO also closes Mondays. Plan museums for Saturday and Sunday.</p></div>
-    <div><b>Safety</b><p>The State Department lists Nuevo León at Level 2, "exercise increased caution." Use app rides or dispatched taxis, and don't drive between cities after dark.</p></div>
-    <div><b>Getting around</b><p>Uber and DiDi are allowed at MTY. Normal fares to San Pedro run about MXN 200–380, but surge on NYE. The authorized airport taxi to San Pedro is about MXN 900.</p></div>
-    <div><b>Bags on Viva</b><p>The base fare includes only a personal item. Carry-ons and checked bags cost extra, and fees are higher at the airport than online.</p></div>
-    <div><b>Weather</b><p>January averages about 50°F lows and 72°F highs. A cold front can drop the city into the 30s, and Chipinque runs colder than town.</p></div>
-    <div><b>Sundays are free</b><p>The three state museums and MARCO charge nothing on Sundays, and the state museums stay open until 8 PM.</p></div>
-  </div>
-</section>
-
-<section id="sources">
-  <span class="eyebrow">Sources</span>
-  <ol class="sources">
-    <li><a href="https://upgradedpoints.com/news/presidente-intercontinental-monterrey-opening-this-summer">Upgraded Points: InterContinental Presidente Monterrey</a></li>
-    <li><a href="https://www.expedia.com/es/Monterrey-Hoteles-Hoteles-Con-Estacionamiento.0-0-d2448-tHotelesconestacionamiento.Guia-Viajes-Filter-Hoteles">Expedia: recent InterContinental rate</a></li>
-    <li><a href="https://www.nl.gob.mx/es/boletines/disfruta-de-la-temporada-navidena-en-los-museos-de-historia">Nuevo León: holiday museum closures</a></li>
-    <li><a href="https://nl.gob.mx/es/3museos">Nuevo León: 3 Museos hours and prices</a></li>
-    <li><a href="https://www.posta.com.mx/share/marco-presenta-nueva-exposicion-mirame-te-vere-de-vuelta-de-teresa-serrano/vl1626299">Posta: MARCO hours and price</a></li>
-    <li><a href="https://www.milenio.com/politica/comunidad/museo-del-acero-horno-3-en-monterrey-que-hacer-y-cuanto-cuesta">Milenio: Horno3 price</a></li>
-    <li><a href="https://www.lonelyplanet.com/pois/465368">Lonely Planet: Horno3 and El Lingote</a></li>
-    <li><a href="https://www.posta.com.mx/nuevo-leon/costo-del-recorrido-en-lancha-del-paseo-santa-lucia-/vl2048794">Posta: Santa Lucía boat price</a></li>
-    <li><a href="https://amp.milenio.com/comunidad/horario-parque-chipinque-ano-nuevo-que-hacer-enero-2026">Milenio: Chipinque New Year's hours and entry</a></li>
-    <li><a href="https://www.adn40.mx/mexico/2026-10-07/el-bosque-de-la-sierra-madre-junto-a-monterrey-que-tiene-precio-especial-para-adultos-mayores-con-inapam-en-octubre-2026/">ADN40: Chipinque online-only tickets</a></li>
-    <li><a href="https://www.posta.com.mx/nuevo-leon/senderismo-en-nuevo-leon-conoce-las-diversas-rutas-con-las-que-cuenta-este-parque-ecologico/vl2091432">Posta: Chipinque trails</a></li>
-    <li><a href="https://playersoflife.com/monterrey/monterrey-michelin-2026-restaurantes-recomendados-y-premiados-con-estrella/">Players of Life: Michelin 2026 Nuevo León</a></li>
-    <li><a href="https://elmanana.com.mx/nacional/2025/6/6/esto-cuesta-comer-en-los-restaurantes-que-tienen-estrella-michelin-en-monterrey-148158.html">El Mañana: KOLI and Pangea prices</a></li>
-    <li><a href="https://www.timeoutmexico.mx/ciudad-de-mexico/restaurantes/donde-comer-en-monterrey-durante-el-torneo">Time Out México: Doña Mary, Cara de Vaca, KOLI hours</a></li>
-    <li><a href="https://www.aeropuertosdelmundo.net/mx/aeropuerto-MTY-transporte/">MTY airport transport fares</a></li>
-    <li><a href="https://www.mexicotravelandleisure.com/blog/monterrey-airport-transportation/">Uber fares from MTY</a></li>
-    <li><a href="https://www.travelpulse.com/news/destinations/us-updates-mexico-travel-advisory-ahead-of-2026-world-cup">TravelPulse: Nuevo León Level 2</a></li>
-    <li><a href="https://aifly.one/guides/viva-aerobus-baggage-allowance/">Viva Aerobus baggage guide</a></li>
-    <li><a href="https://es.weatherspark.com/y/5154/Clima-promedio-en-Monterrey-M%C3%A9xico-durante-todo-el-a%C3%B1o">WeatherSpark: Monterrey climate</a></li>
-    <li><a href="https://www.eldolar.info/en/mexico/dia/20261008">ElDolar: USD/MXN, Oct 2026</a></li>
-  </ol>
-</section>
-
-<footer>Prices and hours were checked in October 2026. Holiday hours change, so confirm reservations the week before.</footer>
-</div>
-
-<script>
-(function(){
-  // ---- checklist (per-browser convenience) ----
-  var KEY='mty-nye-checks';
-  var saved={};
-  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ saved={}; }
-  var boxes=document.querySelectorAll('#checks input');
-  function refresh(){
-    var n=0;
-    boxes.forEach(function(b){ b.closest('li').classList.toggle('done',b.checked); if(b.checked) n++; });
-    document.getElementById('progress').textContent=n+' of '+boxes.length+' done';
-  }
-  boxes.forEach(function(b){
-    if(saved[b.id]) b.checked=true;
-    b.addEventListener('change',function(){
-      saved[b.id]=b.checked;
-      try{ localStorage.setItem(KEY,JSON.stringify(saved)); }catch(e){}
-      refresh();
-    });
-  });
-  refresh();
-
-  // ---- budget ----
-  var FX=18;
-  var cats=[
-    {k:'Flights',c:'var(--sky)'},
-    {k:'Hotel',c:'var(--agave)'},
-    {k:'Food',c:'var(--accent)'},
-    {k:'Getting around',c:'var(--ochre)'},
-    {k:'Activities & buffer',c:'var(--muted)'}
-  ];
-  var rows=[
-    {cat:'Flights',item:'Viva round trip, SAT ⇄ MTY, 2 passengers',note:'Fare from your Google Flights screenshot',usd:871},
-    {cat:'Flights',item:'One carry-on each way (estimate)',note:'Skip with personal items only',usd:70},
-    {cat:'Hotel',item:'Crowne Plaza Monterrey, Dec 31',note:'Booked; Early Saver rate not yet added',usd:0,label:'booked'},
-    {cat:'Hotel',item:'InterContinental Presidente, Jan 1–3 (estimate)',note:'Cash rate, taxes in',usd:600},
-    {cat:'Food',item:'NYE toast',note:'Hotel bar or nearby',usd:40},
-    {cat:'Food',item:'Fri: breakfast, snacks, late lunch, Pangea dinner',note:'Pangea ≈ MXN 2,800 with wine and tip',usd:25+10+45+155},
-    {cat:'Food',item:'Sat: Doña Mary, El Lingote, KOLI tasting',note:'KOLI ≈ MXN 4,750 with drinks and tip',usd:26+50+265},
-    {cat:'Food',item:'Sun: breakfast and airport',note:'',usd:65},
-    {cat:'Food',item:'Coffee and cocktails',note:'Epicentro gin bar and similar',usd:60},
-    {cat:'Getting around',item:'Airport taxi on NYE + airport ride home',note:'≈ MXN 900 + 600',usd:83},
-    {cat:'Getting around',item:'In-town Ubers, about 7 rides',note:'≈ MXN 1,550',usd:87},
-    {cat:'Activities & buffer',item:'Chipinque, MARCO, 3 Museos, boat, Horno3, La Milarca',note:'≈ MXN 1,300 for two',usd:73},
-    {cat:'Activities & buffer',item:'Tips and buffer',note:'',usd:75}
-  ];
-  function fmt(n){ var s=Math.abs(Math.round(n)).toLocaleString('en-US'); return (n<0?'−$':'$')+s; }
-  function render(){
-    var tb=document.getElementById('btbody'); tb.innerHTML='';
-    var total=0, byCat={};
-    rows.forEach(function(r){
-      var on = true;
-      var tr=document.createElement('tr');
-      var td1=document.createElement('td');
-      td1.textContent=r.item;
-      if(r.note){ var sm=document.createElement('small'); sm.textContent=r.note; td1.appendChild(sm); }
-      var td2=document.createElement('td'); td2.className='num';
-      td2.textContent = r.label ? r.label : fmt(r.usd);
-      tr.appendChild(td1); tr.appendChild(td2); tb.appendChild(tr);
-      if(on){ total+=r.usd; byCat[r.cat]=(byCat[r.cat]||0)+r.usd; }
-    });
-    var pp=total/2;
-    document.getElementById('btotal').textContent=fmt(total);
-    document.getElementById('t-total').textContent=fmt(total);
-    document.getElementById('t-pp').textContent=fmt(pp);
-    document.getElementById('g-total').textContent=fmt(total);
-    document.getElementById('g-pp').textContent='≈ '+fmt(pp)+' per person';
-    var split=document.getElementById('split'), bl=document.getElementById('bl');
-    split.innerHTML=''; bl.innerHTML='';
-    cats.forEach(function(c){
-      var v=Math.max(0,byCat[c.k]||0);
-      var d=document.createElement('div'); d.style.flex=String(v); d.style.background=c.c; split.appendChild(d);
-      var s=document.createElement('span'); s.innerHTML='<i style="background:'+c.c+'"></i>'; s.appendChild(document.createTextNode(c.k+' '+fmt(v)+' · '+Math.round(v/total*100)+'%')); bl.appendChild(s);
-    });
-  }
-  render();
-})();
+  <div data-show="in"><p class="say" id="lockmsg" role="status">Opening…</p></div>
+</main>
+<script type="module">
+import { bootLocked } from '/shared/locked.js';
+bootLocked();
 </script>
-
-</body></html>
+</body>
+</html>

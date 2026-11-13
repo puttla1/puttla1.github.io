@@ -537,6 +537,7 @@ export function bootHub() {
   const errEl = document.getElementById('err');
   let unsub = null;
   function render(ws) {
+    ws = ws.filter(w => w.start);   // skips non-weekend docs kept in this collection (page-keys)
     const t = todayISO();
     const up = ws.filter(w => (w.end || w.start) >= t).sort((a, b) => a.start < b.start ? -1 : 1);
     const past = ws.filter(w => (w.end || w.start) < t).sort((a, b) => a.start > b.start ? -1 : 1);
