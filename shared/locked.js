@@ -4,7 +4,10 @@
 //
 // One-time setup: the private key first travels in a link ending #k=…; the first signed-in open with
 // that link saves it to Firestore. After that every locked page opens with sign-in alone.
-import { db, doc, getDoc, setDoc, serverTimestamp, startGate, denied, isDenied } from '/shared/firebase.js';
+import { db, doc, setDoc, serverTimestamp, startGate, denied, isDenied } from '/shared/firebase.js';
+// getDoc comes straight from the SDK (same version as firebase.js) so a browser holding an older cached
+// copy of firebase.js, from before it exported getDoc, still loads this page.
+import { getDoc } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 import { unlockPage } from '/shared/page-crypto.js';
 
 // Lives beside the weekend plans because that collection is already limited to the approved accounts.
