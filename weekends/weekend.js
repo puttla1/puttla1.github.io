@@ -498,11 +498,12 @@ export function bootWeekend(id) {
       h('h1', { text: 'Not set up yet' }),
       h('p', { class: 'summary', text: msg || 'This weekend hasn’t been loaded into your shared list yet. Open the setup link from Claude once, while signed in.' })));
   }
-  async function seed(key) {
+  // replace: a setup link ending &replace=1 overwrites a plan that was already loaded (a re-planned weekend).
+  async function seed(key, replace) {
     const obj = await decryptSeed(key);
     await runTransaction(db, async tx => {
       const snap = await tx.get(ref);
-      if (!snap.exists()) tx.set(ref, { ...obj, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      if (replace || !snap.exists()) tx.set(ref, { ...obj, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
     });
     history.replaceState(null, '', location.pathname);
   }
@@ -515,13 +516,14 @@ export function bootWeekend(id) {
     onSignedIn() {
       if (unsub) unsub();
       unsub = onSnapshot(ref, { includeMetadataChanges: true }, snap => {
-        if (snap.exists()) { data = snap.data(); showErr(''); render(); loadWeather(); return; }
+        const hash = new URLSearchParams(location.hash.slice(1));
+        const key = hash.get('k'), replace = hash.get('replace') === '1';
+        if (snap.exists() && !(key && replace && !seeding)) { data = snap.data(); showErr(''); render(); loadWeather(); return; }
         if (snap.metadata.fromCache) return; // wait for the server's answer
-        const key = new URLSearchParams(location.hash.slice(1)).get('k');
         if (key && !seeding) {
           seeding = true;
           app.replaceChildren(h('div', { class: 'wrap top' }, h('p', { class: 'summary', text: 'Setting up this weekend…' })));
-          seed(key).catch(e => { seeding = false; showMissing(isDenied(e) ? 'This account doesn’t have access.' : 'Couldn’t load the setup: ' + (e.message || e)); });
+          seed(key, replace).catch(e => { seeding = false; showMissing(isDenied(e) ? 'This account doesn’t have access.' : 'Couldn’t load the setup: ' + (e.message || e)); });
         } else if (!seeding) showMissing();
       }, err => { if (isDenied(err)) denied(); else showErr(err); });
     },
