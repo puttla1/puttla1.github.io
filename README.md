@@ -9,7 +9,7 @@ Each page lives in its own folder as `index.html`:
 | File | URL |
 | --- | --- |
 | `mexico-vacation/index.html` | puneeth-alaina.com/mexico-vacation (locked: see Locked pages) |
-| `india-trip/index.html` | puneeth-alaina.com/india-trip |
+| `india-trip/index.html` | puneeth-alaina.com/india-trip (locked: see Locked pages) |
 | `thank-you-sticker/index.html` | puneeth-alaina.com/thank-you-sticker |
 | `to-do/index.html` | puneeth-alaina.com/to-do |
 | `grocery-list/index.html` | puneeth-alaina.com/grocery-list |
@@ -34,14 +34,14 @@ To add a page: create `new-page-name/index.html` (a complete HTML document) and 
 
 `to-do/`, `grocery-list/`, `calendar/`, `fitness/` and `wedding-venues/` read and write a shared Firestore database (project `puneeth-alaina`) through `shared/firebase.js`. Visitors sign in with Google on every one of these pages (the to-do list included, since Nov 2026); the Firestore security rules decide which accounts can see or edit anything. A page's sign-in screen only hides the page: the rules for its collections (`todo` and `meta` for the to-do list) are what actually keep other people out. The Firebase config in `shared/firebase.js` is public by design.
 
-## Locked pages (`mexico-vacation/`)
+## Locked pages (`mexico-vacation/`, `india-trip/`)
 
 For a static page that should only open for the approved Google accounts. The repo is public, so the real page is not committed: the folder holds a small sign-in shell (`index.html`, which calls `bootLocked()` from `shared/locked.js`) and the page itself as an encrypted `page.enc.json`.
 
 - Pages are encrypted to the site's public key, `shared/page-key.pub.json` (ECDH P-256 + AES-GCM, code in `shared/page-crypto.js`). The matching private key is in Firestore at `weekends/page-keys`, a collection the rules already limit to the approved accounts. It got there from a one-time setup link (`/mexico-vacation/#k=…`): the first signed-in open with that link saved it. It is not stored anywhere else.
 - To publish or update a locked page: `node tools/lock-page.mjs path/to/plain.html folder-name`, then commit the new `page.enc.json`. No key or setup link is needed for this.
 - To lock another page: copy the `mexico-vacation/index.html` shell into its folder, change the title and dates, and run the tool.
-- Never commit the plain HTML. The plain Monterrey page is kept as Puneeth's private Claude artifact "Monterrey New Year"; edit that, then re-run the tool. Versions of the page from before Nov 2026 are still in this repo's git history.
+- Never commit the plain HTML. The plain pages are kept as Puneeth's private Claude artifacts "Monterrey New Year" and "Udaipur, by way of Istanbul"; edit that, then re-run the tool. Versions of the page from before Nov 2026 are still in this repo's git history.
 
 ## Icons
 
